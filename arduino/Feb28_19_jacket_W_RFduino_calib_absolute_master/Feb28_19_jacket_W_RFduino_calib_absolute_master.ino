@@ -36,7 +36,7 @@ void setup() {
 pinMode(3,OUTPUT);
   // put your setup code here, to run once:
   Wire.beginOnPins(5,6);
-//  Serial.begin(115200); 
+  Serial.begin(115200); 
 while (BNOmode(Config_mode)!=0){};  
 delay(25);
   resetPWR();
@@ -48,57 +48,65 @@ while (BNOmode(NDOF_mode)!=0){};
 
 void loop() {
 //  Serial.println("Shitting in loop");
-  // put your main code here, to run repeatedly: 
+//  // put your main code here, to run repeatedly: 
 //  digitalWrite(3,LOW);
-  Wire.beginTransmission(BNO);
-  Wire.write(R_calib);
-  Wire.endTransmission();
-  Wire.requestFrom(BNO,1);
-  if (Wire.available()==1)
-  {
-   c = Wire.read();
-   m = bitRead(c,1); m = (m<<1)+bitRead(c,0);
-   a = bitRead(c,3); a = (a<<1)+bitRead(c,2);
-   g = bitRead(c,5); g = (g<<1)+bitRead(c,4);
-   s = bitRead(c,7); s = (s<<1)+bitRead(c,6);
-String s2 = "f,"+String(s)+","+String(g)+","+String(a)+","+String(m);
-char mydata1[s2.length()+1];
-s2.toCharArray(mydata1,s2.length()+1);
-RFduinoGZLL.sendToHost(mydata1,s2.length()+1);
-Serial.println(mydata1);
-delay(random(10,25));
-   }
-while(m==3 && g==3 && a==3 && s==3)
-{
-int q0 = BNOgetQuat(R_q0);
-int q1 = BNOgetQuat(R_q1);
-int q2 = BNOgetQuat(R_q2);
-int q3 = BNOgetQuat(R_q3);
+//  Wire.beginTransmission(BNO);
+//  Wire.write(R_calib);
+//  Wire.endTransmission();
+//  Wire.requestFrom(BNO,1);
+//  if (Wire.available()==1)
+//  {
+//   c = Wire.read();
+//   m = bitRead(c,1); m = (m<<1)+bitRead(c,0);
+//   a = bitRead(c,3); a = (a<<1)+bitRead(c,2);
+//   g = bitRead(c,5); g = (g<<1)+bitRead(c,4);
+//   s = bitRead(c,7); s = (s<<1)+bitRead(c,6);
+//String s2 = "f,"+String(s)+","+String(g)+","+String(a)+","+String(m);
+//char mydata1[s2.length()+1];
+//s2.toCharArray(mydata1,s2.length()+1);
+//RFduinoGZLL.sendToHost(mydata1,s2.length()+1);
+//Serial.println(mydata1);
+//delay(random(10,25));
+//   }
+//   while (BNOmode(IMU_mode)!=0){};
+//while(m==3 && g==3 && a==3 && s==3)
+//{
+uint16_t q0 = BNOgetQuat(R_q0);
+uint16_t q1 = BNOgetQuat(R_q1);
+uint16_t q2 = BNOgetQuat(R_q2);
+uint16_t q3 = BNOgetQuat(R_q3);
+const double scale = (1.0 / (1<<14));
+double Q0d = scale*q0;
+double Q1d = scale*q1;
+double Q2d = scale*q2;
+double Q3d = scale*q3;
+String s1 = "c,";//+String(Q0d)+","+String(Q1d)+","+String(Q2d)+","+String(Q3d);
+Serial.println(Q0d);
 q0 = map(q0,0,65535,0,200);
 q1 = map(q1,0,65535,0,200);
 q2 = map(q2,0,65535,0,200);
 q3 = map(q3,0,65535,0,200);
-String s1 = "c,"+String(q0)+","+String(q1)+","+String(q2)+","+String(q3);
+//String s1 = "c,"+String(q0)+","+String(q1)+","+String(q2)+","+String(q3);
 char mydata[s1.length()+1];
 s1.toCharArray(mydata,s1.length()+1);
 RFduinoGZLL.sendToHost(mydata,s1.length()+1);
 Serial.println(s1);
 digitalWrite(3,HIGH);
-delay(random(10,25));
-  Wire.beginTransmission(BNO);
-  Wire.write(R_calib);
-  Wire.endTransmission();
-  Wire.requestFrom(BNO,1);
-  if (Wire.available()==1)
-  {
-   c = Wire.read();
-   m = bitRead(c,1); m = (m<<1)+bitRead(c,0);
-   a = bitRead(c,3); a = (a<<1)+bitRead(c,2);
-   g = bitRead(c,5); g = (g<<1)+bitRead(c,4);
-   s = bitRead(c,7); s = (s<<1)+bitRead(c,6);
-   digitalWrite(3,LOW);
-  }
-}
+//delay(random(10,25));
+//  Wire.beginTransmission(BNO);
+//  Wire.write(R_calib);
+//  Wire.endTransmission();
+//  Wire.requestFrom(BNO,1);
+//  if (Wire.available()==1)
+//  {
+//   c = Wire.read();
+//   m = bitRead(c,1); m = (m<<1)+bitRead(c,0);
+//   a = bitRead(c,3); a = (a<<1)+bitRead(c,2);
+//   g = bitRead(c,5); g = (g<<1)+bitRead(c,4);
+//   s = bitRead(c,7); s = (s<<1)+bitRead(c,6);
+//   digitalWrite(3,LOW);
+//  }
+//}
 }
 
 byte BNOmode(byte mode)
@@ -110,6 +118,7 @@ byte BNOmode(byte mode)
   while (flag <= 1){
   Wire.beginTransmission(BNO);
   Wire.write(R_OPRmode);
+  delay(10);
   Wire.endTransmission();
   Wire.requestFrom(BNO,1);
   if (Wire.available()==1)
@@ -123,6 +132,7 @@ byte BNOmode(byte mode)
    else        {val = (mode|exval);}
    Wire.beginTransmission(BNO);
    Wire.write(R_OPRmode);
+   delay(10);
    Wire.write(val);
    ok = Wire.endTransmission();
    if (ok == 0){flag += 1;}
@@ -136,20 +146,21 @@ void resetIMU()
   bool ok = 1;
   while (ok==1){
   byte resetinfo = BNOread(resetregister);
-  bitClear(resetinfo,6);
+//  bitClear(resetinfo,6);
   Wire.beginTransmission(BNO);
-  Wire.write(resetinfo);
+//  Wire.write(resetinfo);
+  Wire.write(0x20);
   delay(10);
-  bitSet(resetinfo,6);
-  bitSet(resetinfo,8);
+//  bitSet(resetinfo,6);
+//  bitSet(resetinfo,8);
   Wire.beginTransmission(BNO);
-  Wire.write(resetinfo);
+//  Wire.write(resetinfo);
   delay(10);
   Wire.endTransmission();
   Wire.beginTransmission(BNO);
   Wire.write(resetregister);
   Wire.write(0x80);
-    delay(10);
+  delay(10);
   ok = Wire.endTransmission();
   }
   return;
@@ -199,7 +210,7 @@ byte BNOread(byte R_addr)
 
 
 
-  int BNOgetQuat(byte R_addr)
+  uint16_t BNOgetQuat(byte R_addr)
   {
   byte MSB, LSB;
   bool flag = 0;
@@ -215,7 +226,7 @@ byte BNOread(byte R_addr)
                           { 
                             LSB = Wire.read();
                             MSB = Wire.read();
-                            q = (int(MSB)<<8)|int(LSB);
+                            q = (uint16_t(MSB)<<8)|uint16_t(LSB);
                             flag = 1; 
                             }
   }

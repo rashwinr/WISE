@@ -1,6 +1,6 @@
 #include <RFduinoGZLL.h>
 #include <Wire.h>
-device_t role = DEVICE3;
+device_t role = DEVICE0;
 byte BNO = 0x28; // BNO055 address
 
 byte R_OPRmode = 0x3D;
@@ -61,10 +61,10 @@ void loop() {
         g = bitRead(c,5); g = (g<<1)+bitRead(c,4);
         s = bitRead(c,7); s = (s<<1)+bitRead(c,6);
         }
-          String D3_cal = "cal,d,"+String(m)+","+String(a)+","+String(g)+","+String(s);
-          char mydata_cal[D3_cal.length()+1];
-          D3_cal.toCharArray(mydata_cal,D3_cal.length()+1);
-          RFduinoGZLL.sendToHost(mydata_cal,D3_cal.length()+1);
+          String D0_cal = "cal,d,"+String(m)+","+String(a)+","+String(g)+","+String(s);
+          char mydata_cal[D0_cal.length()+1];
+          D0_cal.toCharArray(mydata_cal,D0_cal.length()+1);
+          RFduinoGZLL.sendToHost(mydata_cal,D0_cal.length()+1);
           delay(random(10,25));
           } 
   flg = 1;
@@ -77,10 +77,10 @@ Q0 = map(q0,-16384,16384,0,999);
 Q1 = map(q1,-16384,16384,0,999);
 Q2 = map(q2,-16384,16384,0,999);
 Q3 = map(q3,-16384,16384,0,999);
-String D3 = "d,"+String(Q0)+","+String(Q1)+","+String(Q2)+","+String(Q3);
-char mydata[D3.length()+1];
-D3.toCharArray(mydata,D3.length()+1);
-RFduinoGZLL.sendToHost(mydata,D3.length()+1);
+String D0 = "d,"+String(Q0)+","+String(Q1)+","+String(Q2)+","+String(Q3);
+char mydata[D0.length()+1];
+D0.toCharArray(mydata,D0.length()+1);
+RFduinoGZLL.sendToHost(mydata,D0.length()+1);
 delay(random(10,25));
 }
 

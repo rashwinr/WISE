@@ -10,6 +10,7 @@ void setup()
 
 void loop()
 {
+  
 if(s[0]!="0")
 {
 Serial.println(s[0]);
@@ -42,7 +43,9 @@ Serial.println(s[4]);
 //delayMicroseconds(500);
 delay(20);
 }
+
 }
+
 void RFduinoGZLL_onReceive(device_t device, int rssi, char *data, int len)
 {
 //  Serial.println(data);

@@ -1,7 +1,10 @@
+#include <RFduinoGZLL.h>
 #include <Wire.h>
+device_t role = DEVICE4;
 byte BNO = 0x28; // BNO055 address
-
+byte R_PWRmode = 0x3E;
 byte R_OPRmode = 0x3D;
+byte Sys_trig = 0x3F;
 /* remember to mask out the first four bit of previous operation mode because
 those four bits are reserved. This mask is done in the BNOmode function */
 byte AccMag_mode = B00000100;
@@ -9,8 +12,6 @@ byte Config_mode = B00000000;
 byte NDOF_mode = B00001100;
 byte IMU_mode = B00001000;
 byte Gyro_mode = B00000011;
-byte resetregister = 0x3F;
-
 // data registers
 /*these values are the register addresses of the least significant byte of
 quaternion data, the address of the MSB always follows the LSB*/
@@ -18,43 +19,61 @@ byte R_q0 = 0x20;
 byte R_q1 = 0x22;
 byte R_q2 = 0x24;
 byte R_q3 = 0x26;
-
 /*calibration values register*/
 byte R_calib = 0x35;
-/*variables*/
-double q0, q1, q2, q3;
 double Q;
 String calib_status;
 byte calib_acc, calib_gyr, calib_mag, calib_sys;
 byte c,m,a,g,s;  
-byte dum;
 
 void setup() {
   // put your setup code here, to run once:
+  RFduinoGZLL.begin(role);
+  RFduinoGZLL.txPowerLevel=4;
+  pinMode(3,OUTPUT);
   Wire.begin();
   Serial.begin(115200); 
-while (BNOmode(NDOF_mode)!=0){};
-}
+  while (BNOmode(Config_mode)!=0){};
+  while (BNOclock()!=0){};
+  while (BNOmode(NDOF_mode)!=0){};
+  }
 
 void loop() {
+  digitalWrite(3,LOW);
   // put your main code here, to run repeatedly: 
+int16_t q0 = BNOgetQuat(R_q0);
+int16_t q1 = BNOgetQuat(R_q1);
+int16_t q2 = BNOgetQuat(R_q2);
+int16_t q3 = BNOgetQuat(R_q3);
+int w = map(q0,-16384,+16384,0,999);
+int x = map(q1,-16384,+16384,0,999);
+int y = map(q2,-16384,+16384,0,999);
+int z = map(q3,-16384,+16384,0,999);
+String final="d,"+String(w)+","+String(x)+","+String(y)+","+String(z)+"\n";
+Serial.print(final);
+char mydata[final.length()];
+final.toCharArray(mydata,final.length());
+//Serial.println(mydata);
+RFduinoGZLL.sendToHost(mydata,final.length());
+digitalWrite(3,HIGH);
+delay(random(10,25));
+}
 
-int q0 = BNOgetQuat(R_q0);
-int q1 = BNOgetQuat(R_q1);
-int q2 = BNOgetQuat(R_q2);
-int q3 = BNOgetQuat(R_q3);
-double w = double(q0)*pow(2,-14);
-double x = double(q1)*pow(2,-14);
-double y = double(q2)*pow(2,-14);
-double z = double(q3)*pow(2,-14);
-Serial.print(w);Serial.print(", ");Serial.print(x);Serial.print(", ");Serial.print(y);Serial.print(", ");Serial.println(z);
+void resetPWR()
+{
+  bool ok = 1;
+  while (ok==1){
+  Wire.beginTransmission(BNO);
+  Wire.write(R_PWRmode);
+  Wire.write(0x00);
+  delay(10);
+  ok = Wire.endTransmission();
+  }
+  return;
 }
 
 
-
-
-byte BNOmode(byte mode){
-  
+bool BNOmode(byte mode){
   byte exval;
   byte val;
   byte ok;
@@ -62,6 +81,7 @@ byte BNOmode(byte mode){
   while (flag <= 1){
   Wire.beginTransmission(BNO);
   Wire.write(R_OPRmode);
+  delay(10);
   Wire.endTransmission();
   Wire.requestFrom(BNO,1);
   if (Wire.available()==1)
@@ -83,25 +103,7 @@ byte BNOmode(byte mode){
 
   return ok;}
 
-
-void resetIMU()
-{
-  bool ok = 1;
-  while (ok==1){
-    byte resetinfo = BNOread(resetregister);
-  bitClear(resetinfo,5);
-  Wire.beginTransmission(BNO);
-  Wire.write(0x3F);
-  Wire.write(resetinfo);
-  ok = Wire.endTransmission();
-  }
-  return;
-}
-
-
-
 byte BNOread(byte R_addr){
-  
   byte data;
   bool flag = 0;
   while(flag == 0){
@@ -116,34 +118,11 @@ byte BNOread(byte R_addr){
   
   }
 
-  String BNOcalib()
-  {
-  byte c;
-  String calib;
-  byte a,m,g,s;
-  bool flag = 0;
-  while(flag == 0){
-  Wire.beginTransmission(BNO);
-  Wire.write(R_calib);
-  Wire.endTransmission();
-  Wire.requestFrom(BNO,1);
-  if (Wire.available()==1)
-  {c = Wire.read();
-   m = bitRead(c,1); m = (m<<1)+bitRead(c,0);
-   a = bitRead(c,3); a = (a<<1)+bitRead(c,2);
-   g = bitRead(c,5); g = (g<<1)+bitRead(c,4);
-   s = bitRead(c,7); s = (s<<1)+bitRead(c,6);
-   calib = "acc "+String(a)+" mag "+String(m)+" gyr "+String(g)+" sys "+String(s);
-   flag = 1;}
-  }
-  return calib;
-  }
 
-int BNOgetQuat(byte R_addr){
-  
+int16_t BNOgetQuat(byte R_addr){
   byte MSB, LSB;
   bool flag = 0;
-  int q;
+  int16_t q;
   while(flag == 0)
   {
    Wire.beginTransmission(BNO);
@@ -154,8 +133,52 @@ int BNOgetQuat(byte R_addr){
    if (Wire.available()==2)
                           { LSB = Wire.read();
                             MSB = Wire.read();
-                            q = (int(MSB)<<8)|int(LSB);
+                            q = (int16_t(MSB)<<8)|int16_t(LSB);
                             flag = 1; }
-                                        }
-
+  }
   return q;}
+
+
+
+  bool BNOclock()
+{
+  bool ok = 1;
+  while (ok==1){
+  byte resetinfo = BNOread(Sys_trig);
+  bitSet(resetinfo,7);
+  Wire.beginTransmission(BNO);
+  Wire.write(Sys_trig);
+  Wire.write(resetinfo);
+  ok = Wire.endTransmission();
+ }
+  return ok;
+  }
+
+
+
+//
+//  bool BNOreset()
+//{
+//  bool ok = 1;
+//  while (ok==1){
+//  byte resetinfo = BNOread(Sys_trig);
+//  bitSet(resetinfo,5);
+//  Wire.beginTransmission(BNO);
+//  Wire.write(Sys_trig);
+//  Wire.write(resetinfo);
+//  if (Wire.endTransmission()==0){
+//        resetinfo = BNOread(Sys_trig);
+//        bitClear(resetinfo,5);
+//        Wire.beginTransmission(BNO);
+//        Wire.write(Sys_trig);
+//        Wire.write(resetinfo);
+//        if (Wire.endTransmission()==0){
+//              resetinfo = BNOread(Sys_trig);
+//              bitSet(resetinfo,7);
+//              Wire.beginTransmission(BNO);
+//              Wire.write(Sys_trig);
+//              Wire.write(resetinfo);
+//              ok = Wire.endTransmission();}
+//              }
+//  }
+//  return ok;}

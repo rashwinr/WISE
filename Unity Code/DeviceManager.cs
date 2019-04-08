@@ -132,8 +132,6 @@ public class DeviceManager : MonoBehaviour
             StartTime = Time.realtimeSinceStartup;
             ActivityChanged = false;
         }
-
-        SavingIteration = 0;
         CurrTime = Time.realtimeSinceStartup - StartTime;
         if (Conn.DeviceLocalAngles != "")
         {

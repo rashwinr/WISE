@@ -44,6 +44,10 @@ public class PlayerController : MonoBehaviour {
     public Transform StartArm;
     public Transform StarForearm;
 
+    public bool Live;
+    public Playback PB;
+    public int PB_iteration = 0;
+    public float Timer;
     // Use this for initialization
     void Start () {
         Forearm_x = new float[2];
@@ -63,33 +67,60 @@ public class PlayerController : MonoBehaviour {
         GameObject D_M = GameObject.FindGameObjectWithTag("DeviceManager");
         Conn = D_M.GetComponent<Connection>();
         DM = D_M.GetComponent<DeviceManager>();
+        PB = D_M.GetComponent<Playback>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-
-        Forearm_x[0] = Conn.angle_x[0];//Forearm 1 x//Change these orders according to the device order
-        Forearm_x[1] = Conn.angle_x[1];//Forearm 2 x
-        Arm_x[0] = Conn.angle_x[2];//Arm 1 x
-        Arm_x[1] = Conn.angle_x[3];//Arm 2 x
-        Forearm_y[0] = Conn.angle_y[0];//Forearm 1 y
-        Forearm_y[1] = Conn.angle_y[1];//Forearm 2 y
-        Forearm_z[0] = Conn.angle_z[0];
-        Forearm_z[1] = Conn.angle_z[1];
-        Arm_y[0] = Conn.angle_y[2];//Arm 1 y
-        Arm_y[1] = Conn.angle_y[3];//Arm 2 y
-        Arm_z[0] = Conn.angle_z[2];//Arm 1 x
-        Arm_z[1] = Conn.angle_z[3];//Arm 2 x
-        Back_all[0] = Conn.angle_x[4];
-        Back_all[1] = Conn.angle_y[4];
-        Back_all[2] = Conn.angle_z[4];
-
+        Timer += Time.deltaTime;
+        if (Live)
+        {
+            Forearm_x[0] = Conn.angle_x[0];//Forearm 1 x//Change these orders according to the device order
+            Forearm_x[1] = Conn.angle_x[1];//Forearm 2 x
+            Arm_x[0] = Conn.angle_x[2];//Arm 1 x
+            Arm_x[1] = Conn.angle_x[3];//Arm 2 x
+            Forearm_y[0] = Conn.angle_y[0];//Forearm 1 y
+            Forearm_y[1] = Conn.angle_y[1];//Forearm 2 y
+            Forearm_z[0] = Conn.angle_z[0];
+            Forearm_z[1] = Conn.angle_z[1];
+            Arm_y[0] = Conn.angle_y[2];//Arm 1 y
+            Arm_y[1] = Conn.angle_y[3];//Arm 2 y
+            Arm_z[0] = Conn.angle_z[2];//Arm 1 x
+            Arm_z[1] = Conn.angle_z[3];//Arm 2 x
+            Back_all[0] = Conn.angle_x[4];
+            Back_all[1] = Conn.angle_y[4];
+            Back_all[2] = Conn.angle_z[4];
+        }
+        else if(PB.TimeStamp.Count != 0)//Change this. It is inefficient
+        {
+            float percentage = Timer / PB.TimeStamp[PB_iteration];
+            Forearm_x[0] = PB.A_Angles[PB_iteration].x;//Forearm 1 x//Change these orders according to the device order
+            Forearm_x[1] = PB.B_Angles[PB_iteration].x;//Forearm 2 x
+            Arm_x[0] = PB.C_Angles[PB_iteration].x;//Arm 1 x
+            Arm_x[1] = PB.D_Angles[PB_iteration].x;//Arm 2 x
+            Forearm_y[0] = PB.A_Angles[PB_iteration].y;//Forearm 1 y
+            Forearm_y[1] = PB.B_Angles[PB_iteration].y;//Forearm 2 y
+            Forearm_z[0] = PB.A_Angles[PB_iteration].z;
+            Forearm_z[1] = PB.B_Angles[PB_iteration].z;
+            Arm_y[0] = PB.C_Angles[PB_iteration].y;//Arm 1 y
+            Arm_y[1] = PB.D_Angles[PB_iteration].y;//Arm 2 y
+            Arm_z[0] = PB.C_Angles[PB_iteration].z;//Arm 1 x
+            Arm_z[1] = PB.D_Angles[PB_iteration].z;//Arm 2 x
+            //Back_all[0] = PB.E_Angles[PB_iteration].x;
+           // Back_all[1] = PB.E_Angles[PB_iteration].y;
+            //Back_all[2] = PB.E_Angles[PB_iteration].z;
+            PB_iteration++;
+            if(PB_iteration == PB.TimeStamp.Count)
+            {
+                PB_iteration = 0;
+            }
+        }
         //MoveShoulder(Arm_x, Arm_z);
         MoveForearm(Forearm_x, Forearm_y,Forearm_z);
         MoveArm(Arm_x, Arm_y, Arm_z);
         MoveBack(Back_all[0], Back_all[1], Back_all[2]);
     }
-
+    
     public void SetGender()
     {
         
@@ -297,6 +328,7 @@ public class PlayerController : MonoBehaviour {
     public void Start_()
     {
         Curr_Anim.SetBool("Pause", false);
+        Live = true;
     }
 
     public void _animate()
@@ -307,6 +339,7 @@ public class PlayerController : MonoBehaviour {
     public void Exit_()
     {
         Curr_Anim.SetBool("Pause", true);
+        Live = false;
     }
 
     #endregion

@@ -346,7 +346,7 @@ public class Connection : MonoBehaviour
                     for (int i = 0; i < forces.Length / 5; i++)//no_devices; i++)
                     {
                         Verbose_Logging("Got Data");
-                        switch (forces[i * 5])
+                        switch (forces[i * 5])//5 i the number of elements in a data set. a,w,x,y,z
                         {
                             case "a":
                                 w[0] = (float.Parse(forces[(5 * i) + 1]) * 2.0f / 999.0f) - 1.0f;

@@ -132,8 +132,8 @@ while true
             rightShoulderAngle_h=acosd(dot(SH1,SH2)/(norm(SH1)*norm(SH2))); 
 
             %shoulder vertical movement angle calculation.
-            SV1=spineShoulder(1:2)-rightShoulder(1:2);
-            SV2=rightElbow(1:2)-rightShoulder(1:2);
+            SV1=spineShoulder([1 2])-rightShoulder([1 2]);
+            SV2=rightElbow([1 2])-rightShoulder([1 2]);
             rightShoulderAngle_v=acosd(dot(SV1,SV2)/(norm(SV1)*norm(SV2))); 
  
  %%%%%% WRIST
@@ -169,28 +169,7 @@ while true
             disp(rightShoulderAngle_v); 
             disp('Right Elbow angle');
             disp(rightElbowAngle); 
-            disp('Right Wrist angle');
-%             disp(rightWristAngle); 
-            
-%T1 = table(timeStamp,rightShoulderAngle_h,rightShoulderAngle_v,rightElbowAngle,rightWristAngle);
-%T1(:,1:5)
-% T1(:,1:5)
-% filename = 'patientdata1.xlsx';
-% writetable(T1,filename,'Sheet',1,'Range','D1')%
-
-            
-%%%%%% Arduino data sending Code
-                 angleB=rightElbowAngle/180;
-%                  angleW=rightWristAngle;
-                 angleS_v=rightShoulderAngle_v;
-                 angleS_h=rightShoulderAngle_h/180;
-                 
-                %angleW=correctangleW(angleW)(rightWristAngle-1)/180;% After Angle correction
-                
-               % writePosition(s,angleB);
-%                  writePosition(s,angleS_h);
-%                  current_pos = readPosition(s);
-%                  fprintf('Current motor position is %d degrees\n', current_pos);        
+            disp('Right Wrist angle');     
        end 
         
         %Draw skeletons on the images!    

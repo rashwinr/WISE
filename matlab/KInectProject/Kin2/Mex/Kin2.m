@@ -822,20 +822,20 @@ classdef Kin2 < handle
             bonesy(:,18) = [joints(this.JointType_WristLeft,2); joints(this.JointType_ThumbLeft,2)];                                            
             
             % Right Leg
-            bonesx(:,19) = [joints(this.JointType_HipRight,1); joints(this.JointType_KneeRight,1)];
-            bonesy(:,19) = [joints(this.JointType_HipRight,2); joints(this.JointType_KneeRight,2)];
-            bonesx(:,20) = [joints(this.JointType_KneeRight,1); joints(this.JointType_AnkleRight,1)];
-            bonesy(:,20) = [joints(this.JointType_KneeRight,2); joints(this.JointType_AnkleRight,2)];
-            bonesx(:,21) = [joints(this.JointType_AnkleRight,1); joints(this.JointType_FootRight,1)];
-            bonesy(:,21) = [joints(this.JointType_AnkleRight,2); joints(this.JointType_FootRight,2)];                        
+%             bonesx(:,19) = [joints(this.JointType_HipRight,1); joints(this.JointType_KneeRight,1)];
+%             bonesy(:,19) = [joints(this.JointType_HipRight,2); joints(this.JointType_KneeRight,2)];
+%             bonesx(:,20) = [joints(this.JointType_KneeRight,1); joints(this.JointType_AnkleRight,1)];
+%             bonesy(:,20) = [joints(this.JointType_KneeRight,2); joints(this.JointType_AnkleRight,2)];
+%             bonesx(:,21) = [joints(this.JointType_AnkleRight,1); joints(this.JointType_FootRight,1)];
+%             bonesy(:,21) = [joints(this.JointType_AnkleRight,2); joints(this.JointType_FootRight,2)];                        
             
             % Left Leg
-            bonesx(:,22) = [joints(this.JointType_HipLeft,1); joints(this.JointType_KneeLeft,1)];
-            bonesy(:,22) = [joints(this.JointType_HipLeft,2); joints(this.JointType_KneeLeft,2)];
-            bonesx(:,23) = [joints(this.JointType_KneeLeft,1); joints(this.JointType_AnkleLeft,1)];
-            bonesy(:,23) = [joints(this.JointType_KneeLeft,2); joints(this.JointType_AnkleLeft,2)];
-            bonesx(:,24) = [joints(this.JointType_AnkleLeft,1); joints(this.JointType_FootLeft,1)];
-            bonesy(:,24) = [joints(this.JointType_AnkleLeft,2); joints(this.JointType_FootLeft,2)];                                    
+%             bonesx(:,22) = [joints(this.JointType_HipLeft,1); joints(this.JointType_KneeLeft,1)];
+%             bonesy(:,22) = [joints(this.JointType_HipLeft,2); joints(this.JointType_KneeLeft,2)];
+%             bonesx(:,23) = [joints(this.JointType_KneeLeft,1); joints(this.JointType_AnkleLeft,1)];
+%             bonesy(:,23) = [joints(this.JointType_KneeLeft,2); joints(this.JointType_AnkleLeft,2)];
+%             bonesx(:,24) = [joints(this.JointType_AnkleLeft,1); joints(this.JointType_FootLeft,1)];
+%             bonesy(:,24) = [joints(this.JointType_AnkleLeft,2); joints(this.JointType_FootLeft,2)];                                    
             
         end
                 

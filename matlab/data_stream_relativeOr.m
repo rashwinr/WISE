@@ -1,13 +1,13 @@
 clear all, close all, clc
-delete(instrfind({'Port'},{'COM14'}))
-s = serial('COM14','BaudRate',115200);
+delete(instrfind({'Port'},{'COM15'}))
+s = serial('COM15','BaudRate',115200);
 s.ReadAsyncMode = 'continuous';
 p = -1; %y = m x + p where y(-1 1) x(0 999) from rfduino z(-2^14 2^14)
 m = 2/999;
 
-qC = [1,0,0,0];
+qB = [1,0,0,0];
 qD = [1,0,0,0];
-qCD = [1,0,0,0];
+qBD = [1,0,0,0];
 
 sp = 1.5;
 
@@ -62,12 +62,12 @@ while true
     switch data(1)
         case 'cal'
             switch data(2)
-                case 'c'
+                case 'b'
                     C_mag = str2double(data(3));
                     C_acc = str2double(data(4));
                     C_gyr = str2double(data(5));
                     C_sys = str2double(data(6));  
-                    Cal_C = [C_mag C_acc C_gyr C_sys]
+                    Cal_B = [C_mag C_acc C_gyr C_sys]
                 case 'd'
                     D_mag = str2double(data(3));
                     D_acc = str2double(data(4));
@@ -75,26 +75,26 @@ while true
                     D_sys = str2double(data(6));      
                     Cal_D = [D_mag D_acc D_gyr D_sys]
             end    
-        case 'c'
-            qC(1) = str2double(data(2))*m+p;
-            qC(2) = str2double(data(3))*m+p;
-            qC(3) = str2double(data(4))*m+p;
-            qC(4) = str2double(data(5))*m+p;
-            qC = quatnormalize(qC);
-            qCD = quatmultiply(quatconj(qC),qD);
+        case 'e'
+            qB(1) = str2double(data(2))*m+p;
+            qB(2) = str2double(data(3))*m+p;
+            qB(3) = str2double(data(4))*m+p;
+            qB(4) = str2double(data(5))*m+p;
+            qB = quatnormalize(qB);
+            qBD = quatmultiply(quatconj(qB),qD);
             
-            [~,I1,I2,I3] = parts(quaternion(quatmultiply(qC,quatmultiply(qI,quatconj(qC)))));
+            [~,I1,I2,I3] = parts(quaternion(quatmultiply(qB,quatmultiply(qI,quatconj(qB)))));
             IC = [I1,I2,I3];
-            [~,J1,J2,J3] = parts(quaternion(quatmultiply(qC,quatmultiply(qJ,quatconj(qC)))));
+            [~,J1,J2,J3] = parts(quaternion(quatmultiply(qB,quatmultiply(qJ,quatconj(qB)))));
             JC = [J1,J2,J3];
-            [~,K1,K2,K3] = parts(quaternion(quatmultiply(qC,quatmultiply(qK,quatconj(qC)))));
+            [~,K1,K2,K3] = parts(quaternion(quatmultiply(qB,quatmultiply(qK,quatconj(qB)))));
             KC = [K1,K2,K3];
             
-            [~,I1,I2,I3] = parts(quaternion(quatmultiply(qCD,quatmultiply(qI,quatconj(qCD)))));
+            [~,I1,I2,I3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qI,quatconj(qBD)))));
             ICD = [I1,I2,I3];
-            [~,J1,J2,J3] = parts(quaternion(quatmultiply(qCD,quatmultiply(qJ,quatconj(qCD)))));
+            [~,J1,J2,J3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qJ,quatconj(qBD)))));
             JCD = [J1,J2,J3];
-            [~,K1,K2,K3] = parts(quaternion(quatmultiply(qCD,quatmultiply(qK,quatconj(qCD)))));
+            [~,K1,K2,K3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qK,quatconj(qBD)))));
             KCD = [K1,K2,K3];
             
             figure(1)
@@ -116,7 +116,7 @@ while true
             qD(3) = str2double(data(4))*m+p;
             qD(4) = str2double(data(5))*m+p;
             qD = quatnormalize(qD);
-            qCD = quatmultiply(quatconj(qC),qD);
+            qBD = quatmultiply(quatconj(qB),qD);
             
             [~,I1,I2,I3] = parts(quaternion(quatmultiply(qD,quatmultiply(qI,quatconj(qD)))));
             ID = [I1,I2,I3];
@@ -125,11 +125,11 @@ while true
             [~,K1,K2,K3] = parts(quaternion(quatmultiply(qD,quatmultiply(qK,quatconj(qD)))));
             KD = [K1,K2,K3];
             
-            [~,I1,I2,I3] = parts(quaternion(quatmultiply(qCD,quatmultiply(qI,quatconj(qCD)))));
+            [~,I1,I2,I3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qI,quatconj(qBD)))));
             ICD = [I1,I2,I3];
-            [~,J1,J2,J3] = parts(quaternion(quatmultiply(qCD,quatmultiply(qJ,quatconj(qCD)))));
+            [~,J1,J2,J3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qJ,quatconj(qBD)))));
             JCD = [J1,J2,J3];
-            [~,K1,K2,K3] = parts(quaternion(quatmultiply(qCD,quatmultiply(qK,quatconj(qCD)))));
+            [~,K1,K2,K3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qK,quatconj(qBD)))));
             KCD = [K1,K2,K3];
             
             figure(1)

@@ -12,6 +12,12 @@ public class DeviceManager : MonoBehaviour
     public Dropdown Difficulty;
     public Dropdown Dexterity;
     public Dropdown Activties;
+    public Dropdown IMU;
+    public Slider Sys;
+    public Slider Acc;
+    public Slider Gyro;
+    public Slider Magneto;
+
     public InputField Name;
     public string PatientName;
     public string gender;
@@ -41,6 +47,12 @@ public class DeviceManager : MonoBehaviour
         savedDataPath = Application.persistentDataPath + "/savedData";
         Conn = GetComponent<Connection>();
     }
+
+    private void Update()
+    {
+        UpdateCalibration();
+    }
+
     public void GameStart()
     {
         string Time_ = System.DateTime.Now.ToString("_dd_MM_yyyy_HH_mm_ss");
@@ -199,6 +211,14 @@ public class DeviceManager : MonoBehaviour
         {
             Tabs[i].SetActive(false);
         }
+    }
+
+    public void UpdateCalibration()
+    {
+        Sys.value = Conn.Calibrations[IMU.value][0] / 3.0f;
+        Acc.value = Conn.Calibrations[IMU.value][1] / 3.0f;
+        Gyro.value = Conn.Calibrations[IMU.value][2] / 3.0f;
+        Magneto.value = Conn.Calibrations[IMU.value][3] / 3.0f;
     }
     #endregion
 

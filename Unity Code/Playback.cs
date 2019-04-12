@@ -54,7 +54,7 @@ public class Playback : MonoBehaviour
                 {
                     string[] buffer = line.Split(',');
                     Debug.Log(buffer.Length);
-                    if (buffer.Length == 17)
+                    if (buffer.Length == 21)
                     {
                         bool ReadStatus = true;
                         for (int j = 0; j < buffer.Length; j++)
@@ -66,7 +66,7 @@ public class Playback : MonoBehaviour
                         }
                         if (ReadStatus)
                         {
-                            TimeStamp.Add(float.Parse(buffer[16]));
+                            TimeStamp.Add(float.Parse(buffer[20]));
                             Debug.Log("Timed");
                             try
                             {

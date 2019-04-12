@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour {
     public Playback PB;
     public int PB_iteration = 0;
     public float Timer;
+    public float percentage;
     // Use this for initialization
     void Start () {
         Forearm_x = new float[2];
@@ -93,7 +94,39 @@ public class PlayerController : MonoBehaviour {
         }
         else if(PB.TimeStamp.Count != 0)//Change this. It is inefficient
         {
-            float percentage = Timer / PB.TimeStamp[PB_iteration];
+           /* percentage = Timer / (PB.TimeStamp[PB_iteration+1]- PB.TimeStamp[PB_iteration]);
+            if (percentage > 1)
+            {
+                PB_iteration++;
+                Timer = 0;
+                percentage = 0;
+            }
+            Vector3 A_ApproxAngles = Vector3.Lerp(PB.A_Angles[PB_iteration], PB.A_Angles[PB_iteration + 1], percentage);
+            Vector3 B_ApproxAngles = Vector3.Lerp(PB.B_Angles[PB_iteration], PB.B_Angles[PB_iteration + 1], percentage);
+            Vector3 C_ApproxAngles = Vector3.Lerp(PB.C_Angles[PB_iteration], PB.C_Angles[PB_iteration + 1], percentage);
+            Vector3 D_ApproxAngles = Vector3.Lerp(PB.D_Angles[PB_iteration], PB.D_Angles[PB_iteration + 1], percentage);
+            Vector3 E_ApproxAngles = Vector3.Lerp(PB.E_Angles[PB_iteration], PB.E_Angles[PB_iteration + 1], percentage);
+
+            Forearm_x[0] = A_ApproxAngles.x;//Forearm 1 x//Change these orders according to the device order
+            Forearm_x[1] = B_ApproxAngles.x;//Forearm 2 x
+            Arm_x[0] = C_ApproxAngles.x;//Arm 1 x
+            Arm_x[1] = D_ApproxAngles.x;//Arm 2 x
+            Forearm_y[0] = A_ApproxAngles.y;//Forearm 1 y
+            Forearm_y[1] = B_ApproxAngles.y;//Forearm 2 y
+            Forearm_z[0] = A_ApproxAngles.z;
+            Forearm_z[1] = B_ApproxAngles.z;
+            Arm_y[0] = C_ApproxAngles.y;//Arm 1 y
+            Arm_y[1] = D_ApproxAngles.y;//Arm 2 y
+            Arm_z[0] = C_ApproxAngles.z;//Arm 1 x
+            Arm_z[1] = D_ApproxAngles.z;//Arm 2 x
+            Back_all[0] = E_ApproxAngles.x;
+            Back_all[1] = E_ApproxAngles.y;
+            Back_all[2] = E_ApproxAngles.z;
+            
+            if(PB_iteration == PB.TimeStamp.Count-1)
+            {
+                PB_iteration = 0;
+            }*/
             Forearm_x[0] = PB.A_Angles[PB_iteration].x;//Forearm 1 x//Change these orders according to the device order
             Forearm_x[1] = PB.B_Angles[PB_iteration].x;//Forearm 2 x
             Arm_x[0] = PB.C_Angles[PB_iteration].x;//Arm 1 x
@@ -106,11 +139,11 @@ public class PlayerController : MonoBehaviour {
             Arm_y[1] = PB.D_Angles[PB_iteration].y;//Arm 2 y
             Arm_z[0] = PB.C_Angles[PB_iteration].z;//Arm 1 x
             Arm_z[1] = PB.D_Angles[PB_iteration].z;//Arm 2 x
-            //Back_all[0] = PB.E_Angles[PB_iteration].x;
-           // Back_all[1] = PB.E_Angles[PB_iteration].y;
-            //Back_all[2] = PB.E_Angles[PB_iteration].z;
+                                                   //Back_all[0] = PB.E_Angles[PB_iteration].x;
+                                                   // Back_all[1] = PB.E_Angles[PB_iteration].y;
+                                                   //Back_all[2] = PB.E_Angles[PB_iteration].z;
             PB_iteration++;
-            if(PB_iteration == PB.TimeStamp.Count)
+            if (PB_iteration == PB.TimeStamp.Count)
             {
                 PB_iteration = 0;
             }

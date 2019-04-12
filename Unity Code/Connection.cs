@@ -61,7 +61,8 @@ public class Connection : MonoBehaviour
     static float DataSendRate = 100.0f;
     static float TimeTakenforOneMsg = 1.0f / DataSendRate;
     public bool debug = true;
-    
+
+    public List<int[]> Calibrations = new List<int[]>();
     // Use this for initialization
     void Start()
     {
@@ -83,6 +84,10 @@ public class Connection : MonoBehaviour
         //sp.ReadTimeout = 1;
         //sp.Close();
         //InvokeRepeating("InvokeMultipleStream", 0.1f, 0.01f);
+        for (int i = 0; i < no_devices; i++) {
+            Calibrations.Add(new int[] { 0, 0, 0, 0, 0 });
+        }
+        InvokeRepeating("InvokeMultipleStream", 5.0f, TimeTakenforOneMsg);//Remember Invoke doesnt happen when time.timescale is 0
     }
 
     #region Code Connecting With Arduino
@@ -179,7 +184,7 @@ public class Connection : MonoBehaviour
 
             if (onlyX)
             {
-                angle_x = new float[] { quat2eul(LeftForearm).x, quat2eul(rightForearm).x, quat2eul(LeftArm).x, quat2eul(RightArm).x, quat2eul(Back).x };
+                angle_x = new float[] { quat2eul(LeftForearm,0).x, quat2eul(rightForearm,1).x, quat2eul(LeftArm,2).x, quat2eul(RightArm,3).x, quat2eul(Back,4).x };
                 for (int i = 0; i < angle_x.Length; i++)
                 {
                     if (angle_x[i] > 180.0f)
@@ -194,7 +199,7 @@ public class Connection : MonoBehaviour
             }
             if (onlyY)
             {
-                angle_y = new float[] { quat2eul(LeftForearm).y, quat2eul(rightForearm).y, quat2eul(LeftArm).y, quat2eul(RightArm).y, quat2eul(Back).y };
+                angle_y = new float[] { quat2eul(LeftForearm,0).y, quat2eul(rightForearm,1).y, quat2eul(LeftArm,2).y, quat2eul(RightArm,3).y, quat2eul(Back,4).y };
                 for (int i = 0; i < angle_y.Length; i++)
                 {
                     if (angle_y[i] > 180.0f)
@@ -209,7 +214,7 @@ public class Connection : MonoBehaviour
             }
             if (onlyZ)
             {
-                angle_z = new float[] { quat2eul(LeftForearm).z, quat2eul(rightForearm).z, quat2eul(LeftArm).z, quat2eul(RightArm).z, quat2eul(Back).z };
+                angle_z = new float[] { quat2eul(LeftForearm,0).z, quat2eul(rightForearm,1).z, quat2eul(LeftArm,2).z, quat2eul(RightArm,3).z, quat2eul(Back,4).z };
                 for (int i = 0; i < angle_z.Length; i++)
                 {
                     if (angle_z[i] > 180.0f)
@@ -229,17 +234,25 @@ public class Connection : MonoBehaviour
         }
     }
 
-    Vector3 quat2eul(Quaternion Q)
+    Vector3 quat2eul(Quaternion Q, int Device)
     {
         float sinr_cosp = 2.0f * (Q.w * Q.x + Q.y * Q.z);
         float cosr_cosp = 1.0f - (2.0f * (Q.x * Q.x + Q.y * Q.y));
         Vector3 euler = new Vector3();
         euler.x = Mathf.Rad2Deg * Mathf.Atan2(sinr_cosp, cosr_cosp);
+        
         float sinp = 2.0f * (Q.w * Q.y - Q.z * Q.x);
         euler.y = - Mathf.Rad2Deg * Mathf.Asin(sinp);
+        
         float siny_cosp = 2.0f * (Q.w * Q.z + Q.y * Q.x);
         float cosy_cosp = 1.0f -(2.0f * (Q.y * Q.y + Q.z * Q.z));
         euler.z = Mathf.Rad2Deg * Mathf.Atan2(siny_cosp, cosy_cosp);
+        if (float.IsNaN(euler.x)|| float.IsNaN(euler.y)||float.IsNaN(euler.z))
+        {
+            euler.x = angle_x[Device];
+            euler.y = angle_y[Device];
+            euler.z = angle_z[Device];
+        }
         return euler;
     }
 
@@ -361,6 +374,7 @@ public class Connection : MonoBehaviour
                                     Verbose_Logging(L_Forearm + " A");// Device A
                                     _device[0] = true;
                                 }
+                                Calibrations[0] = new int[] { 3, 3, 3, 3 };
                                 break;
                             case "b":
                                 w[1] = (float.Parse(forces[(5 * i) + 1]) * 2.0f / 999.0f) - 1.0f;
@@ -374,6 +388,7 @@ public class Connection : MonoBehaviour
                                     Verbose_Logging(R_Forearm + " B");// Device B
                                     _device[1] = true;
                                 }
+                                Calibrations[1] = new int[] { 3, 3, 3, 3 };
                                 break;
                             case "c":
                                 w[2] = (float.Parse(forces[(5 * i) + 1]) * 2.0f / 999.0f) - 1.0f;
@@ -383,12 +398,13 @@ public class Connection : MonoBehaviour
                                 if (!_device[2])
                                 {
                                     L_Arm = new Quaternion(x[2], y[2], z[2], w[2]);
-                                   // L_Arm = Quaternion.Normalize(L_Arm);
+                                    // L_Arm = Quaternion.Normalize(L_Arm);
                                     //Debug.Log(L_Arm);//Device C
                                     L_Arm = Quaternion.Inverse(L_Arm);
                                     Verbose_Logging(L_Arm + " C");// Device C
                                     _device[2] = true;
                                 }
+                                Calibrations[2] = new int[] { 3, 3, 3, 3 };
                                 break;
                             case "d":
                                 w[3] = (float.Parse(forces[(5 * i) + 1]) * 2.0f / 999.0f) - 1.0f;
@@ -402,6 +418,7 @@ public class Connection : MonoBehaviour
                                     Verbose_Logging(R_Arm + " D");// Device D
                                     _device[3] = true;
                                 }
+                                Calibrations[3] = new int[] { 3, 3, 3, 3 };
                                 break;
                             case "e":
                                 w[4] = (float.Parse(forces[(5 * i) + 1]) * 2.0f / 999.0f) - 1.0f;
@@ -415,6 +432,7 @@ public class Connection : MonoBehaviour
                                     Verbose_Logging(R_Arm + " E");// Device E
                                     _device[4] = true;
                                 }
+                                Calibrations[4] = new int[] { 3, 3, 3, 3 };
                                 break;
                             default:
                                 break;
@@ -429,9 +447,53 @@ public class Connection : MonoBehaviour
 
             }
         }
+        else if (forces.Length == 6)
+        {
+            for (int i = 0; i < forces.Length; i++)
+            {
+                if (forces[i] == "")
+                {
+                    ReadStatus = false;
+                }
+            }
+            if (ReadStatus)
+            {
+                try
+                {
+                    if(forces[0] == "cal")
+                      Verbose_Logging(" Recieved Calibratoin Data");
+                        switch (forces[1])//5 i the number of elements in a data set. a,w,x,y,z
+                        {
+                            case "a":
+                            Calibrations[0] = new int[] { int.Parse(forces[2]), int.Parse(forces[3]), int.Parse(forces[4]), int.Parse(forces[5]) };
+                                break;
+                            case "b":
+                            Calibrations[1] = new int[] { int.Parse(forces[2]), int.Parse(forces[3]), int.Parse(forces[4]), int.Parse(forces[5]) };
+                            break;
+                            case "c":
+                            Calibrations[2] = new int[] { int.Parse(forces[2]), int.Parse(forces[3]), int.Parse(forces[4]), int.Parse(forces[5]) };
+                            break;
+                            case "d":
+                            Calibrations[3] = new int[] { int.Parse(forces[2]), int.Parse(forces[3]), int.Parse(forces[4]), int.Parse(forces[5]) };
+                            break;
+                            case "e":
+                            Calibrations[4] = new int[] { int.Parse(forces[2]), int.Parse(forces[3]), int.Parse(forces[4]), int.Parse(forces[5]) };
+                            break;
+                            default:
+                                break;
+                        }
+                        //Save_Statics();
+                    
+                }
+                catch (System.FormatException)
+                {
+                    Verbose_Logging("Format Error");
+                }
+            }
+        }
         else
         {
-            //Debug.Log(Line);
+            Debug.Log("Wrong Data: "+ Line);
         }
     }
     #endregion
@@ -439,6 +501,7 @@ public class Connection : MonoBehaviour
     #region Buttons
     public void Save_Statics()
     {
+        CancelInvoke();
         start = true;
         //DeviceLocalAngles = new List<string>();
         SaveStatics = true;

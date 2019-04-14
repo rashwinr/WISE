@@ -1,0 +1,1 @@
+Timestamp,Kinect_LShoulderExt-Flx,Kinect_LShoulderAbd-Add,Kinect_LElbow,Kinect_RShoulderExt-Flx,Kinect_RShoulderAbd-Add,Kinect_RElbow,LS_X,LS_Y,LS_Z,LE_X,LE_Y,LE_Z,RS_X,RS_Y,RS_Z,RE_X,RE_Y,RE_Z

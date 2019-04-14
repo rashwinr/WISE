@@ -37,19 +37,21 @@ A3 = plot3([sp,sp+KC(1)],[0,KC(2)],[0,KC(3)],'b');
 B1 = plot3([2*sp,2*sp+ID(1)],[0,ID(2)],[0,ID(3)],'r');  
 B2 = plot3([2*sp,2*sp+JD(1)],[0,JD(2)],[0,JD(3)],'g');
 B3 = plot3([2*sp,2*sp+KD(1)],[0,KD(2)],[0,KD(3)],'b');
+t1 = text(1,2,"a",'Color','black','FontSize',12);
+t2 = text(0,0,"a",'Color','black','FontSize',12);
 
-figure(2)
-hold on
-grid on
-axis equal
-axis([-1 4 -1 2 -1 2])
-view([35,24])
-plot3([0,qI(2)],[0,qI(3)],[0,qI(4)],'r');
-plot3([0,qJ(2)],[0,qJ(3)],[0,qJ(4)],'g');
-plot3([0,qK(2)],[0,qK(3)],[0,qK(4)],'b');
-AB1 = plot3([2*sp,2*sp+ICD(1)],[0,ICD(2)],[0,ICD(3)],'r');  
-AB2 = plot3([2*sp,2*sp+JCD(1)],[0,JCD(2)],[0,JCD(3)],'g');
-AB3 = plot3([2*sp,2*sp+KCD(1)],[0,KCD(2)],[0,KCD(3)],'b');
+% figure(2)
+% hold on
+% grid on
+% axis equal
+% axis([-1 4 -1 2 -1 2])
+% view([35,24])
+% plot3([0,qI(2)],[0,qI(3)],[0,qI(4)],'r');
+% plot3([0,qJ(2)],[0,qJ(3)],[0,qJ(4)],'g');
+% plot3([0,qK(2)],[0,qK(3)],[0,qK(4)],'b');
+% AB1 = plot3([2*sp,2*sp+ICD(1)],[0,ICD(2)],[0,ICD(3)],'r');  
+% AB2 = plot3([2*sp,2*sp+JCD(1)],[0,JCD(2)],[0,JCD(3)],'g');
+% AB3 = plot3([2*sp,2*sp+KCD(1)],[0,KCD(2)],[0,KCD(3)],'b');
 
 fopen(s);
 
@@ -62,13 +64,13 @@ while true
     switch data(1)
         case 'cal'
             switch data(2)
-                case 'b'
+                case 'e'
                     C_mag = str2double(data(3));
                     C_acc = str2double(data(4));
                     C_gyr = str2double(data(5));
                     C_sys = str2double(data(6));  
                     Cal_B = [C_mag C_acc C_gyr C_sys]
-                case 'd'
+                case 'c'
                     D_mag = str2double(data(3));
                     D_acc = str2double(data(4));
                     D_gyr = str2double(data(5));
@@ -81,6 +83,7 @@ while true
             qB(3) = str2double(data(4))*m+p;
             qB(4) = str2double(data(5))*m+p;
             qB = quatnormalize(qB);
+            L_sho = getShoulder(qB,qD);
             qBD = quatmultiply(quatconj(qB),qD);
             
             [~,I1,I2,I3] = parts(quaternion(quatmultiply(qB,quatmultiply(qI,quatconj(qB)))));
@@ -97,25 +100,31 @@ while true
             [~,K1,K2,K3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qK,quatconj(qBD)))));
             KCD = [K1,K2,K3];
             
+            jl1 = strcat('Left Shoulder Y: ',num2str(L_sho(1),'%.1f'));
+            jl2 = strcat('Left Shoulder Z: ',num2str(L_sho(2),'%.1f'));
+            
             figure(1)
             hold on
-            delete([A1,A2,A3])
+            delete([A1,A2,A3,t1,t2])
             A1 = plot3([sp,sp+IC(1)],[0,IC(2)],[0,IC(3)],'r');  
             A2 = plot3([sp,sp+JC(1)],[0,JC(2)],[0,JC(3)],'g');
             A3 = plot3([sp,sp+KC(1)],[0,KC(2)],[0,KC(3)],'b');
+            t1 = text(1,2,jl1,'Color','black','FontSize',12);
+            t2 = text(0,0,jl2,'Color','black','FontSize',12);
             
-            figure(2)
-            hold on
-            delete([AB1,AB2,AB3])
-            AB1 = plot3([sp,sp+ICD(1)],[0,ICD(2)],[0,ICD(3)],'r');  
-            AB2 = plot3([sp,sp+JCD(1)],[0,JCD(2)],[0,JCD(3)],'g');
-            AB3 = plot3([sp,sp+KCD(1)],[0,KCD(2)],[0,KCD(3)],'b');
-        case 'd'
+%             figure(2)
+%             hold on
+%             delete([AB1,AB2,AB3])
+%             AB1 = plot3([sp,sp+ICD(1)],[0,ICD(2)],[0,ICD(3)],'r');  
+%             AB2 = plot3([sp,sp+JCD(1)],[0,JCD(2)],[0,JCD(3)],'g');
+%             AB3 = plot3([sp,sp+KCD(1)],[0,KCD(2)],[0,KCD(3)],'b');
+        case 'c'
             qD(1) = str2double(data(2))*m+p;
             qD(2) = str2double(data(3))*m+p;
             qD(3) = str2double(data(4))*m+p;
             qD(4) = str2double(data(5))*m+p;
             qD = quatnormalize(qD);
+            L_sho = getShoulder(qB,qD);
             qBD = quatmultiply(quatconj(qB),qD);
             
             [~,I1,I2,I3] = parts(quaternion(quatmultiply(qD,quatmultiply(qI,quatconj(qD)))));
@@ -132,22 +141,40 @@ while true
             [~,K1,K2,K3] = parts(quaternion(quatmultiply(qBD,quatmultiply(qK,quatconj(qBD)))));
             KCD = [K1,K2,K3];
             
+            jl1 = strcat('Left Shoulder Y: ',num2str(L_sho(1),'%.1f'));
+            jl2 = strcat('Left Shoulder Z: ',num2str(L_sho(2),'%.1f'));
+            
             figure(1)
             hold on
-            delete([B1,B2,B3])
+            delete([B1,B2,B3,t1,t2])
             B1 = plot3([2*sp,2*sp+ID(1)],[0,ID(2)],[0,ID(3)],'r');  
             B2 = plot3([2*sp,2*sp+JD(1)],[0,JD(2)],[0,JD(3)],'g');
             B3 = plot3([2*sp,2*sp+KD(1)],[0,KD(2)],[0,KD(3)],'b');
+            t1 = text(1,2,jl1,'Color','black','FontSize',12);
+            t2 = text(0,0,jl2,'Color','black','FontSize',12);
             
-            figure(2)
-            hold on
-            delete([AB1,AB2,AB3])
-            AB1 = plot3([sp,sp+ICD(1)],[0,ICD(2)],[0,ICD(3)],'r');  
-            AB2 = plot3([sp,sp+JCD(1)],[0,JCD(2)],[0,JCD(3)],'g');
-            AB3 = plot3([sp,sp+KCD(1)],[0,KCD(2)],[0,KCD(3)],'b');
+%             figure(2)
+%             hold on
+%             delete([AB1,AB2,AB3])
+%             AB1 = plot3([sp,sp+ICD(1)],[0,ICD(2)],[0,ICD(3)],'r');  
+%             AB2 = plot3([sp,sp+JCD(1)],[0,JCD(2)],[0,JCD(3)],'g');
+%             AB3 = plot3([sp,sp+KCD(1)],[0,KCD(2)],[0,KCD(3)],'b');
     end 
     end
     
+end
 
 
+function Sho = getShoulder(back,arm)
+Qi = [0,1,0,0];
+Qj = [0,0,1,0];
+Qbx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
+Bx = [Qbx(2),Qbx(3),Qbx(4)];
+Qby = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
+By = -[Qby(2),Qby(3),Qby(4)];
+Qarm = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+Ax = [Qarm(2),Qarm(3),Qarm(4)];
+Shoz = acosd(dot(Bx,Ax)/(norm(Bx)*norm(Ax)));
+Shoy = acosd(dot(By,Ax)/(norm(By)*norm(Ax)));
+Sho = [Shoy, Shoz];
 end

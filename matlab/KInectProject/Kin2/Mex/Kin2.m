@@ -753,7 +753,7 @@ classdef Kin2 < handle
                 [bonesx, bonesy] = this.getBones(pos2D);                                    
 
                 % Draw the joints
-                viscircles(handle,pos2D,ones(25,1)*jointsSize,'EdgeColor',this.bodyColors(i));
+%                 viscircles(handle,pos2D,ones(25,1)*jointsSize,'EdgeColor',this.bodyColors(i));
                 %plot(handle,pos2D(:,1),pos2D(:,2), ...
                 %'LineStyle','none','Marker','o','MarkerFaceColor',this.bodyColors(i), ...
                 %'MarkerEdgeColor',this.bodyColors(i),'MarkerSize', jointsSize);
@@ -780,10 +780,10 @@ classdef Kin2 < handle
             bonesx = zeros(2,24);
             bonesy = zeros(2,24);
             % Torso
-            bonesx(:,1) = [joints(this.JointType_Head,1); joints(this.JointType_Neck,1)];
-            bonesy(:,1) = [joints(this.JointType_Head,2); joints(this.JointType_Neck,2)];
-            bonesx(:,2) = [joints(this.JointType_Neck,1); joints(this.JointType_SpineShoulder,1)];
-            bonesy(:,2) = [joints(this.JointType_Neck,2); joints(this.JointType_SpineShoulder,2)];
+%             bonesx(:,1) = [joints(this.JointType_Head,1); joints(this.JointType_Neck,1)];
+%             bonesy(:,1) = [joints(this.JointType_Head,2); joints(this.JointType_Neck,2)];
+%             bonesx(:,2) = [joints(this.JointType_Neck,1); joints(this.JointType_SpineShoulder,1)];
+%             bonesy(:,2) = [joints(this.JointType_Neck,2); joints(this.JointType_SpineShoulder,2)];
             bonesx(:,3) = [joints(this.JointType_SpineShoulder,1); joints(this.JointType_SpineMid,1)];
             bonesy(:,3) = [joints(this.JointType_SpineShoulder,2); joints(this.JointType_SpineMid,2)];
             bonesx(:,4) = [joints(this.JointType_SpineMid,1); joints(this.JointType_SpineBase,1)];
@@ -802,24 +802,24 @@ classdef Kin2 < handle
             bonesy(:,9) = [joints(this.JointType_ShoulderRight,2); joints(this.JointType_ElbowRight,2)];
             bonesx(:,10) = [joints(this.JointType_ElbowRight,1); joints(this.JointType_WristRight,1)];
             bonesy(:,10) = [joints(this.JointType_ElbowRight,2); joints(this.JointType_WristRight,2)];
-            bonesx(:,11) = [joints(this.JointType_WristRight,1); joints(this.JointType_HandRight,1)];
-            bonesy(:,11) = [joints(this.JointType_WristRight,2); joints(this.JointType_HandRight,2)];
-            bonesx(:,12) = [joints(this.JointType_HandRight,1); joints(this.JointType_HandTipRight,1)];
-            bonesy(:,12) = [joints(this.JointType_HandRight,2); joints(this.JointType_HandTipRight,2)];
-            bonesx(:,13) = [joints(this.JointType_WristRight,1); joints(this.JointType_ThumbRight,1)];
-            bonesy(:,13) = [joints(this.JointType_WristRight,2); joints(this.JointType_ThumbRight,2)];
+%             bonesx(:,11) = [joints(this.JointType_WristRight,1); joints(this.JointType_HandRight,1)];
+%             bonesy(:,11) = [joints(this.JointType_WristRight,2); joints(this.JointType_HandRight,2)];
+%             bonesx(:,12) = [joints(this.JointType_HandRight,1); joints(this.JointType_HandTipRight,1)];
+%             bonesy(:,12) = [joints(this.JointType_HandRight,2); joints(this.JointType_HandTipRight,2)];
+%             bonesx(:,13) = [joints(this.JointType_WristRight,1); joints(this.JointType_ThumbRight,1)];
+%             bonesy(:,13) = [joints(this.JointType_WristRight,2); joints(this.JointType_ThumbRight,2)];
                                                          
             % Left Arm
             bonesx(:,14) = [joints(this.JointType_ShoulderLeft,1); joints(this.JointType_ElbowLeft,1)];
             bonesy(:,14) = [joints(this.JointType_ShoulderLeft,2); joints(this.JointType_ElbowLeft,2)];
             bonesx(:,15) = [joints(this.JointType_ElbowLeft,1); joints(this.JointType_WristLeft,1)];
             bonesy(:,15) = [joints(this.JointType_ElbowLeft,2); joints(this.JointType_WristLeft,2)];
-            bonesx(:,16) = [joints(this.JointType_WristLeft,1); joints(this.JointType_HandLeft,1)];
-            bonesy(:,16) = [joints(this.JointType_WristLeft,2); joints(this.JointType_HandLeft,2)];
-            bonesx(:,17) = [joints(this.JointType_HandLeft,1); joints(this.JointType_HandTipLeft,1)];
-            bonesy(:,17) = [joints(this.JointType_HandLeft,2); joints(this.JointType_HandTipLeft,2)];
-            bonesx(:,18) = [joints(this.JointType_WristLeft,1); joints(this.JointType_ThumbLeft,1)];
-            bonesy(:,18) = [joints(this.JointType_WristLeft,2); joints(this.JointType_ThumbLeft,2)];                                            
+%             bonesx(:,16) = [joints(this.JointType_WristLeft,1); joints(this.JointType_HandLeft,1)];
+%             bonesy(:,16) = [joints(this.JointType_WristLeft,2); joints(this.JointType_HandLeft,2)];
+%             bonesx(:,17) = [joints(this.JointType_HandLeft,1); joints(this.JointType_HandTipLeft,1)];
+%             bonesy(:,17) = [joints(this.JointType_HandLeft,2); joints(this.JointType_HandTipLeft,2)];
+%             bonesx(:,18) = [joints(this.JointType_WristLeft,1); joints(this.JointType_ThumbLeft,1)];
+%             bonesy(:,18) = [joints(this.JointType_WristLeft,2); joints(this.JointType_ThumbLeft,2)];                                            
             
             % Right Leg
 %             bonesx(:,19) = [joints(this.JointType_HipRight,1); joints(this.JointType_KneeRight,1)];

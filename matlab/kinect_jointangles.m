@@ -4,7 +4,7 @@ close all;
 clc;
 tt = 0;
 flag = 0;
-cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
+cd('C:\Users\satis\Git\wearable-jacket\matlab\kinect+imudata\');
 telapsed = 0;
 strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
 fid = fopen(strfile,'wt');

@@ -4,18 +4,22 @@ close all;
 clc;
 tt = 0;
 flag = 0;
+<<<<<<< HEAD
 cd('C:\Users\satis\Git\wearable-jacket\matlab\kinect+imudata\');
+=======
+cd('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\');
+>>>>>>> 94d4396579f30b56c40c258fba29a9b95d0c82a8
 telapsed = 0;
 strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
 fid = fopen(strfile,'wt');
 fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LShoulderExt-Y','Kinect_LShoulderAbd-Z','Kinect_LElbow','Kinect_RShoulderExt-Y','Kinect_RShoulderAbd-Z','Kinect_RElbow','IMULS_Y','IMULS_Z','IMUL_Elbow','IMURS_Y','IMURS_Z','IMURElbow');
 delete(instrfind({'Port'},{'COM15'}))
-s = serial('COM15','BaudRate',115200);
+s = serial('COM3','BaudRate',115200);
 s.ReadAsyncMode = 'continuous';
 %Kinect initialization script
-addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
-addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
-addpath('F:\github\wearable-jacket\matlab\KInectProject');
+addpath('C:\Users\fabio\github\wearable-jacket\matlab\KInectProject\Kin2');
+addpath('C:\Users\fabio\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
+addpath('C:\Users\fabio\github\wearable-jacket\matlab\KInectProject');
 k2 = Kin2('color','depth','body');
 %Quaternion variables
 X = [1,0,0];
@@ -157,31 +161,31 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
                     B_acc = str2double(data(4));
                     B_gyr = str2double(data(5));
                     B_sys = str2double(data(6));
-                    Cal_B = [B_mag B_acc B_gyr B_sys];
+                    Cal_B = [B_mag B_acc B_gyr B_sys]
                 case 'a'
                     A_mag = str2double(data(3));
                     A_acc = str2double(data(4));
                     A_gyr = str2double(data(5));
                     A_sys = str2double(data(6));      
-                    Cal_A = [A_mag A_acc A_gyr A_sys];
+                    Cal_A = [A_mag A_acc A_gyr A_sys]
                 case 'c'
                     C_mag = str2double(data(3));
                     C_acc = str2double(data(4));
                     C_gyr = str2double(data(5));
                     C_sys = str2double(data(6));  
-                    Cal_C = [C_mag C_acc C_gyr C_sys];
+                    Cal_C = [C_mag C_acc C_gyr C_sys]
                 case 'd'
                     D_mag = str2double(data(3));
                     D_acc = str2double(data(4));
                     D_gyr = str2double(data(5));
                     D_sys = str2double(data(6));      
-                    Cal_D = [D_mag D_acc D_gyr D_sys];
+                    Cal_D = [D_mag D_acc D_gyr D_sys]
                 case 'e'
                     E_mag = str2double(data(3));
                     E_acc = str2double(data(4));
                     E_gyr = str2double(data(5));
                     E_sys = str2double(data(6));      
-                    Cal_E = [E_mag E_acc E_gyr E_sys];
+                    Cal_E = [E_mag E_acc E_gyr E_sys]
           end 
           
         case 'e'

@@ -194,31 +194,31 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             qE(3) = str2double(data(4))*m+p;
             qE(4) = str2double(data(5))*m+p;
             qE = quatnormalize(qE);
-            R_sho = getShoulderRight(qE,qD);
-            L_sho = getShoulderLeft(qE,qC);
+            R_sho = getShoulder(qE,qD);
+            L_sho = getShoulder(qE,qC);
         case 'a'
             qA(1) = str2double(data(2))*m+p;
             qA(2) = str2double(data(3))*m+p;
             qA(3) = str2double(data(4))*m+p;
             qA(4) = str2double(data(5))*m+p;
             qA = quatnormalize(qA);
-            L_elb = getElbowLeft(qA,qC);
+            L_elb = getElbow(qA,qC);
         case 'c'
             qC(1) = str2double(data(2))*m+p;
             qC(2) = str2double(data(3))*m+p;
             qC(3) = str2double(data(4))*m+p;
             qC(4) = str2double(data(5))*m+p;
             qC = quatnormalize(qC);
-            L_elb = getElbowLeft(qA,qC);
-            L_sho = getShoulderLeft(qE,qC);
+            L_elb = getElbow(qA,qC);
+            L_sho = getShoulder(qE,qC);
         case 'd'
             qD(1) = str2double(data(2))*m+p;
             qD(2) = str2double(data(3))*m+p;
             qD(3) = str2double(data(4))*m+p;
             qD(4) = str2double(data(5))*m+p;
             qD = quatnormalize(qD);
-            R_sho = getShoulderRight(qE,qD);
-            R_elb = getElbowRight(qD,qB);
+            R_sho = getShoulder(qE,qD);
+            R_elb = getElbow(qD,qB);
         case 'b'
             qB(1) = str2double(data(2))*m+p;
             qB(2) = str2double(data(3))*m+p;
@@ -226,7 +226,7 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             qB(4) = str2double(data(5))*m+p;
             qB = quatnormalize(qB);
             qBD = quatmultiply(quatconj(qB),qD);
-            R_elb = getElbowRight(qD,qB);
+            R_elb = getElbow(qD,qB);
     end 
     end
 
@@ -343,7 +343,7 @@ ElbL = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
 end
 
 
-function ShoL = getShoulderLeft(back,arm)
+function Sho = getShoulderLeft(back,arm)
 Qi = [0,1,0,0];
 Qj = [0,0,1,0];
 Qbx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
@@ -354,21 +354,7 @@ Qarm = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Ax = [Qarm(2),Qarm(3),Qarm(4)];
 Shoz = acosd(dot(Bx,Ax)/(norm(Bx)*norm(Ax)));
 Shoy = acosd(dot(By,Ax)/(norm(By)*norm(Ax)));
-ShoL = [Shoy, Shoz];
-end
-
-function ShoR = getShoulderRight(back,arm)
-Qi = [0,1,0,0];
-Qj = [0,0,1,0];
-Qbx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Bx = [Qbx(2),Qbx(3),Qbx(4)];
-Qby = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
-By = [Qby(2),Qby(3),Qby(4)];
-Qarm = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Ax = -[Qarm(2),Qarm(3),Qarm(4)];
-Shoz = acosd(dot(Bx,Ax)/(norm(Bx)*norm(Ax)));
-Shoy = acosd(dot(By,Ax)/(norm(By)*norm(Ax)));
-ShoR = [Shoy, Shoz];
+Sho = [Shoy, Shoz];
 end
 
 

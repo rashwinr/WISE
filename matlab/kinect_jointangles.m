@@ -4,7 +4,11 @@ close all;
 clc;
 tt = 0;
 flag = 0;
+<<<<<<< HEAD
+cd('C:\Users\satis\Git\wearable-jacket\matlab\kinect+imudata\');
+=======
 cd('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\');
+>>>>>>> 94d4396579f30b56c40c258fba29a9b95d0c82a8
 telapsed = 0;
 strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
 fid = fopen(strfile,'wt');
@@ -190,31 +194,31 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             qE(3) = str2double(data(4))*m+p;
             qE(4) = str2double(data(5))*m+p;
             qE = quatnormalize(qE);
-            R_sho = getShoulder(qE,qD);
-            L_sho = getShoulder(qE,qC);
+            R_sho = getShoulderRight(qE,qD);
+            L_sho = getShoulderLeft(qE,qC);
         case 'a'
             qA(1) = str2double(data(2))*m+p;
             qA(2) = str2double(data(3))*m+p;
             qA(3) = str2double(data(4))*m+p;
             qA(4) = str2double(data(5))*m+p;
             qA = quatnormalize(qA);
-            L_elb = getElbow(qA,qC);
+            L_elb = getElbowLeft(qA,qC);
         case 'c'
             qC(1) = str2double(data(2))*m+p;
             qC(2) = str2double(data(3))*m+p;
             qC(3) = str2double(data(4))*m+p;
             qC(4) = str2double(data(5))*m+p;
             qC = quatnormalize(qC);
-            L_elb = getElbow(qA,qC);
-            L_sho = getShoulder(qE,qC);
+            L_elb = getElbowLeft(qA,qC);
+            L_sho = getShoulderLeft(qE,qC);
         case 'd'
             qD(1) = str2double(data(2))*m+p;
             qD(2) = str2double(data(3))*m+p;
             qD(3) = str2double(data(4))*m+p;
             qD(4) = str2double(data(5))*m+p;
             qD = quatnormalize(qD);
-            R_sho = getShoulder(qE,qD);
-            R_elb = getElbow(qD,qB);
+            R_sho = getShoulderRight(qE,qD);
+            R_elb = getElbowRight(qD,qB);
         case 'b'
             qB(1) = str2double(data(2))*m+p;
             qB(2) = str2double(data(3))*m+p;
@@ -222,7 +226,7 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             qB(4) = str2double(data(5))*m+p;
             qB = quatnormalize(qB);
             qBD = quatmultiply(quatconj(qB),qD);
-            R_elb = getElbow(qD,qB);
+            R_elb = getElbowRight(qD,qB);
     end 
     end
 
@@ -329,17 +333,17 @@ delete(instrfind({'Port'},{'COM15'}))
 close all;
 
 
-function Elb = getElbow(q1,q2)
+function ElbL = getElbowLeft(q1,q2)
 Qi = [0,1,0,0];
 Q1 = quatmultiply(q1,quatmultiply(Qi,quatconj(q1)));
 V1 = [Q1(2),Q1(3),Q1(4)];
 Q2 = quatmultiply(q2,quatmultiply(Qi,quatconj(q2)));
 V2 = [Q2(2),Q2(3),Q2(4)];
-Elb = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
+ElbL = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
 end
 
 
-function Sho = getShoulder(back,arm)
+function ShoL = getShoulderLeft(back,arm)
 Qi = [0,1,0,0];
 Qj = [0,0,1,0];
 Qbx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
@@ -350,5 +354,29 @@ Qarm = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Ax = [Qarm(2),Qarm(3),Qarm(4)];
 Shoz = acosd(dot(Bx,Ax)/(norm(Bx)*norm(Ax)));
 Shoy = acosd(dot(By,Ax)/(norm(By)*norm(Ax)));
-Sho = [Shoy, Shoz];
+ShoL = [Shoy, Shoz];
+end
+
+function ShoR = getShoulderRight(back,arm)
+Qi = [0,1,0,0];
+Qj = [0,0,1,0];
+Qbx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
+Bx = [Qbx(2),Qbx(3),Qbx(4)];
+Qby = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
+By = [Qby(2),Qby(3),Qby(4)];
+Qarm = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+Ax = -[Qarm(2),Qarm(3),Qarm(4)];
+Shoz = acosd(dot(Bx,Ax)/(norm(Bx)*norm(Ax)));
+Shoy = acosd(dot(By,Ax)/(norm(By)*norm(Ax)));
+ShoR = [Shoy, Shoz];
+end
+
+
+function ElbR = getElbowRight(q1,q2)
+Qi = [0,-1,0,0];
+Q1 = quatmultiply(q1,quatmultiply(Qi,quatconj(q1)));
+V1 = [Q1(2),Q1(3),Q1(4)];
+Q2 = quatmultiply(q2,quatmultiply(Qi,quatconj(q2)));
+V2 = [Q2(2),Q2(3),Q2(4)];
+ElbR = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
 end

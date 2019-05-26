@@ -1,25 +1,22 @@
-%Joint angles of Wearable Jackeet connected with Kinect
+%Joint angles of Kinect only
 clear all; 
 close all; 
 clc;
 tt = 0;
 flag = 0;
-<<<<<<< HEAD
-cd('C:\Users\satis\Git\wearable-jacket\matlab\kinect+imudata\');
-=======
-cd('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\');
->>>>>>> 94d4396579f30b56c40c258fba29a9b95d0c82a8
+cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
+cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
 telapsed = 0;
 strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
 fid = fopen(strfile,'wt');
 fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LShoulderExt-Y','Kinect_LShoulderAbd-Z','Kinect_LElbow','Kinect_RShoulderExt-Y','Kinect_RShoulderAbd-Z','Kinect_RElbow','IMULS_Y','IMULS_Z','IMUL_Elbow','IMURS_Y','IMURS_Z','IMURElbow');
-delete(instrfind({'Port'},{'COM15'}))
-s = serial('COM3','BaudRate',115200);
-s.ReadAsyncMode = 'continuous';
+% delete(instrfind({'Port'},{'COM15'}))
+% s = serial('COM15','BaudRate',115200);
+% s.ReadAsyncMode = 'continuous';
 %Kinect initialization script
-addpath('C:\Users\fabio\github\wearable-jacket\matlab\KInectProject\Kin2');
-addpath('C:\Users\fabio\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
-addpath('C:\Users\fabio\github\wearable-jacket\matlab\KInectProject');
+addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
+addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
+addpath('F:\github\wearable-jacket\matlab\KInectProject');
 k2 = Kin2('color','depth','body');
 %Quaternion variables
 X = [1,0,0];
@@ -54,7 +51,6 @@ c.im = imshow(color,[]);
 title('Color Source (press q to exit)');
 set(gcf,'keypress','k=get(gcf,''currentchar'');'); % listen keypress
 k=[];
-fopen(s);
 p = -1; %y = m x + p where y(-1 1) x(0 999) from rfduino z(-2^14 2^14)
 m = 2/999;
 while true
@@ -147,90 +143,6 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
 % theta1 = (acosd(rightElbow(2)/sqrt(rightElbow(1)^2+rightElbow(2)^2)))
 % theta2 = (acosd(rightElbow(3)/sqrt(rightElbow(2)^2+rightElbow(3)^2)))
 % theta3 = (acosd(rightElbow(1)/sqrt(rightElbow(1)^2+rightElbow(3)^2)))
-
-%arduino section
-    flushinput(s);
-    line = fscanf(s);   % get data if there exists data in the next line
-    data = strsplit(string(line),',');
-    if(length(data) == 5 || length(data) == 6)
-    switch data(1)
-        case 'cal'
-          switch data(2)
-                case 'b'
-                    B_mag = str2double(data(3));
-                    B_acc = str2double(data(4));
-                    B_gyr = str2double(data(5));
-                    B_sys = str2double(data(6));
-                    Cal_B = [B_mag B_acc B_gyr B_sys]
-                case 'a'
-                    A_mag = str2double(data(3));
-                    A_acc = str2double(data(4));
-                    A_gyr = str2double(data(5));
-                    A_sys = str2double(data(6));      
-                    Cal_A = [A_mag A_acc A_gyr A_sys]
-                case 'c'
-                    C_mag = str2double(data(3));
-                    C_acc = str2double(data(4));
-                    C_gyr = str2double(data(5));
-                    C_sys = str2double(data(6));  
-                    Cal_C = [C_mag C_acc C_gyr C_sys]
-                case 'd'
-                    D_mag = str2double(data(3));
-                    D_acc = str2double(data(4));
-                    D_gyr = str2double(data(5));
-                    D_sys = str2double(data(6));      
-                    Cal_D = [D_mag D_acc D_gyr D_sys]
-                case 'e'
-                    E_mag = str2double(data(3));
-                    E_acc = str2double(data(4));
-                    E_gyr = str2double(data(5));
-                    E_sys = str2double(data(6));      
-                    Cal_E = [E_mag E_acc E_gyr E_sys]
-          end 
-          
-        case 'e'
-            qE(1) = str2double(data(2))*m+p;
-            qE(2) = str2double(data(3))*m+p;
-            qE(3) = str2double(data(4))*m+p;
-            qE(4) = str2double(data(5))*m+p;
-            qE = quatnormalize(qE);
-            R_sho = getShoulder(qE,qD);
-            L_sho = getShoulder(qE,qC);
-        case 'a'
-            qA(1) = str2double(data(2))*m+p;
-            qA(2) = str2double(data(3))*m+p;
-            qA(3) = str2double(data(4))*m+p;
-            qA(4) = str2double(data(5))*m+p;
-            qA = quatnormalize(qA);
-            L_elb = getElbow(qA,qC);
-        case 'c'
-            qC(1) = str2double(data(2))*m+p;
-            qC(2) = str2double(data(3))*m+p;
-            qC(3) = str2double(data(4))*m+p;
-            qC(4) = str2double(data(5))*m+p;
-            qC = quatnormalize(qC);
-            L_elb = getElbow(qA,qC);
-            L_sho = getShoulder(qE,qC);
-        case 'd'
-            qD(1) = str2double(data(2))*m+p;
-            qD(2) = str2double(data(3))*m+p;
-            qD(3) = str2double(data(4))*m+p;
-            qD(4) = str2double(data(5))*m+p;
-            qD = quatnormalize(qD);
-            R_sho = getShoulder(qE,qD);
-            R_elb = getElbow(qD,qB);
-        case 'b'
-            qB(1) = str2double(data(2))*m+p;
-            qB(2) = str2double(data(3))*m+p;
-            qB(3) = str2double(data(4))*m+p;
-            qB(4) = str2double(data(5))*m+p;
-            qB = quatnormalize(qB);
-            qBD = quatmultiply(quatconj(qB),qD);
-            R_elb = getElbow(qD,qB);
-    end 
-    end
-
-
 imu = strcat('IMU');
 knt= strcat('Kinect');
 
@@ -267,13 +179,13 @@ fs = 30;
 
 text(100,40,lft,'Color','black','FontSize',fs,'FontWeight','bold');
 
-text(400,100,knt,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(400,100,knt,'Color','white','FontSize',fs,'FontWeight','bold');
 text(0,150,shldY,'Color','black','FontSize',fs,'FontWeight','bold');
-text(400,150,r1,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(400,150,r1,'Color','white','FontSize',fs,'FontWeight','bold');
 text(0,200,shldZ,'Color','black','FontSize',fs,'FontWeight','bold');
-text(400,200,r2,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(400,200,r2,'Color','white','FontSize',fs,'FontWeight','bold');
 text(0,250,elbR,'Color','black','FontSize',fs,'FontWeight','bold');
-text(400,250,r3,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(400,250,r3,'Color','white','FontSize',fs,'FontWeight','bold');
 
 text(600,100,imu,'Color','red','FontSize',fs,'FontWeight','bold');
 text(600,150,jl1,'Color','red','FontSize',fs,'FontWeight','bold');
@@ -283,13 +195,13 @@ text(600,250,jl4,'Color','red','FontSize',fs,'FontWeight','bold');
 
 text(1000,40,rgt,'Color','black','FontSize',fs,'FontWeight','bold');
 
-text(1300,100,knt,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(1300,100,knt,'Color','white','FontSize',fs,'FontWeight','bold');
 text(900,150,shldY,'Color','black','FontSize',fs,'FontWeight','bold');
-text(1300,150,s1,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(1300,150,s1,'Color','white','FontSize',fs,'FontWeight','bold');
 text(900,200,shldZ,'Color','black','FontSize',fs,'FontWeight','bold');
-text(1300,200,s2,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(1300,200,s2,'Color','white','FontSize',fs,'FontWeight','bold');
 text(900,250,elbR,'Color','black','FontSize',fs,'FontWeight','bold');
-text(1300,250,s3,'Color','blue','FontSize',fs,'FontWeight','bold');
+text(1300,250,s3,'Color','white','FontSize',fs,'FontWeight','bold');
 
 text(1500,100,imu,'Color','red','FontSize',fs,'FontWeight','bold');
 text(1500,150,jr1,'Color','red','FontSize',fs,'FontWeight','bold');
@@ -331,38 +243,3 @@ k2.delete;
 delete(instrfind({'Port'},{'COM15'}))
 %clear s a % Clear Arduino and Servo Objects
 close all;
-
-
-function ElbL = getElbowLeft(q1,q2)
-Qi = [0,1,0,0];
-Q1 = quatmultiply(q1,quatmultiply(Qi,quatconj(q1)));
-V1 = [Q1(2),Q1(3),Q1(4)];
-Q2 = quatmultiply(q2,quatmultiply(Qi,quatconj(q2)));
-V2 = [Q2(2),Q2(3),Q2(4)];
-ElbL = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
-end
-
-
-function Sho = getShoulderLeft(back,arm)
-Qi = [0,1,0,0];
-Qj = [0,0,1,0];
-Qbx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Bx = [Qbx(2),Qbx(3),Qbx(4)];
-Qby = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
-By = -[Qby(2),Qby(3),Qby(4)];
-Qarm = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Ax = [Qarm(2),Qarm(3),Qarm(4)];
-Shoz = acosd(dot(Bx,Ax)/(norm(Bx)*norm(Ax)));
-Shoy = acosd(dot(By,Ax)/(norm(By)*norm(Ax)));
-Sho = [Shoy, Shoz];
-end
-
-
-function ElbR = getElbowRight(q1,q2)
-Qi = [0,-1,0,0];
-Q1 = quatmultiply(q1,quatmultiply(Qi,quatconj(q1)));
-V1 = [Q1(2),Q1(3),Q1(4)];
-Q2 = quatmultiply(q2,quatmultiply(Qi,quatconj(q2)));
-V2 = [Q2(2),Q2(3),Q2(4)];
-ElbR = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
-end

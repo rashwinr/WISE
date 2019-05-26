@@ -779,6 +779,7 @@ classdef Kin2 < handle
             % output: 24 (x,y) coordinates. 
             bonesx = zeros(2,24);
             bonesy = zeros(2,24);
+            
             % Torso
 %             bonesx(:,1) = [joints(this.JointType_Head,1); joints(this.JointType_Neck,1)];
 %             bonesy(:,1) = [joints(this.JointType_Head,2); joints(this.JointType_Neck,2)];
@@ -796,7 +797,6 @@ classdef Kin2 < handle
             bonesy(:,7) = [joints(this.JointType_SpineBase,2); joints(this.JointType_HipRight,2)];
             bonesx(:,8) = [joints(this.JointType_SpineBase,1); joints(this.JointType_HipLeft,1)];
             bonesy(:,8) = [joints(this.JointType_SpineBase,2); joints(this.JointType_HipLeft,2)];
-            
             % Right Arm
             bonesx(:,9) = [joints(this.JointType_ShoulderRight,1); joints(this.JointType_ElbowRight,1)];
             bonesy(:,9) = [joints(this.JointType_ShoulderRight,2); joints(this.JointType_ElbowRight,2)];

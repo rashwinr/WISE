@@ -185,9 +185,9 @@ while true
             qE = fix_E(qE);
 %             R_sho = getShoulderRight(qE,qD);
            lshoangle = getlefthand(qE,qC,qA);
-           limuieangle = lshoangle(1);limubdangle = lshoangle(2);limuefangle = lshoangle(3); 
+           limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
            rshoangle = getrighthand(qE,qD,qB);
-           rimuieangle = rshoangle(1);rimubdangle = rshoangle(2);rimuefangle = rshoangle(3);
+           rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1);
         case 'a'
            qA = qconvert(data);
            qA = quatnormalize(qA);
@@ -199,14 +199,14 @@ while true
            qC = quatnormalize(qC);
            qC = fix_C(qC);
            lshoangle = getlefthand(qE,qC,qA);
-           limuieangle = lshoangle(1);limubdangle = lshoangle(2);limuefangle = lshoangle(3); 
+           limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
            limuelbangle = lshoangle(4);
         case 'd'
            qD = qconvert(data);
            qD = quatnormalize(qD);
            qD = fix_D(qD);
            rshoangle = getrighthand(qE,qD,qB);
-           rimuieangle = rshoangle(1);rimubdangle = rshoangle(2);rimuefangle = rshoangle(3);
+           rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1);
            rimuelbangle = rshoangle(4);
         case 'b'
             qB = qconvert(data);
@@ -302,90 +302,52 @@ resultmult(3) = str2double(a(4))*m+p;
 resultmult(4) = str2double(a(5))*m+p;
 end
 
-function ElbL = getElbowLeft(q1,q2)
-Qi = [0,1,0,0];
-Q1 = quatmultiply(q1,quatmultiply(Qi,quatconj(q1)));
-V1 = -[Q1(2),Q1(3),Q1(4)];
-Q2 = quatmultiply(q2,quatmultiply(Qi,quatconj(q2)));
-V2 = -[Q2(2),Q2(3),Q2(4)];
-ElbL = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
-end
-
-function ElbR = getElbowRight(q1,q2)
-Qi = [0,1,0,0];
-Q1 = quatmultiply(q1,quatmultiply(Qi,quatconj(q1)));
-V1 = [Q1(2),Q1(3),Q1(4)];
-Q2 = quatmultiply(q2,quatmultiply(Qi,quatconj(q2)));
-V2 = [Q2(2),Q2(3),Q2(4)];
-ElbR = acosd(dot(V1,V2)/(norm(V1)*norm(V2)));
-end
-
-function L_sho = getShoulderLeft(back,arm)
-zrot = 180;
-xrot = -90;
-Qk = [0,0,0,1];Qj = [0,0,1,0];Qi = [0,1,0,0];
-Qz = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
-Qz1 = [cosd(zrot/2) Qz(2)*sind(zrot/2) Qz(3)*sind(zrot/2) Qz(4)*sind(zrot/2)];
-Qe = quatmultiply(Qz1,back);
-Qx = quatmultiply(Qe,quatmultiply(Qi,quatconj(Qe)));
-Qx1 = [cosd(xrot/2) Qx(2)*sind(xrot/2) Qx(3)*sind(xrot/2) Qx(4)*sind(xrot/2)];
-Qback = quatmultiply(Qx1,Qe);
-Qnew =  quatmultiply(quatconj(Qback),arm);
-Qzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
-Qxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Qyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
-Qza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
-Qxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Qya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
-angle1 = acosd(dot([Qxb(2) Qxb(3) Qxb(4)],[-Qxa(2) -Qxa(3) -Qxa(4)])/(norm([Qxb(2) Qxb(3) Qxb(4)])*norm([-Qxa(2) -Qxa(3) -Qxa(4)])));
-angle2 = acosd(dot([-Qyb(2) -Qyb(3) -Qyb(4)],[Qza(2) Qza(3) Qza(4)])/(norm([Qyb(2) Qyb(3) Qyb(4)])*norm([Qza(2) Qza(3) Qza(4)])));
-% text(410,900,num2str(angle1,'%.2f'),'Color','white','FontSize',20,'FontWeight','normal','HorizontalAlignment','center');
-% text(410,950,num2str(angle2,'%.2f'),'Color','white','FontSize',20,'FontWeight','normal','HorizontalAlignment','center');
-L_sho = quat2eul(Qnew,'XYZ')*180/pi;
-L_sho(2) = angle2;
-end
-
-function R_sho = getShoulderRight(back,arm)
-Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
-xrot = -90;
-Qx = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Qx1 = [cosd(xrot/2) Qx(2)*sind(xrot/2) Qx(3)*sind(xrot/2) Qx(4)*sind(xrot/2)];
-Qback = quatmultiply(Qx1,back);
-Qnew =  quatmultiply(quatconj(Qback),arm);
-Qzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
-Qxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Qyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
-Qza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
-Qxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Qya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
-R_sho = quat2eul(Qnew,'XYZ')*180/pi;
-end
-
 
 function lefthand = getlefthand(back,arm,wrist)
 lefthand = zeros(5,1);
 Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
-Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
+Vzb = quatmultiply(back,quatmultiply(-Qk,quatconj(back)));
 Vxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
 Vyb = quatmultiply(back,quatmultiply(-Qj,quatconj(back)));
 Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
-Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Vxa_ = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));
+Vxa = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
 Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
-Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
+Vxw = quatmultiply(wrist,quatmultiply(-Qi,quatconj(wrist)));
 Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
 %sagittal plane on back has Y axis as normal for extension and flexion
-Vxasagittal = Vxa_(2:4) - (dot(Vxa_(2:4),Vyb(2:4))/norm(Vyb(2:4))^2)*Vyb(2:4);
-lefthand(1,1) = acosd(dot(Vxasagittal,Vxb(2:4))/norm(Vxasagittal)*norm(Vxb(2:4)));
+N = Vyb(2:4);
+R1 = Vxb(2:4);
+R2 = Vzb(2:4);
+
+Vxasagittal = Vxa(2:4) - (dot(Vxa(2:4),N)/norm(N)^2)*N;
+Vyasagittal = Vya(2:4) - (dot(Vya(2:4),N)/norm(N)^2)*N;
+
+CrossX = cross(Vxasagittal,R1)/(norm(Vxasagittal)*norm(R1));
+cosineX = dot(Vxasagittal,R1)/(norm(Vxasagittal)*norm(R1));
+sineX = norm(CrossX)*sign(dot(CrossX,N));
+angleX = atan2d(sineX,cosineX);
+weightX = dot(Vya(2:4),N);
+
+CrossY = cross(Vyasagittal,R2)/(norm(Vyasagittal)*norm(R2));
+cosineY = dot(Vyasagittal,R2)/(norm(Vyasagittal)*norm(R2));
+sineY = norm(CrossY)*sign(dot(CrossY,N));
+angleY = atan2d(sineY,cosineY);
+weightY = dot(Vxa(2:4),N);
+
+% lefthand(1,1) = (weightX*angleX+weightY*angleY)/(weightX+weightY);
+lefthand(1,1) = angleY;
+
 %coronal plane on back has Z axis as normal for abduction and adduction
-Vxacoronal = Vxa_(2:4) - (dot(Vxa_(2:4),Vzb(2:4))/norm(Vzb(2:4))^2)*Vzb(2:4);
-lefthand(2,1) = acosd(dot(Vxacoronal,Vxb(2:4))/(norm(Vxacoronal)*norm(Vxb(2:4))));
-%arm-axis plane
-Vxwarmaxis = Vxw(2:4) - (dot(Vxw(2:4),Vxa(2:4))/norm(Vxa(2:4))^2)*Vxa(2:4);
-lefthand(3,1) = acosd(dot(Vxwarmaxis,Vya(2:4))/(norm(Vxwarmaxis)*norm(Vya(2:4))));
+Vxacoronal = Vxa(2:4) - (dot(Vxa(2:4),Vzb(2:4))/norm(Vzb(2:4))^2)*Vzb(2:4);
+cat = norm(Vxacoronal - Vxb(2:4))*sign(dot(Vxacoronal,Vxb(2:4)));
+lefthand(2,1) = atan2d(cat,norm(Vxb(2:4)));
 %elbow angle extension-flexion                    requires a normal plane
 lefthand(4,1) = acosd(dot(Vxa(2:4),Vxw(2:4))/norm(Vxa(2:4))*norm(Vxw(2:4)));
+%arm-axis plane
+Vxwarmaxis = Vxw(2:4) - (dot(Vxw(2:4),Vxa(2:4))/norm(Vxa(2:4))^2)*Vxa(2:4);
+cat = norm(Vxwarmaxis - Vya(2:4))*sign(dot(Vxwarmaxis,Vya(2:4)));
+lefthand(3,1) = atan2d(cat,norm(Vya(2:4)));
 %elbow pronation-supination                       requires a normal plane
 lefthand(5,1) = acosd(dot(Vza(2:4),Vzw(2:4))/norm(Vza(2:4))*norm(Vzw(2:4)));
 end

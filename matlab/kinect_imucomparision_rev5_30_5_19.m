@@ -1,15 +1,21 @@
 %Joint angles from the Kinect and the IMU's are processed in a single
 %script for viewing 
+delete(instrfind({'Port'},{'COM15'}))
+% fclose(fid);
 clear all; 
 close all; 
 clc;
 tt = 0;
 flag = 0;
+flg = 1;
+if flg 
+    Offsets = [0.8589,0.0411,-0.0170,-0.5101; 1.0000,0,0,0; -0.8954,0.0070,0.0010,0.4452; -0.9749,0.0070,-0.0250,0.2210; 0.9791,-0.0371,-0.0170,-0.1994];
+end
 cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
 telapsed = 0;
-% strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
-% fid = fopen(strfile,'wt');
-% fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LS_E-F','IMU_LS_E-F','Kinect_LS_aB-aD','IMU_LS_aB-aD','Kinect_LS_I-E','IMU_LS_I-E','Kinect_LElbow','IMU_LElbow','Kinect_RS_E-F','IMU_RS_E-F','Kinect_RS_aB-aD','IMU_RS_aB-aD','Kinect_RS_I-E','IMU_RS_I-E','Kinect_RElbow','IMU_RElbow');
+strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
+fid = fopen(strfile,'wt');
+fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
 %Kinect initialization script
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
@@ -42,19 +48,21 @@ k=[];
                         ser = serial('COM15','BaudRate',115200);
                         ser.ReadAsyncMode = 'continuous';
 %quaternion variables
-qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];qAC = [1,0,0,0];qCE = [1,0,0,0];qDE = [1,0,0,0];qBD = [1,0,0,0];
+qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
+empty = [1,0,0,0];
 Cal_A = [0 0 0 0];Cal_B = [0 0 0 0];Cal_C = [0 0 0 0];Cal_D = [0 0 0 0];Cal_E = [0 0 0 0];
 imustr = strcat('IMU');
 kntstr = strcat('KINECT');
-lftstr = strcat('Left hand angles');
-rgtstr = strcat('Right hand angles');
-efstr = strcat('Ext.-Flex.');
-bdstr = strcat('Abd.-Add.');
-iestr = strcat('Int.-Ext.');
-psstr = strcat('Pro.-Sup.');
+lftstr = strcat('Left arm angles');
+rgtstr = strcat('Right arm angles');
+efstr = strcat('Flex-Ext');
+bdstr = strcat('Abd-Add');
+iestr = strcat('Int-Ext Rot.');
+psstr = strcat('Pro-Sup');
 jtext = strcat('Joint');
 etext = strcat('Elbow');         
-stext = strcat('Shoulder');              
+stext = strcat('Shoulder');
+ftext = strcat('Forearm');
 limuefangle = 0;rimuefangle = 0;lkinefangle = 0;rkinefangle = 0;
 limubdangle = 0;rimubdangle = 0;lkinbdangle = 0;rkinbdangle = 0;
 limuieangle = 0;rimuieangle = 10;lkinieangle = 0;rkinieangle = 0;
@@ -63,6 +71,75 @@ limuelb1angle = 0;rimuelb1angle = 0;lkinelb1angle = 0;rkinelb1angle = 0;
 fs = 24;s=35;fontdiv = 1.3;limulocationdiv = 1.9/2.2;rimulocationdiv = 2.1/2.4;lkinlocationdiv = 1.75;rkinlocationdiv = 1.75;
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
 fopen(ser);
+
+while true
+    flushinput(ser);
+    pause(0.01);
+    line = fscanf(ser);   % get data if there exists data in the next line
+    data = strsplit(string(line),',');
+    if(length(data) == 5 || length(data) == 6)
+    switch data(1)
+        case 'cal'
+          switch data(2)
+                case 'b'
+                    B_mag = str2double(data(3));B_acc = str2double(data(4));B_gyr = str2double(data(5));B_sys = str2double(data(6));
+                    Cal_B = [B_mag B_acc B_gyr B_sys];
+                case 'a'
+                    A_mag = str2double(data(3));A_acc = str2double(data(4));A_gyr = str2double(data(5));A_sys = str2double(data(6));      
+                    Cal_A = [A_mag A_acc A_gyr A_sys];
+                case 'c'
+                    C_mag = str2double(data(3));C_acc = str2double(data(4));C_gyr = str2double(data(5));C_sys = str2double(data(6));  
+                    Cal_C = [C_mag C_acc C_gyr C_sys];
+                case 'd'
+                    D_mag = str2double(data(3));D_acc = str2double(data(4));D_gyr = str2double(data(5));D_sys = str2double(data(6));      
+                    Cal_D = [D_mag D_acc D_gyr D_sys];
+                case 'e'
+                    E_mag = str2double(data(3));E_acc = str2double(data(4));E_gyr = str2double(data(5));E_sys = str2double(data(6));      
+                    Cal_E = [E_mag E_acc E_gyr E_sys];
+          end 
+          
+                case 'e'
+            qE = qconvert(data);
+            if flg
+                break
+            else 
+                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
+            end
+
+                case 'a'
+           qA = qconvert(data);
+           if flg
+               break
+           else 
+                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
+           end
+            
+                case 'c'
+           qC = qconvert(data);
+           if flg
+               break
+           else 
+                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
+           end
+                case 'd'
+           qD = qconvert(data);
+           if flg
+               break
+           else 
+                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
+           end
+                case 'b'
+            qB = qconvert(data);
+            if flg
+               break
+            else 
+                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
+            end
+                end 
+    end
+end
+
+
 while true
    tstart = tic;
    validData = k2.updateData;
@@ -115,13 +192,13 @@ while true
             %coronal plane calculation
 %                     if (leftElbow(1)<=(leftShoulder(1)-(0.25*norm(LH2))))
                         leftElbowprojection = LH2 - dot(LH2,coronalnormalL)*coronalnormalL;
-                        lkinbdangle = atan2d(norm(cross(TrunkVector,LH2)),dot(TrunkVector,LH2));                      %Abduction-adduction angle left
+                        lkinbdangle = sign(dot(TrunkVector,LH2))*atan2d(norm(cross(TrunkVector,LH2)),dot(TrunkVector,LH2));                      %Abduction-adduction angle left
 %                     else
 %                         lkinbdangle = 0;
 %                     end
 %                     if (rightElbow(1)>=(rightShoulder(1)+(0.25*norm(RH2))))
                         rightElbowprojection = RH2 - dot(RH2,coronalnormalR)*coronalnormalR;
-                        rkinbdangle = atan2d(norm(cross(TrunkVector,RH2)),dot(TrunkVector,RH2));                     %Abduction-adduction angle right  
+                        rkinbdangle = sign(dot(TrunkVector,RH2))*atan2d(norm(cross(TrunkVector,RH2)),dot(TrunkVector,RH2));                     %Abduction-adduction angle right  
 %                     else
 %                         rkinbdangle = 0;
 %                     end
@@ -130,29 +207,29 @@ while true
                     sagittalnormalR = cross(coronalnormalR,TrunkVector);
 %             if (leftShoulder(3)>=(leftElbow(3)+(0.25*norm(LH2))))
                 leftShoulderprojection = LH2 - (dot(LH2,sagittalnormalL)/norm(sagittalnormalL)^2)*sagittalnormalL;
-                lkinefangle=atan2d(norm(cross(TrunkVector,leftShoulderprojection)),dot(TrunkVector,leftShoulderprojection));       %Extension-flexion left
+                lkinefangle=sign(dot(TrunkVector,leftShoulderprojection))*atan2d(norm(cross(TrunkVector,leftShoulderprojection)),dot(TrunkVector,leftShoulderprojection));       %Extension-flexion left
 %             else
 %                 lkinefangle = 0;
 %             end
 %             if (rightShoulder(3)>=(rightElbow(3)+(0.25*norm(RH2))))
                 rightShoulderprojection = RH2 - (dot(RH2,sagittalnormalR)/norm(sagittalnormalR)^2)*sagittalnormalR;
-                rkinefangle=atan2d(norm(cross(TrunkVector,rightShoulderprojection)),dot(TrunkVector,rightShoulderprojection));    %Extension-flexion right
+                rkinefangle=sign(dot(TrunkVector,rightShoulderprojection))*atan2d(norm(cross(TrunkVector,rightShoulderprojection)),dot(TrunkVector,rightShoulderprojection));    %Extension-flexion right
 %             else
 %                 rkinefangle = 0;
 %             end
             %arm-axis plane calculation
                     leftwristprojection = armaxisnormalL - (dot(LH2,armaxisnormalL)/norm(LH2)^2)*LH2;
                     rightwristprojection = armaxisnormalR - (dot(RH2,armaxisnormalR)/norm(RH2)^2)*RH2;
-            if lkinelbangle>=60
-                lkinieangle = acosd(dot(leftwristprojection,F2)/(norm(F2)*norm(leftwristprojection)));
-            else
-                lkinieangle = 0;
-            end
-            if rkinelbangle>=60
-                rkinieangle = acosd(dot(-rightwristprojection,E2)/(norm(E2)*norm(-rightwristprojection)));
-            else
-                rkinieangle = 0;
-            end
+%             if lkinelbangle>=60
+                lkinieangle = sign(dot(leftwristprojection,F2))*atan2d(norm(cross(leftwristprojection,F2)),dot(leftwristprojection,F2));
+%             else
+%                 lkinieangle = 0;
+%             end
+%             if rkinelbangle>=60
+                rkinieangle = sign(dot(-rightwristprojection,F2))*atan2d(norm(cross(-rightwristprojection,E2)),dot(-rightwristprojection,E2));
+%             else
+%                 rkinieangle = 0;
+%             end
             rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
             rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
                         %arduino section
@@ -162,81 +239,58 @@ while true
 %     text(rs+rw/2,750,calib,'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
     if(length(data) == 5 || length(data) == 6)
     switch data(1)
-        case 'cal'
-          switch data(2)
-                case 'b'
-                    B_mag = str2double(data(3));B_acc = str2double(data(4));B_gyr = str2double(data(5));B_sys = str2double(data(6));
-                    Cal_B = [B_mag B_acc B_gyr B_sys];
-                case 'a'
-                    A_mag = str2double(data(3));A_acc = str2double(data(4));A_gyr = str2double(data(5));A_sys = str2double(data(6));      
-                    Cal_A = [A_mag A_acc A_gyr A_sys];
-                case 'c'
-                    C_mag = str2double(data(3));C_acc = str2double(data(4));C_gyr = str2double(data(5));C_sys = str2double(data(6));  
-                    Cal_C = [C_mag C_acc C_gyr C_sys];
-                case 'd'
-                    D_mag = str2double(data(3));D_acc = str2double(data(4));D_gyr = str2double(data(5));D_sys = str2double(data(6));      
-                    Cal_D = [D_mag D_acc D_gyr D_sys];
+        
                 case 'e'
-                    E_mag = str2double(data(3));E_acc = str2double(data(4));E_gyr = str2double(data(5));E_sys = str2double(data(6));      
-                    Cal_E = [E_mag E_acc E_gyr E_sys];
-                end 
-          
-        case 'e'
             qE = qconvert(data);
-            qE = quatnormalize(qE);
-            qE = E_fix(qE);
-%             R_sho = getShoulderRight(qE,qD);
-           lshoangle = getlefthand(qE,qC,qA);
-           limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
-           rshoangle = getrighthand(qE,qD,qB);
-           rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1);
-        case 'a'
+            qE = fix_imu('e',qE,Offsets);
+            lshoangle = getlefthand(qE,qC,qA);
+            limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
+            rshoangle = getrighthand(qE,qD,qB);
+            rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1);
+                
+                case 'a'
            qA = qconvert(data);
-           qA = quatnormalize(qA);
-           qA = fix_A(qA);
+           qA = fix_imu('a',qA,Offsets);
            lshoangle = getlefthand(qE,qC,qA);
            limuelbangle = lshoangle(4);
            limuelb1angle = lshoangle(5);
-        case 'c'
+            
+                case 'c'
            qC = qconvert(data);
-           qC = quatnormalize(qC);
-           qC = C_fix(qC);
+           qC = fix_imu('c',qC,Offsets);
            lshoangle = getlefthand(qE,qC,qA);
            limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
            limuelbangle = lshoangle(4);
            limuelb1angle = lshoangle(5);
-        case 'd'
+           
+                case 'd'
            qD = qconvert(data);
-           qD = quatnormalize(qD);
-           qD = fix_D(qD);
+           qD = fix_imu('d',qD,Offsets);
            rshoangle = getrighthand(qE,qD,qB);
            rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1);
            rimuelbangle = rshoangle(4);
            rimuelb1angle = rshoangle(5);
-        case 'b'
+           
+                case 'b'
             qB = qconvert(data);
-            qB = quatnormalize(qB);
-            qB = fix_B(qB);
+            qB = fix_imu('b',qB,Offsets);
             rshoangle = getlefthand(qE,qD,qB);
             rimuelbangle = rshoangle(4);
             rimuelb1angle = rshoangle(5);
-    end 
+            
+                end 
     end
-%             text(rs+rw/2,850,strcat('Calib B: ',num2str(Cal_B)),'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-%             text(rs+rw/2,800,strcat('Calib A: ',num2str(Cal_A)),'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-%             text(rs+rw/2,900,strcat('Calib C: ',num2str(Cal_C)),'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-%             text(rs+rw/2,950,strcat('Calib D: ',num2str(Cal_D)),'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-%             text(rs+rw/2,1000,strcat('Calib E: ',num2str(Cal_E)),'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
+
             limuefstr = num2str(limuefangle,'%.1f');rimuefstr = num2str(rimuefangle,'%.1f');
             lkinefstr = num2str(lkinefangle,'%.1f');rkinefstr = num2str(rkinefangle,'%.1f');
             limubdstr = num2str(limubdangle,'%.1f');rimubdstr = num2str(rimubdangle,'%.1f');
             lkinbdstr = num2str(lkinbdangle,'%.1f');rkinbdstr = num2str(rkinbdangle,'%.1f');
             limuiestr = num2str(limuieangle,'%.1f');rimuiestr = num2str(rimuieangle,'%.1f');
             lkiniestr = num2str(lkinieangle,'%.1f');rkiniestr = num2str(rkinieangle,'%.1f');
-            limuelbstr = num2str(limuelbangle,'%.1f');rimuelbstr = num2str(rimuelb1angle,'%.1f');
-            lkinelbstr = num2str(lkinelbangle,'%.1f');rkinelbstr = num2str(rkinelb1angle,'%.1f');
-            limuelb1str = num2str(limuelbangle,'%.1f');rimuelb1str = num2str(rimuelb1angle,'%.1f');
-            lkinelb1str = num2str(lkinelbangle,'%.1f');rkinelb1str = num2str(rkinelb1angle,'%.1f');
+            limuelbstr = num2str(limuelbangle,'%.1f');rimuelbstr = num2str(rimuelbangle,'%.1f');
+            lkinelbstr = num2str(lkinelbangle,'%.1f');rkinelbstr = num2str(rkinelbangle,'%.1f');
+            limuelb1str = num2str(limuelb1angle,'%.1f');rimuelb1str = num2str(rimuelb1angle,'%.1f');
+            lkinelb1str = num2str(lkinelb1angle,'%.1f');rkinelb1str = num2str(rkinelb1angle,'%.1f');
                                                  %Text placement on the left side
 text(ls+lw/2,s,lftstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(rs+rw/2,s,rgtstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
@@ -278,8 +332,8 @@ text(ls+(lw/lkinlocationdiv),19.5*s,lkinelbstr,'Color','white','FontSize',fs/fon
 text(rs+(rw/rkinlocationdiv),19.5*s,rkinelbstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(ls+(limulocationdiv*lw),19.5*s,limuelbstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+(rimulocationdiv*rw),19.5*s,rimuelbstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-text(ls+lw/5,23*s,etext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
-text(rs+rw/5,23*s,etext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
+text(ls+lw/5,23*s,ftext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
+text(rs+rw/5,23*s,ftext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
 text(ls+lw/5,24*s,psstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+rw/5,24*s,psstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(ls+(lw/lkinlocationdiv),23.5*s,lkinelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
@@ -289,6 +343,8 @@ text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fo
             telapsed = telapsed+toc(tstart);
             text(ls+lw/3,1050,'Time (seconds)','Color','white','FontSize',fs/(fontdiv),'FontWeight','bold','HorizontalAlignment','center');
             text(ls+(limulocationdiv*lw),1000,num2str(telapsed,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
+%               'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
+        fprintf( fid, '%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n',telapsed,lkinefangle,limuefangle,lkinbdangle,limubdangle,lkinieangle,limuieangle,lkinelbangle,limuelbangle,limuelb1angle,rkinefangle,rimuefangle,rkinbdangle,rimubdangle,rkinieangle,rimuieangle,rkinelbangle,rimuelbangle,rimuelb1angle);
                end
        if numBodies == 0
            s1 = strcat('No persons in view');   
@@ -301,14 +357,14 @@ text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fo
            text(1920/2,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
        end      
        if ~isempty(k)
-        if strcmp(k,'q'); 
+        if strcmp(k,'q') 
             break; 
-        end;
+        end
         end
         k2.drawBodies(c.ax,bodies,'color',3,2,1);
         flag = 0;         
    end
-     pause(0.0001);
+     pause(0.00001);
     clearvars pos2Dxxx depth color validData depth8u depth8uc3 leftShoulder leftElbow leftWrist rightShoulder rightElbow rightWrist rightHand rightHandtip spineShoulder spineCenter spinebase hipRight hipLeft E1 E2 F1 F2 RH2 LH2 LSRS RSLS coronalnormalL coronalnormalR TrunkVector sagittalnormalL sagittalnormalR line data
     clearvars limubdstr limuefstr limuelbstr lkinefstr lkinbdstr lkiniestr limuiestr lkinelbstr rimubdstr rimuefstr rimuelbstr rkinefstr rkinbdstr rkiniestr rimuiestr rkinelbstr rimuelb1str rkinelb1str limuelb1str lkinelb1str
 end
@@ -316,76 +372,102 @@ k2.delete;
 clear all;
 close all;
 delete(instrfind({'Port'},{'COM15'}))
-
-function resultmult = qconvert(a)
-p = -1; %y = m x + p where y(-1 1) x(0 999) from rfduino z(-2^14 2^14)
-m = 2/999;
-resultmult(1) = str2double(a(2))*m+p;
-resultmult(2) = str2double(a(3))*m+p;
-resultmult(3) = str2double(a(4))*m+p;
-resultmult(4) = str2double(a(5))*m+p;
-end
+fclose(fid);
 
 
-function lefthand = getlefthand(back,arm,wrist)
-lefthand = zeros(5,1);
-Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
-Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
-Vxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Vyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
-Vzb_ = quatmultiply(back,quatmultiply(-Qk,quatconj(back)));
-Vxb_ = quatmultiply(back,quatmultiply(-Qi,quatconj(back)));
-Vyb_ = quatmultiply(back,quatmultiply(-Qj,quatconj(back)));
-Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
-Vza_ = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
-Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Vxa_ = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));
-Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
-Vya_ = quatmultiply(arm,quatmultiply(-Qj,quatconj(arm)));
-Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
-Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
-Vxw_ = quatmultiply(wrist,quatmultiply(-Qi,quatconj(wrist)));
-Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
-IC = Vxa_(2:4);
-IE = Vxb(2:4);
-JE = Vyb_(2:4);
-KE = Vzb_(2:4);
-V = [dot(IC,IE) , dot(IC,JE) , dot(IC,KE)];
-lefthand(1,1) = atan2d(V(3),V(1));
-lefthand(2,1) = atan2d(V(2),V(1));
 
 
-end
 
-function righthand = getrighthand(back,arm,wrist)
-righthand = zeros(5,1);
-Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
-Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
-Vxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
-Vyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
-Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
-Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
-Vxa_ = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));
-Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
-Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
-Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
-Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
-%sagittal plane on back has Y axis as normal for extension and flexion
-Vxasagittal = Vya(2:4) - (dot(Vya(2:4),Vyb(2:4))/norm(Vyb(2:4))^2)*Vyb(2:4);
-if abs(dot(Vxa(2:4),Vyb(2:4))/(norm(Vxa(2:4))*norm(Vyb(2:4))))<=0.98
-    righthand(1,1) = acosd(dot(Vxasagittal,Vxb(2:4))/norm(Vxasagittal)*norm(Vxb(2:4)));
-else 
-    righthand(1,1) = 90.00;
-end
-%coronal plane on back has Z axis as normal for abduction and adduction
-Vxacoronal = Vxa(2:4) - (dot(Vxa(2:4),Vzb(2:4))/norm(Vzb(2:4))^2)*Vzb(2:4);
+%%
+delete(instrfind({'Port'},{'COM15'}))
+fclose(fid);
+font = 18;
+[Time,KLSEF,IMULSEF,KLSAA,IMULSAA,KLSIE,IMULSIE,KLEEF,IMULEEF,IMULEPS,KRSEF,IMURSEF,KRSAA,IMURSAA,KRSIE,IMURSIE,KREEF,IMUREEF,IMUREPS] = ....
+importtextkinimu(strfile);
 
-righthand(2,1) = acosd(dot(Vxacoronal,Vxb(2:4))/(norm(Vxacoronal)*norm(Vxb(2:4))));
-%arm-axis plane
-Vxwarmaxis = Vxw(2:4) - (dot(Vxw(2:4),Vxa(2:4))/norm(Vxw(2:4))^2)*Vxw(2:4);
-righthand(3,1) = acosd(dot(Vxwarmaxis,Vya(2:4))/(norm(Vxwarmaxis)*norm(Vya(2:4))));
-%elbow angle extension-flexion
-righthand(4,1) = acosd(dot(-Vxa(2:4),Vxw(2:4))/norm(-Vxa(2:4))*norm(Vxw(2:4)));
-%elbow pronation-supination
-righthand(5,1) = acosd(dot(Vza(2:4),Vzw(2:4))/norm(Vza(2:4))*norm(Vzw(2:4)));
-end
+figure(1)
+plot(Time,KLSEF);
+hold on
+plot(Time,IMULSEF);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Left Shoulder_{Extension-Flexion}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+figure(2)
+plot(Time,KLSAA);
+hold on
+plot(Time,IMULSAA);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Left Shoulder_{Abduction-Adduction}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+
+figure(3)
+plot(Time,KLSIE);
+hold on
+plot(Time,IMULSIE);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Left Shoulder_{Internal-External Rotation}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+
+figure(4)
+subplot(2,1,1)
+plot(Time,KLEEF);
+hold on
+plot(Time,IMULEEF);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Left Elbow_{Extension-Flexion}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+subplot(2,1,2)
+hold on
+plot(Time,IMULEPS);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Left Elbow_{Pronation-Supination}','FontWeight','bold','FontSize',font);
+legend('WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+
+figure(5)
+plot(Time,KRSEF);
+hold on
+plot(Time,IMURSEF);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Right Shoulder_{Extension-Flexion}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+
+figure(6)
+plot(Time,KRSAA);
+hold on
+plot(Time,IMURSAA);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Right Shoulder_{Abduction-Adduction}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+
+figure(7)
+plot(Time,KRSIE);
+hold on
+plot(Time,IMURSIE);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Right Shoulder_{Internal-External Rotation}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+
+figure(8)
+subplot(2,1,1)
+plot(Time,KREEF);
+hold on
+plot(Time,IMUREEF);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Right Elbow_{Extension-Flexion}','FontWeight','bold','FontSize',font);
+legend('Kinect','WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off
+subplot(2,1,2)
+hold on
+plot(Time,IMUREPS);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Right Elbow_{Pronation-Supination}','FontWeight','bold','FontSize',font);
+legend('WISE','Location','NorthWest','FontWeight','bold','FontSize',font);
+hold off

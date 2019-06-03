@@ -71,19 +71,19 @@ while true
                     E_acc = str2double(data(4));
                     E_gyr = str2double(data(5));
                     E_sys = str2double(data(6));  
-                    Cal_E = [E_mag E_acc E_gyr E_sys]
+                    Cal_E = [E_mag E_acc E_gyr E_sys];
                 case 'c'
                     C_mag = str2double(data(3));
                     C_acc = str2double(data(4));
                     C_gyr = str2double(data(5));
                     C_sys = str2double(data(6));  
-                    Cal_C = [C_mag C_acc C_gyr C_sys]
+                    Cal_C = [C_mag C_acc C_gyr C_sys];
                 case 'a'
                     A_mag = str2double(data(3));
                     A_acc = str2double(data(4));
                     A_gyr = str2double(data(5));
                     A_sys = str2double(data(6));      
-                    Cal_A = [A_mag A_acc A_gyr A_sys]
+                    Cal_A = [A_mag A_acc A_gyr A_sys];
             end  
         case 'e'
             qE(1) = str2double(data(2))*m+p;

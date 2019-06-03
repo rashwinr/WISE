@@ -1,1 +1,0 @@
-Timestamp,Kinect_LShoulderExt-Y,Kinect_LShoulderAbd-Z,Kinect_LElbow,Kinect_RShoulderExt-Y,Kinect_RShoulderAbd-Z,Kinect_RElbow,IMULS_Y,IMULS_Z,IMUL_Elbow,IMURS_Y,IMURS_Z,IMURElbow

@@ -16,15 +16,16 @@ rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
                     
 imustr = strcat('IMU');
 kntstr = strcat('KINECT');
-lftstr = strcat('Left hand angles');
-rgtstr = strcat('Right hand angles');
-efstr = strcat('Ext.-Flex.');
-bdstr = strcat('Abd.-add.');
-iestr = strcat('Int.-Ext.');
-psstr = strcat('Pro.-Sup.');
+lftstr = strcat('Left arm angles');
+rgtstr = strcat('Right arm angles');
+efstr = strcat('Flex-Ext');
+bdstr = strcat('Abd-Add');
+iestr = strcat('Int-Ext Rot');
+psstr = strcat('Pro-Sup');
 jtext = strcat('Joint');
 etext = strcat('Elbow');         
 stext = strcat('Shoulder');     
+ftext = strcat('Forearm');  
 limuefangle = 0;rimuefangle = 0;lkinefangle = 0;rkinefangle = 0;
 limubdangle = 5;rimubdangle = 5;lkinbdangle = 5;rkinbdangle = 5;
 limuieangle = 10;rimuieangle = 10;lkinieangle = 10;rkinieangle = 10;
@@ -93,17 +94,14 @@ text(ls+(lw/lkinlocationdiv),19.5*s,lkinelbstr,'Color','white','FontSize',fs/fon
 text(rs+(rw/rkinlocationdiv),19.5*s,rkinelbstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(ls+(limulocationdiv*lw),19.5*s,limuelbstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+(rimulocationdiv*rw),19.5*s,rimuelbstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-text(ls+lw/5,23*s,etext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
-text(rs+rw/5,23*s,etext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
+text(ls+lw/5,23*s,ftext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
+text(rs+rw/5,23*s,ftext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
 text(ls+lw/5,24*s,psstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+rw/5,24*s,psstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(ls+(lw/lkinlocationdiv),23.5*s,lkinelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+(rw/rkinlocationdiv),23.5*s,rkinelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(ls+(limulocationdiv*lw),23.5*s,limuelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-
-
-
 
 
 function ElbL = getElbowLeft(q1,q2)
@@ -163,4 +161,81 @@ Qza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
 Qxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Qya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
 R_sho = quat2eul(Qnew,'XYZ')*180/pi;
+end
+
+
+function lefthand = getlefthand(back,arm,wrist)
+lefthand = zeros(5,1);
+Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
+Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
+Vxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
+Vyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
+Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
+Vza_ = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
+Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+Vxa_ = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));
+Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
+Vya_ = quatmultiply(arm,quatmultiply(-Qj,quatconj(arm)));
+Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
+Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
+Vxw_ = quatmultiply(wrist,quatmultiply(-Qi,quatconj(wrist)));
+Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
+abs(dot(Vxa(2:4),Vyb(2:4))/(norm(Vxa(2:4))*norm(Vyb(2:4))))
+if abs(dot(Vxa(2:4),Vyb(2:4))/(norm(Vxa(2:4))*norm(Vyb(2:4))))<=0.98
+        %sagittal plane on back has Y axis as normal for extension and flexion
+        Vxasagittal = Vya_(2:4) - (dot(Vya_(2:4),Vyb(2:4))/norm(Vyb(2:4))^2)*Vyb(2:4);
+        lefthand(1,1) = acosd(dot(Vxasagittal,Vzb(2:4))/norm(Vxasagittal)*norm(Vzb(2:4)));
+else 
+        lefthand(1,1) = 0.0;
+end
+%  if dot(
+%coronal plane on back has Z axis as normal for abduction and adduction
+Vxacoronal = Vxa_(2:4) - (dot(Vxa_(2:4),Vzb(2:4))/norm(Vzb(2:4))^2)*Vzb(2:4);
+lefthand(2,1) = acosd(dot(Vxacoronal,Vxb(2:4))/(norm(Vxacoronal)*norm(Vxb(2:4))));
+%elbow angle extension-flexion                    requires a normal plane
+lefthand(4,1) = acosd(dot(Vxa_(2:4),Vxw_(2:4))/norm(Vxa_(2:4))*norm(Vxw_(2:4)));
+%  end
+if lefthand(4,1)>=70
+%arm-axis plane
+        Vxwarmaxis = Vxw_(2:4) - (dot(Vxw_(2:4),Vxa(2:4))/norm(Vxa(2:4))^2)*Vxa(2:4);
+        lefthand(3,1) = acosd(dot(Vxwarmaxis,Vya(2:4))/(norm(Vxwarmaxis)*norm(Vya(2:4))));
+else 
+        lefthand(3,1) = 0;
+end
+
+%elbow pronation-supination                       requires a normal plane
+lefthand(5,1) = acosd(dot(Vza(2:4),Vzw(2:4))/norm(Vza(2:4))*norm(Vzw(2:4)));
+end
+
+function righthand = getrighthand(back,arm,wrist)
+righthand = zeros(5,1);
+Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
+Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
+Vxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
+Vyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
+Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
+Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+Vxa_ = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));
+Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
+Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
+Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
+Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
+%sagittal plane on back has Y axis as normal for extension and flexion
+Vxasagittal = Vya(2:4) - (dot(Vya(2:4),Vyb(2:4))/norm(Vyb(2:4))^2)*Vyb(2:4);
+if abs(dot(Vxa(2:4),Vyb(2:4))/(norm(Vxa(2:4))*norm(Vyb(2:4))))<=0.98
+    righthand(1,1) = acosd(dot(Vxasagittal,Vxb(2:4))/norm(Vxasagittal)*norm(Vxb(2:4)));
+else 
+    righthand(1,1) = 90.00;
+end
+%coronal plane on back has Z axis as normal for abduction and adduction
+Vxacoronal = Vxa(2:4) - (dot(Vxa(2:4),Vzb(2:4))/norm(Vzb(2:4))^2)*Vzb(2:4);
+
+righthand(2,1) = acosd(dot(Vxacoronal,Vxb(2:4))/(norm(Vxacoronal)*norm(Vxb(2:4))));
+%arm-axis plane
+Vxwarmaxis = Vxw(2:4) - (dot(Vxw(2:4),Vxa(2:4))/norm(Vxw(2:4))^2)*Vxw(2:4);
+righthand(3,1) = acosd(dot(Vxwarmaxis,Vya(2:4))/(norm(Vxwarmaxis)*norm(Vya(2:4))));
+%elbow angle extension-flexion
+righthand(4,1) = acosd(dot(-Vxa(2:4),Vxw(2:4))/norm(-Vxa(2:4))*norm(Vxw(2:4)));
+%elbow pronation-supination
+righthand(5,1) = acosd(dot(Vza(2:4),Vzw(2:4))/norm(Vza(2:4))*norm(Vzw(2:4)));
 end

@@ -1,5 +1,6 @@
-# wearable-jacket
-We are creating a wearable jacket for arm rehabilitation of stroke patients.
+# Wearable Inertial Sensors for Exergames
+
+We are creating a wearable IMUs for ROM (range of motion) assessment and arm rehabilitation of stroke patients.
 
 Data: The data folder consists of data sets saved from the IMU.
 Arduino: All scripts relevant to the jacket are placed here.

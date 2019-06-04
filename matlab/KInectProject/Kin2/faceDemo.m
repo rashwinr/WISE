@@ -68,8 +68,9 @@ while true
         %   MouthOpen, MouthMoved, LookingAway
         %   The detection results are: 
         %   Unknown = 0, No = 1, Maybe = 2, Yes = 3;
-        faces = k2.getFaces;                
-
+        face = k2.getFaces;                
+%         face.FaceBox
+%         rectangle('Position',[face(1).FaceBox(1) face(1).FaceBox(2) face(1).FaceBox(3)-face(1).FaceBox(1) face(1).FaceBox(4)-face(1).FaceBox(2)],'LineWidth',3,'FaceColor','k');
         % update color figure
         color = imresize(color,COL_SCALE);
         c.im = imshow(color, 'Parent', c.ax);
@@ -81,7 +82,7 @@ while true
         % 3) face landmarks size (radius)
         % 4) display text information?
         % 5) information font size in pixels
-        k2.drawFaces(c.ax,faces,5,true,20);
+        k2.drawFaces(c.ax,face,5,false,20);
              
     end
     

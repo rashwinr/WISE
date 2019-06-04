@@ -884,25 +884,27 @@ classdef Kin2 < handle
             for i=1:numFaces                
                 % Draw the facial landmarks
                 viscircles(handle,faces(i).FacePoints',ones(5,1)*pointsSize,'EdgeColor',this.bodyColors(i));
-
+                sc = 20;
                 % Draw the rectangle    
-                left = faces(i).FaceBox(1);
-                top = faces(i).FaceBox(2);
+                left = faces(i).FaceBox(1)-sc;
+                top = faces(i).FaceBox(2)-sc;
                 right = faces(i).FaceBox(3);
                 bottom = faces(i).FaceBox(4);
+                len = right - left+sc;
+                hgt = bottom - top+sc;
                   % top line
-                line([left right],[top top],'Color',this.bodyColors(i), ...
-                    'LineWidth',2,'Parent',handle);
-                  % bottom line
-                line([left right],[bottom bottom],'Color',this.bodyColors(i), ...
-                    'LineWidth',2,'Parent',handle);
-                  % left line
-                line([left left],[top bottom],'Color',this.bodyColors(i), ...
-                    'LineWidth',2,'Parent',handle);
-                  % right line
-                line([right right],[top bottom],'Color',this.bodyColors(i), ...
-                    'LineWidth',2,'Parent',handle);
-                
+%                 line([left right],[top top],'Color',this.bodyColors(i), ...
+%                     'LineWidth',2,'Parent',handle);
+%                   % bottom line
+%                 line([left right],[bottom bottom],'Color',this.bodyColors(i), ...
+%                     'LineWidth',2,'Parent',handle);
+%                   % left line
+%                 line([left left],[top bottom],'Color',this.bodyColors(i), ...
+%                     'LineWidth',2,'Parent',handle);
+%                   % right line
+%                 line([right right],[top bottom],'Color',this.bodyColors(i), ...
+%                     'LineWidth',2,'Parent',handle);
+                rectangle('Position',[left,top,len,hgt],'LineWidth',3,'FaceColor','k');
                 if displayText
                     % Display face information
                     for j=1:length(this.faceProperties)

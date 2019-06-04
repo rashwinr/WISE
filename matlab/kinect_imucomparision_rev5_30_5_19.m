@@ -20,7 +20,7 @@ fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Time
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
 addpath('F:\github\wearable-jacket\matlab\KInectProject');
-k2 = Kin2('color','depth','body');
+k2 = Kin2('color','depth','body','face');
 % images sizes
 d_width = 512; d_height = 424; outOfRange = 4000;
 c_width = 1920; c_height = 1080;
@@ -95,7 +95,7 @@ while true
                     Cal_D = [D_mag D_acc D_gyr D_sys];
                 case 'e'
                     E_mag = str2double(data(3));E_acc = str2double(data(4));E_gyr = str2double(data(5));E_sys = str2double(data(6));      
-                    Cal_E = [E_mag E_acc E_gyr E_sys];
+                    Cal_E = [E_mag E_acc E_gyr E_sys]
           end 
           
                 case 'e'
@@ -145,6 +145,7 @@ while true
    validData = k2.updateData;
    if validData
        depth = k2.getDepth;
+       face = k2.getFaces;
        color = k2.getColor;
         depth8u = uint8(depth*(255/outOfRange));
         depth8uc3 = repmat(depth8u,[1 1 3]);
@@ -230,6 +231,7 @@ while true
 %             else
 %                 rkinieangle = 0;
 %             end
+            
             rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
             rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
                         %arduino section
@@ -345,6 +347,8 @@ text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fo
             text(ls+(limulocationdiv*lw),1000,num2str(telapsed,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 %               'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
         fprintf( fid, '%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n',telapsed,lkinefangle,limuefangle,lkinbdangle,limubdangle,lkinieangle,limuieangle,lkinelbangle,limuelbangle,limuelb1angle,rkinefangle,rimuefangle,rkinbdangle,rimubdangle,rkinieangle,rimuieangle,rkinelbangle,rimuelbangle,rimuelb1angle);
+                k2.drawBodies(c.ax,bodies,'color',3,2,1);
+                k2.drawFaces(c.ax,face,5,false,20);
                end
        if numBodies == 0
            s1 = strcat('No persons in view');   
@@ -360,8 +364,7 @@ text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fo
         if strcmp(k,'q') 
             break; 
         end
-        end
-        k2.drawBodies(c.ax,bodies,'color',3,2,1);
+       end
         flag = 0;         
    end
      pause(0.00001);

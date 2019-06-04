@@ -3,6 +3,7 @@ leftarm = zeros(3,1);
 Qi = [0,1,0,0];Qj = [0,0,1,0];Qk = [0,0,0,1];
 Vxb = quatmultiply(back,quatmultiply(Qi,quatconj(back)));
 Vzb_ = quatmultiply(back,quatmultiply(-Qk,quatconj(back)));
+Vyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
 Vyb_ = quatmultiply(back,quatmultiply(-Qj,quatconj(back)));
 Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
 Vxa_ = quatmultiply(arm,quatmultiply(-Qi,quatconj(arm)));

@@ -1,4 +1,4 @@
-%Joint angles from the Kinect and the IMU's are processed in a single
+ %Joint angles from the Kinect and the IMU's are processed in a single
 %script for viewing 
 delete(instrfind({'Port'},{'COM15'}))
 % fclose(fid);

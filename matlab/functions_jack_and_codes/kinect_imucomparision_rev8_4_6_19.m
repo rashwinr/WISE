@@ -15,33 +15,26 @@ cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
 telapsed = 0;
 strfile = sprintf('wearable+kinecttesting_%s.txt', datestr(now,'mm-dd-yyyy HH-MM'));
 fid = fopen(strfile,'wt');
-fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
+fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LeftShoulder_Ext.-Flex.',...
+'IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
 %Kinect initialization script
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
 addpath('F:\github\wearable-jacket\matlab\KInectProject');
 k2 = Kin2('color','depth','body','face');
-% images sizes
+                                        % images sizes
 outOfRange = 4000;
 c_width = 1920; c_height = 1080;
-% Color image is to big, let's scale it down
 COL_SCALE = 1.0;
-% Create matrices for the images
-% depth = zeros(d_height,d_width,'uint16');
 color = zeros(c_height*COL_SCALE,c_width*COL_SCALE,3,'uint8');
-title('Depth Source (press q to exit)')
-set(gcf,'keypress','k=get(gcf,''currentchar'');'); % listen keypress
-% color stream figure
-c.h = figure;
+
+c.h = figure(1);
 c.ax = axes;
 c.im = imshow(color,[]);
-title('Color Source (press q to exit)');
-set(gcf,'keypress','k=get(gcf,''currentchar'');'); % listen keypress
-k=[];
-                        %COM Port details
-                        delete(instrfind({'Port'},{'COM15'}))
-                        ser = serial('COM15','BaudRate',115200);
-                        ser.ReadAsyncMode = 'continuous';
+%COM Port details
+delete(instrfind({'Port'},{'COM15'}))
+ser = serial('COM15','BaudRate',115200);
+ser.ReadAsyncMode = 'continuous';
 %quaternion variables
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 empty = [1,0,0,0];
@@ -66,7 +59,7 @@ limuelb1angle = 0;rimuelb1angle = 0;lkinelb1angle = 0;rkinelb1angle = 0;
 fs = 24;s=35;fontdiv = 1.3;limulocationdiv = 1.9/2.2;rimulocationdiv = 2.1/2.4;lkinlocationdiv = 1.75;rkinlocationdiv = 1.75;
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
 fopen(ser);
-
+k=[];
 while true
     flushinput(ser);
     pause(0.01);
@@ -141,22 +134,25 @@ while true
    if validData
        depth = k2.getDepth;
        color = k2.getColor;
+       face = k2.getFaces;
         depth8u = uint8(depth*(255/outOfRange));
         depth8uc3 = repmat(depth8u,[1 1 3]);
         color = imresize(color,COL_SCALE);
         c.im = imshow(color, 'Parent', c.ax);
+        rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
+        rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
         flag=1;
         tt=0;
         [bodies, fcp, timeStamp] = k2.getBodies('Quat');
         numBodies = size(bodies,2);
                if numBodies == 1
-                   pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored to the variable pos2Dxxx.
+                   pos2Dxxx = bodies(1).Position;       % All 25 joints positions are stored to the variable pos2Dxxx.
                                                         %Left Side Joints
                    leftShoulder = pos2Dxxx(:,5);
                    leftElbow = pos2Dxxx(:,6);
                    leftWrist = pos2Dxxx(:,7);
                                                         %Right Side Joints
-                   rightShoulder = pos2Dxxx(:,9); % Left arm: 4,5,6 ; RightArm: 8,9,10
+                   rightShoulder = pos2Dxxx(:,9);       % Left arm: 4,5,6 ; RightArm: 8,9,10
                    rightElbow = pos2Dxxx(:,10);
                    rightWrist = pos2Dxxx(:,11);
                    rightHand = pos2Dxxx(:,12);
@@ -202,7 +198,7 @@ while true
             rightShoulderprojection = RH2 - (dot(RH2,sagittalnormalR)/norm(sagittalnormalR)^2)*sagittalnormalR;
             D = cross(TrunkVector,rightShoulderprojection);
             rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));    %Extension-flexion right
-            %arm-axis plane calculation
+                                                                                                %arm-axis plane calculation
             leftwristprojection = armaxisnormalL - (dot(LH2,armaxisnormalL)/norm(LH2)^2)*LH2;
             rightwristprojection = armaxisnormalR - (dot(RH2,armaxisnormalR)/norm(RH2)^2)*RH2;
             rkiniestr = strcat('NA');
@@ -213,7 +209,6 @@ while true
                 rkiniestr = num2str(rkinieangle,'%.1f');
             end
             F = cross(leftwristprojection,F2);
-%             sign(F)
             if lkinelbangle>=70
                 lkinieangle = -1*sign(F(2))*atan2d(norm(F),dot(leftwristprojection,F2));
                 lkiniestr = num2str(lkinieangle,'%.1f');
@@ -221,11 +216,11 @@ while true
             clearvars A B C D E F 
             rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
             rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
-                                                    %arduino section
+                                    %arduino section
     flushinput(ser);
     line = fscanf(ser);   % get data if there exists data in the next line
     data = strsplit(string(line),',');
-%     text(rs+rw/2,750,calib,'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
+
     if(length(data) == 5 || length(data) == 6)
     switch data(1)
         
@@ -281,7 +276,7 @@ while true
             lkinelbstr = num2str(lkinelbangle,'%.1f');rkinelbstr = num2str(rkinelbangle,'%.1f');
             limuelb1str = num2str(limuelb1angle,'%.1f');rimuelb1str = num2str(rimuelb1angle,'%.1f');
             lkinelb1str =strcat('NA');rkinelb1str =strcat('NA');
-                                                 %Text placement on the left side
+
 text(ls+lw/2,s,lftstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(rs+rw/2,s,rgtstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(ls+lw/5,4*s,jtext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
@@ -333,14 +328,15 @@ text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fo
             telapsed = telapsed+toc(tstart);
             text(ls+lw/3,1050,'Time (seconds)','Color','white','FontSize',fs/(fontdiv),'FontWeight','bold','HorizontalAlignment','center');
             text(ls+(limulocationdiv*lw),1000,num2str(telapsed,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-%               'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
+%               'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_
+% LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.',
+% 'IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
         fprintf( fid, '%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n',telapsed,lkinefangle,limuefangle,lkinbdangle,limubdangle,lkinieangle,limuieangle,lkinelbangle,limuelbangle,limuelb1angle,rkinefangle,rimuefangle,rkinbdangle,rimubdangle,rkinieangle,rimuieangle,rkinelbangle,rimuelbangle,rimuelb1angle);
                end
        if numBodies == 0
            s1 = strcat('No persons in view');   
            text((1920/2) - 250,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
-           rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
-           rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
+
        end      
        if numBodies > 1
            s1 = strcat('Too many people in view');
@@ -352,6 +348,7 @@ text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fo
         end
         end
         k2.drawBodies(c.ax,bodies,'color',3,2,1);
+        k2.drawFaces(c.ax,face,5,false,20);
         flag = 0;         
    end
      pause(0.00001);

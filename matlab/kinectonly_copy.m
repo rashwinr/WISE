@@ -60,9 +60,14 @@ color = zeros(c_height*COL_SCALE,c_width*COL_SCALE,3,'uint8');
 c.h = figure;
 c.ax = axes;
 c.im = imshow(color,[]);
-title('Color Source (press q to exit)');
-set(gcf,'keypress','k=get(gcf,''currentchar'');'); % listen keypress
+set( gcf, 'DoubleBuffer', 'on' )
 k=[];
+
+figure(2)
+axes2 = gca;
+% axis([0 200 -180 180])
+anline = animatedline(axes2,'Color','r');
+
 while true
     tstart=tic;
     %Kinect section
@@ -76,9 +81,16 @@ while true
         depth8uc3 = repmat(depth8u,[1 1 3]);
         color = imresize(color,COL_SCALE);
         c.im = imshow(color, 'Parent', c.ax);
+        [bodies, fcp, timeStamp] = k2.getBodies('Quat');
+%         figure(1)
+%         hold on
+rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
+rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
+k2.drawBodies(c.ax,bodies,'color',3,2,1);
+k2.drawFaces(c.ax,face,5,false,20);
+
         flag=1;
 %         end
-        [bodies, fcp, timeStamp] = k2.getBodies('Quat');
         numBodies = size(bodies,2);
        if numBodies == 1
 %%%%%%%  Measuring the joints of the body in camera spac
@@ -161,10 +173,11 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             lkinelbstr = num2str(lkinelbangle,'%.1f');rkinelbstr = num2str(rkinelbangle,'%.1f');
             limuelb1str = num2str(limuelb1angle,'%.1f');rimuelb1str = num2str(rimuelb1angle,'%.1f');
             lkinelb1str =strcat('NA');rkinelb1str =strcat('NA');
+           
+            
                                                  %Text placement on the left side
-                                                 figure(1)
-            rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
-            rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
+%                                                  figure(1)
+% hold on
 text(ls+lw/2,s,lftstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(rs+rw/2,s,rgtstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(ls+lw/5,4*s,jtext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
@@ -213,17 +226,18 @@ text(ls+(lw/lkinlocationdiv),23.5*s,lkinelb1str,'Color','white','FontSize',fs/fo
 text(rs+(rw/rkinlocationdiv),23.5*s,rkinelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(ls+(limulocationdiv*lw),23.5*s,limuelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-telapsed = telapsed+toc(tstart);
-tt = [tt telapsed];
-lkinef = [lkinef lkinefangle];
 text(ls+lw/3,1050,'Time (seconds)','Color','white','FontSize',fs/(fontdiv),'FontWeight','bold','HorizontalAlignment','center');
 text(ls+(limulocationdiv*lw),1000,num2str(telapsed,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-k2.drawBodies(c.ax,bodies,'color',3,2,1);
-k2.drawFaces(c.ax,face,5,false,20);
 
-figure(2)
-plot(tt,lkinef)
-drawnow;
+
+% animated plot
+telapsed = telapsed+toc(tstart);
+% tt = [tt telapsed];
+% lkinef = [lkinef lkinefangle];
+addpoints(anline,telapsed,lkinefangle);
+% drawnow
+
+
 
 end   
  if numBodies == 0
@@ -242,13 +256,11 @@ end
             break; 
         end
  end
-        k2.drawBodies(c.ax,bodies,'color',3,2,1);
         flag = 0;
     end
- pause(0.02);
-%   i = i+1;
+ pause(0.001);
  
-
+figure(1)
  
 end
 % Close kinect object

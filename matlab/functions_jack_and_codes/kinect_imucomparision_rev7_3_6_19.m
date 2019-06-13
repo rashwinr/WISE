@@ -42,6 +42,7 @@ k=[];
                         delete(instrfind({'Port'},{'COM15'}))
                         ser = serial('COM15','BaudRate',115200);
                         ser.ReadAsyncMode = 'continuous';
+                        fopen(ser);
 %quaternion variables
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 empty = [1,0,0,0];
@@ -65,12 +66,12 @@ limuelbangle = 0;rimuelbangle = 0;lkinelbangle = 0;rkinelbangle = 0;
 limuelb1angle = 0;rimuelb1angle = 0;lkinelb1angle = 0;rkinelb1angle = 0;
 fs = 24;s=35;fontdiv = 1.3;limulocationdiv = 1.9/2.2;rimulocationdiv = 2.1/2.4;lkinlocationdiv = 1.75;rkinlocationdiv = 1.75;
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
-fopen(ser);
+
 
 while true
     flushinput(ser);
-    pause(0.01);
-    line = fscanf(ser);   % get data if there exists data in the next line
+%     pause(0.01);
+    line = fgetl(ser);   % get data if there exists data in the next line
     data = strsplit(string(line),',');
     if(length(data) == 5 || length(data) == 6)
     switch data(1)
@@ -223,7 +224,8 @@ while true
             rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
                                                     %arduino section
     flushinput(ser);
-    line = fscanf(ser);   % get data if there exists data in the next line
+%     pause(0.01);
+    line = fgetl(ser);   % get data if there exists data in the next line
     data = strsplit(string(line),',');
 %     text(rs+rw/2,750,calib,'Color','white','FontSize',0.75*fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
     if(length(data) == 5 || length(data) == 6)

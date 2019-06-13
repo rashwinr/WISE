@@ -40,33 +40,32 @@ limuelbangle = 0;rimuelbangle = 0;lkinelbangle = 0;rkinelbangle = 0;
 limuelb1angle = 0;rimuelb1angle = 0;lkinelb1angle = 0;rkinelb1angle = 0;
 fs = 24;s=35;fontdiv = 1.3;limulocationdiv = 1.9/2.2;rimulocationdiv = 2.1/2.4;lkinlocationdiv = 1.75;rkinlocationdiv = 1.75;
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
-% images sizes
-% d_width = 512; d_height = 424; 
 outOfRange = 4000;
 c_width = 1920; c_height = 1080;
-% Color image is to big, let's scale it down
 COL_SCALE = 1.0;
-% Create matrices for the images
-% depth = zeros(d_height,d_width,'uint16');
 color = zeros(c_height*COL_SCALE,c_width*COL_SCALE,3,'uint8');
-% depth stream figure
-% d.h = figure;
-% d.ax = axes;
-% d.im = imshow(zeros(d_height,d_width,'uint8'));
-%hold on;
-% title('Depth Source (press q to exit)')
-% set(gcf,'keypress','k=get(gcf,''currentchar'');'); % listen keypress
-% color stream figure
 c.h = figure;
 c.ax = axes;
 c.im = imshow(color,[]);
 title('Color Source (press q to exit)');
 set(gcf,'keypress','k=get(gcf,''currentchar'');'); % listen keypress
 k=[];
+
+figure(2)
+title('Flexion-Extension','FontWeight','bold','FontSize',font);
+set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
+hold on
+title('Left Shoulder','FontWeight','bold','FontSize',font);
+xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+ylabel('Joint angles (degrees)','FontWeight','bold','FontSize',font);
+legend('Location','NorthWest','FontWeight','bold','FontSize',font);
+axes1 = gca;axes2  = gca;
+anline = animatedline(axes1,'Color','r','DisplayName','KINECT');
+anline1 = animatedline(axes2,'Color','b','DisplayName','IMU');
+
+
 while true
     tstart=tic;
-    %Kinect section
-    % Get frames from Kinect and save them on underlying buffer
     validData = k2.updateData;
     if validData
         depth = k2.getDepth;
@@ -84,24 +83,12 @@ while true
 %%%%%%%  Measuring the joints of the body in camera spac
                 % Left arm(modified): 5,6,7 ; RightArm: 9,10,11            
 pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored to the variable pos2Dxxx.
-                                                %Left Side Joints
-            leftShoulder = pos2Dxxx(:,5);
-            leftElbow = pos2Dxxx(:,6);
-            leftWrist = pos2Dxxx(:,7);
-                                                %Right Side Joints
-            rightShoulder = pos2Dxxx(:,9); % Left arm: 4,5,6 ; RightArm: 8,9,10
-            rightElbow = pos2Dxxx(:,10);
-            rightWrist = pos2Dxxx(:,11);
-            rightHand = pos2Dxxx(:,12);
-            rightHandtip = pos2Dxxx(:,24);
-                                                %Spine Joints
-            spineShoulder = pos2Dxxx(:,21);
-            spineCenter = pos2Dxxx(:,2);
-            spinebase = pos2Dxxx(:,1);
-            hipRight = pos2Dxxx(:,17);
-            hipLeft = pos2Dxxx(:,13);
+            leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);                       %Left Side Joints
+            rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);                  %Right Side Joints
+            rightHand = pos2Dxxx(:,12);rightHandtip = pos2Dxxx(:,24);
+            spineShoulder = pos2Dxxx(:,21);spineCenter = pos2Dxxx(:,2);spinebase = pos2Dxxx(:,1);                   %Spine Joints
+            hipRight = pos2Dxxx(:,17);hipLeft = pos2Dxxx(:,13);
 %%%%%% ELBOW           
-                                                %Right Elbow joint angle calculation 3D
             E1=rightElbow-rightShoulder;
             E2=rightWrist-rightElbow;
             rkinelbangle=acosd(dot(E1,E2)/(norm(E1)*norm(E2)));
@@ -109,10 +96,10 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             F2=leftWrist-leftElbow;
             lkinelbangle=acosd(dot(F1,F2)/(norm(F1)*norm(F2)));
 %%%%%% SHOULDER 
-            % Right Shoulder abduction-adduction Movement
+                                                                                                                    % Right Shoulder abduction-adduction Movement
             RH2=rightElbow([1:3])-rightShoulder([1:3]);
             LH2=leftElbow([1:3])-leftShoulder([1:3]);    
-                                    %coronal plane calculation
+                                                                                                                    %coronal plane calculation
             RSLS = leftShoulder-rightShoulder;
             LSRS = rightShoulder-leftShoulder;
             TrunkVector = spinebase-spineShoulder;
@@ -120,22 +107,22 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             coronalnormalR = cross(RSLS,TrunkVector);
             armaxisnormalL = cross(LSRS,LH2);
             armaxisnormalR = cross(RSLS,RH2);
-                                    %sagittal plane calculation
+                                                                                                                    %sagittal plane calculation
             leftElbowprojection = LH2 - dot(LH2,coronalnormalL)*coronalnormalL;
             A = cross(TrunkVector,LH2);
-            lkinbdangle = sign(-A(3))*atan2d(norm(A),dot(TrunkVector,LH2));                      %Abduction-adduction angle left
+            lkinbdangle = sign(-A(3))*atan2d(norm(A),dot(TrunkVector,LH2));                                         %Abduction-adduction angle left
             rightElbowprojection = RH2 - dot(RH2,coronalnormalR)*coronalnormalR;
             B = cross(TrunkVector,RH2);
-            rkinbdangle = sign(B(3))*atan2d(norm(B),dot(TrunkVector,RH2));                     %Abduction-adduction angle right  
+            rkinbdangle = sign(B(3))*atan2d(norm(B),dot(TrunkVector,RH2));                                          %Abduction-adduction angle right  
             sagittalnormalL = cross(coronalnormalL,TrunkVector);
             sagittalnormalR = cross(coronalnormalR,TrunkVector);
             leftShoulderprojection = LH2 - (dot(LH2,sagittalnormalL)/norm(sagittalnormalL)^2)*sagittalnormalL;
             C = cross(TrunkVector,leftShoulderprojection);
-            lkinefangle=sign(C(1))*atan2d(norm(C),dot(TrunkVector,leftShoulderprojection));       %Extension-flexion left
+            lkinefangle=sign(C(1))*atan2d(norm(C),dot(TrunkVector,leftShoulderprojection));                         %Extension-flexion left
             rightShoulderprojection = RH2 - (dot(RH2,sagittalnormalR)/norm(sagittalnormalR)^2)*sagittalnormalR;
             D = cross(TrunkVector,rightShoulderprojection);
-            rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));    %Extension-flexion right
-                        %arm-axis plane calculation
+            rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));                        %Extension-flexion right
+                                                                                                                    %arm-axis plane calculation
             leftwristprojection = armaxisnormalL - (dot(LH2,armaxisnormalL)/norm(LH2)^2)*LH2;
             rightwristprojection = armaxisnormalR - (dot(RH2,armaxisnormalR)/norm(RH2)^2)*RH2;
             rkiniestr = strcat('NA');
@@ -161,10 +148,10 @@ pos2Dxxx = bodies(1).Position;              % All 25 joints positions are stored
             lkinelbstr = num2str(lkinelbangle,'%.1f');rkinelbstr = num2str(rkinelbangle,'%.1f');
             limuelb1str = num2str(limuelb1angle,'%.1f');rimuelb1str = num2str(rimuelb1angle,'%.1f');
             lkinelb1str =strcat('NA');rkinelb1str =strcat('NA');
-                                                 %Text placement on the left side
-                                                 figure(1)
-            rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
-            rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
+                                                                                                                    %Text placement on the left side
+figure(1)
+rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
+rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
 text(ls+lw/2,s,lftstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(rs+rw/2,s,rgtstr,'Color','white','FontSize',fs,'FontWeight','bold','HorizontalAlignment','center');
 text(ls+lw/5,4*s,jtext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
@@ -214,17 +201,10 @@ text(rs+(rw/rkinlocationdiv),23.5*s,rkinelb1str,'Color','white','FontSize',fs/fo
 text(ls+(limulocationdiv*lw),23.5*s,limuelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 text(rs+(rimulocationdiv*rw),23.5*s,rimuelb1str,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 telapsed = telapsed+toc(tstart);
-tt = [tt telapsed];
-lkinef = [lkinef lkinefangle];
 text(ls+lw/3,1050,'Time (seconds)','Color','white','FontSize',fs/(fontdiv),'FontWeight','bold','HorizontalAlignment','center');
 text(ls+(limulocationdiv*lw),1000,num2str(telapsed,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 k2.drawBodies(c.ax,bodies,'color',3,2,1);
 k2.drawFaces(c.ax,face,5,false,20);
-
-figure(2)
-plot(tt,lkinef)
-drawnow;
-
 end   
  if numBodies == 0
            s1 = strcat('No persons in view');   
@@ -246,9 +226,6 @@ end
         flag = 0;
     end
  pause(0.02);
-%   i = i+1;
- 
-
  
 end
 % Close kinect object

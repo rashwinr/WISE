@@ -45,10 +45,11 @@ fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Time
 'IMU_RightElbow_Pro.-Sup.');
 fopen(ser);
 figure(2)
+hold on
 title('Flexion-Extension','FontWeight','bold','FontSize',font);
 subplot(2,1,1)
 set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
-hold on
+
 title('Left Shoulder','FontWeight','bold','FontSize',font);
 xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
 ylabel('Joint angles (degrees)','FontWeight','bold','FontSize',font);
@@ -144,44 +145,40 @@ while (lef<=7 || ref<=7)
         [bodies, fcp, timeStamp] = k2.getBodies('Quat');
         numBodies = size(bodies,2);
                if numBodies == 1
-        pos2Dxxx = bodies(1).Position;       % All 25 joints positions are stored to the variable pos2Dxxx.
-                                              %Left Side Joints
-        leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);
-                                              %Right Side Joints
-        rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);
+        pos2Dxxx = bodies(1).Position;       % All 25 joints positions are stored to the variable pos2Dxxx.  
+        leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);           %Left Side Joints  
+        rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);      %Right Side Joints
         rightHand = pos2Dxxx(:,12);rightHandtip = pos2Dxxx(:,24);
-                                                        %Spine Joints
-        spineShoulder = pos2Dxxx(:,21);spineCenter = pos2Dxxx(:,2);spinebase = pos2Dxxx(:,1);
+        spineShoulder = pos2Dxxx(:,21);spineCenter = pos2Dxxx(:,2);spinebase = pos2Dxxx(:,1);       %Spine Joints
         hipRight = pos2Dxxx(:,17);hipLeft = pos2Dxxx(:,13);
             %%%%%% ELBOW           
-                  %Right Elbow joint angle calculation 3D
             E1=rightElbow-rightShoulder;E2=rightWrist-rightElbow;
             rkinelbangle=acosd(dot(E1,E2)/(norm(E1)*norm(E2)));
             F1=leftElbow-leftShoulder;F2=leftWrist-leftElbow;
             lkinelbangle=acosd(dot(F1,F2)/(norm(F1)*norm(F2)));
             %%%%%% SHOULDER 
-                  % Right Shoulder abduction-adduction Movement
+                                                                                                    % Right Shoulder abduction-adduction Movement
             RH2=rightElbow([1:3])-rightShoulder([1:3]);LH2=leftElbow([1:3])-leftShoulder([1:3]);    
-                                                                              %coronal plane calculation
+                                                                                                    %coronal plane calculation
             RSLS = leftShoulder-rightShoulder;LSRS = rightShoulder-leftShoulder;
             TrunkVector = spinebase-spineShoulder;
             coronalnormalL = cross(LSRS,TrunkVector);coronalnormalR = cross(RSLS,TrunkVector);
             armaxisnormalL = cross(LSRS,LH2);armaxisnormalR = cross(RSLS,RH2);
-                                                        %sagittal plane calculation
+                                                                                                    %sagittal plane calculation
             leftElbowprojection = LH2 - dot(LH2,coronalnormalL)*coronalnormalL;
             A = cross(TrunkVector,LH2);
-            lkinbdangle = sign(-A(3))*atan2d(norm(A),dot(TrunkVector,LH2));                      %Abduction-adduction angle left
+            lkinbdangle = sign(-A(3))*atan2d(norm(A),dot(TrunkVector,LH2));                         %Abduction-adduction angle left
             rightElbowprojection = RH2 - dot(RH2,coronalnormalR)*coronalnormalR;
             B = cross(TrunkVector,RH2);
-            rkinbdangle = sign(B(3))*atan2d(norm(B),dot(TrunkVector,RH2));                     %Abduction-adduction angle right  
+            rkinbdangle = sign(B(3))*atan2d(norm(B),dot(TrunkVector,RH2));                          %Abduction-adduction angle right  
             sagittalnormalL = cross(coronalnormalL,TrunkVector);sagittalnormalR = cross(coronalnormalR,TrunkVector);
             leftShoulderprojection = LH2 - (dot(LH2,sagittalnormalL)/norm(sagittalnormalL)^2)*sagittalnormalL;
             C = cross(TrunkVector,leftShoulderprojection);
-            lkinefangle=sign(C(1))*atan2d(norm(C),dot(TrunkVector,leftShoulderprojection));       %Extension-flexion left
+            lkinefangle=sign(C(1))*atan2d(norm(C),dot(TrunkVector,leftShoulderprojection));         %Extension-flexion left
             rightShoulderprojection = RH2 - (dot(RH2,sagittalnormalR)/norm(sagittalnormalR)^2)*sagittalnormalR;
             D = cross(TrunkVector,rightShoulderprojection);
-            rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));    %Extension-flexion right
-                                                                                                %arm-axis plane calculation
+            rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));        %Extension-flexion right
+                                                                                                    %arm-axis plane calculation
             leftwristprojection = armaxisnormalL - (dot(LH2,armaxisnormalL)/norm(LH2)^2)*LH2;
             rightwristprojection = armaxisnormalR - (dot(RH2,armaxisnormalR)/norm(RH2)^2)*RH2;
             rkiniestr = strcat('NA');lkiniestr = strcat('NA');
@@ -210,9 +207,9 @@ while (lef<=7 || ref<=7)
     clearvars A B C D E F 
     rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
     rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
-                                    %arduino section
+                                                                                                   %arduino section
     flushinput(ser);
-    line = fscanf(ser);   % get data if there exists data in the next line
+    line = fscanf(ser);                                                                            % get data if there exists data in the next line
     data = strsplit(string(line),',');
     if(length(data) == 5 || length(data) == 6)
     switch data(1)
@@ -308,9 +305,9 @@ addpoints(anline2,telapsed,rkinefangle);addpoints(anline3,telapsed,rkinefangle);
 addpoints(anline4,telapsed,lkinbdangle);addpoints(anline5,telapsed,limuefangle);
 addpoints(anline6,telapsed,rkinbdangle);addpoints(anline7,telapsed,rimubdangle);
 drawnow;
-%'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_
-% LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.',
-% 'IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
+                    %'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_
+                    % LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.',
+                    % 'IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.','Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
 fprintf( fid, '%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n',telapsed,...
 lkinefangle,limuefangle,lkinbdangle,limubdangle,lkinieangle,limuieangle,lkinelbangle,limuelbangle,limuelb1angle,rkinefangle,rimuefangle,...
 rkinbdangle,rimubdangle,rkinieangle,rimuieangle,rkinelbangle,rimuelbangle,rimuelb1angle);
@@ -362,8 +359,9 @@ end
 clearvars pos2Dxxx depth color validData depth8u depth8uc3 leftShoulder leftElbow leftWrist rightShoulder rightElbow rightWrist rightHand rightHandtip spineShoulder spineCenter spinebase hipRight hipLeft E1 E2 F1 F2 RH2 LH2 LSRS RSLS coronalnormalL coronalnormalR TrunkVector sagittalnormalL sagittalnormalR line data
 clearvars limubdstr limuefstr limuelbstr lkinefstr lkinbdstr lkiniestr limuiestr lkinelbstr rimubdstr rimuefstr rimuelbstr rkinefstr rkinbdstr rkiniestr rimuiestr rkinelbstr rimuelb1str rkinelb1str limuelb1str lkinelb1str
 end
-%Abduction-adduction left and right arm
-lbdflag = 0;rbdflag = 0;lbd = 0;rbd = 0;
+                                %Abduction-adduction left and right arm
+                                
+lbdflag = 0;rbdflag = 0;lbd = 0;rbd = 0;telapsed = 0;
 bdfile = sprintf('%s_WISE+KINECT_testing_%s_%s.txt',num2str(SUBJECTID),datestr(now,'mm-dd-yyyy HH-MM'),'abd-add');
 fid = fopen(bdfile,'wt');
 fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LeftShoulder_Ext.-Flex.',...
@@ -406,44 +404,40 @@ while (lbd<=7 || rbd<=7)
         [bodies, fcp, timeStamp] = k2.getBodies('Quat');
         numBodies = size(bodies,2);
                if numBodies == 1
-        pos2Dxxx = bodies(1).Position;       % All 25 joints positions are stored to the variable pos2Dxxx.
-                                              %Left Side Joints
-        leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);
-                                              %Right Side Joints
-        rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);
+        pos2Dxxx = bodies(1).Position;                                                                          % All 25 joints positions are stored to the variable pos2Dxxx.
+        leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);                       %Left Side Joints
+        rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);                  %Right Side Joints
         rightHand = pos2Dxxx(:,12);rightHandtip = pos2Dxxx(:,24);
-                                                        %Spine Joints
-        spineShoulder = pos2Dxxx(:,21);spineCenter = pos2Dxxx(:,2);spinebase = pos2Dxxx(:,1);
+        spineShoulder = pos2Dxxx(:,21);spineCenter = pos2Dxxx(:,2);spinebase = pos2Dxxx(:,1);                   %Spine Joints
         hipRight = pos2Dxxx(:,17);hipLeft = pos2Dxxx(:,13);
             %%%%%% ELBOW           
-                  %Right Elbow joint angle calculation 3D
             E1=rightElbow-rightShoulder;E2=rightWrist-rightElbow;
             rkinelbangle=acosd(dot(E1,E2)/(norm(E1)*norm(E2)));
             F1=leftElbow-leftShoulder;F2=leftWrist-leftElbow;
             lkinelbangle=acosd(dot(F1,F2)/(norm(F1)*norm(F2)));
             %%%%%% SHOULDER 
-                  % Right Shoulder abduction-adduction Movement
+                                                                                                                % Right Shoulder abduction-adduction Movement
             RH2=rightElbow([1:3])-rightShoulder([1:3]);LH2=leftElbow([1:3])-leftShoulder([1:3]);    
-                                                                              %coronal plane calculation
+                                                                                                                %coronal plane calculation
             RSLS = leftShoulder-rightShoulder;LSRS = rightShoulder-leftShoulder;
             TrunkVector = spinebase-spineShoulder;
             coronalnormalL = cross(LSRS,TrunkVector);coronalnormalR = cross(RSLS,TrunkVector);
             armaxisnormalL = cross(LSRS,LH2);armaxisnormalR = cross(RSLS,RH2);
-                                                        %sagittal plane calculation
+                                                                                                                %sagittal plane calculation
             leftElbowprojection = LH2 - dot(LH2,coronalnormalL)*coronalnormalL;
             A = cross(TrunkVector,LH2);
-            lkinbdangle = sign(-A(3))*atan2d(norm(A),dot(TrunkVector,LH2));                      %Abduction-adduction angle left
+            lkinbdangle = sign(-A(3))*atan2d(norm(A),dot(TrunkVector,LH2));                                     %Abduction-adduction angle left
             rightElbowprojection = RH2 - dot(RH2,coronalnormalR)*coronalnormalR;
             B = cross(TrunkVector,RH2);
-            rkinbdangle = sign(B(3))*atan2d(norm(B),dot(TrunkVector,RH2));                     %Abduction-adduction angle right  
+            rkinbdangle = sign(B(3))*atan2d(norm(B),dot(TrunkVector,RH2));                                      %Abduction-adduction angle right  
             sagittalnormalL = cross(coronalnormalL,TrunkVector);sagittalnormalR = cross(coronalnormalR,TrunkVector);
             leftShoulderprojection = LH2 - (dot(LH2,sagittalnormalL)/norm(sagittalnormalL)^2)*sagittalnormalL;
             C = cross(TrunkVector,leftShoulderprojection);
-            lkinefangle=sign(C(1))*atan2d(norm(C),dot(TrunkVector,leftShoulderprojection));       %Extension-flexion left
+            lkinefangle=sign(C(1))*atan2d(norm(C),dot(TrunkVector,leftShoulderprojection));                     %Extension-flexion left
             rightShoulderprojection = RH2 - (dot(RH2,sagittalnormalR)/norm(sagittalnormalR)^2)*sagittalnormalR;
             D = cross(TrunkVector,rightShoulderprojection);
-            rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));    %Extension-flexion right
-                                                                                                %arm-axis plane calculation
+            rkinefangle=sign(D(1))*atan2d(norm(D),dot(TrunkVector,rightShoulderprojection));                    %Extension-flexion right
+                                                                                                                %arm-axis plane calculation
             leftwristprojection = armaxisnormalL - (dot(LH2,armaxisnormalL)/norm(LH2)^2)*LH2;
             rightwristprojection = armaxisnormalR - (dot(RH2,armaxisnormalR)/norm(RH2)^2)*RH2;
             rkiniestr = strcat('NA');lkiniestr = strcat('NA');
@@ -472,7 +466,7 @@ while (lbd<=7 || rbd<=7)
     clearvars A B C D E F 
     rectangle('Position',[ls 0 lw H],'LineWidth',3,'FaceColor','k');  
     rectangle('Position',[rs 0 rw H],'LineWidth',3,'FaceColor','k');
-                                    %arduino section
+                                                                                                                %arduino section
     flushinput(ser);
     line = fscanf(ser);   % get data if there exists data in the next line
     data = strsplit(string(line),',');

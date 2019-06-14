@@ -23,11 +23,17 @@ set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 %quaternion variables
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];empty = [1,0,0,0];
 Cal_A = [0 0 0 0];Cal_B = [0 0 0 0];Cal_C = [0 0 0 0];Cal_D = [0 0 0 0];Cal_E = [0 0 0 0];
-limuefangle = 0;rimuefangle = 0;lkinefangle = 0;rkinefangle = 0;
-limubdangle = 0;rimubdangle = 0;lkinbdangle = 0;rkinbdangle = 0;
-limuieangle = 0;rimuieangle = 10;lkinieangle = 0;rkinieangle = 0;
-limuelbangle = 0;rimuelbangle = 0;lkinelbangle = 0;rkinelbangle = 0;
-limuelb1angle = 0;rimuelb1angle = 0;lkinelb1angle = 0;rkinelb1angle = 0;
+limuef = 0;rimuef = 0;lkinef = 0;rkinef = 0;
+limubd = 0;rimubd = 0;lkinbdangle = 0;rkinbd = 0;
+limuie = 0;rimuie = 10;lkinie = 0;rkinie = 0;
+limuelb = 0;rimuelb = 0;lkinelb = 0;rkinelb = 0;
+limuelb1 = 0;rimuelb1 = 0;lkinelb1 = 0;rkinelb1 = 0;
+xlimuef = 0;xrimuef = 0;xlkinef = 0;xrkinef = 0;
+xlimubd = 0;xrimubd = 0;xlkinbd = 0;xrkinbd = 0;
+xlimuie = 0;xrimuie = 10;xlkinie = 0;xrkinie = 0;
+xlimuelb = 0;xrimuelb = 0;xlkinelb = 0;xrkinelb = 0;
+xlimuelb1 = 0;xrimuelb1 = 0;xlkinelb1 = 0;xrkinelb1 = 0;
+
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
 %COM Port details
 delete(instrfind({'Port'},{'COM15'}))
@@ -115,18 +121,18 @@ while (lc)
        qD = fix_imu('d',qD,Offsets);
        qB = fix_imu('b',qB,Offsets); 
        lshoangle = getleftarm(qE,qC);
-       limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
+       limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
        rshoangle = getrightarm(qE,qD);
-       rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1); 
-       lwriangle = getleftwrist(qC,qA);limuelbangle = lwriangle(1);limuelb1angle = lwriangle(2);
+       rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1); 
+       lwriangle = getleftwrist(qC,qA);limuelb = lwriangle(1);limuelb1 = lwriangle(2);
        lshoangle = getleftarm(qE,qC);lwriangle = getleftwrist(qC,qA);
-       limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
-       limuelbangle = lwriangle(1);limuelb1angle = lwriangle(2);
+       limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
+       limuelb = lwriangle(1);limuelb1 = lwriangle(2);
        rshoangle = getrightarm(qE,qD);rwriangle = getrightwrist(qD,qB);
-       rimuieangle = rshoangle(3);rimubdangle = rshoangle(2);rimuefangle = rshoangle(1);
-       rimuelbangle = rwriangle(1);rimuelb1angle = rwriangle(2);
+       rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1);
+       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);
        rwriangle = getleftwrist(qD,qB);
-       rimuelbangle = rwriangle(1);rimuelb1angle = rwriangle(2);     
+       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);     
    end
    validData = k2.updateData;
    if validData
@@ -140,63 +146,63 @@ while (lc)
        numBodies = size(bodies,2);
        if numBodies == 1
            pos2Dxxx = bodies(1).Position; 
-           [lkinefangle,rkinefangle,lkinbdangle,rkinbdangle,lkinieangle,rkinieangle,lkinelbangle,rkinelbangle] = get_Kinect(pos2Dxxx);
+           [lkinef,rkinef,lkinbdangle,rkinbd,lkinie,rkinie,lkinelb,rkinelb] = get_Kinect(pos2Dxxx);
            k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
            switch arg
                 case 'lef'
-                    kin = lkinefangle; imu = limuefangle;
+                    kin = lkinef; imu = limuef;
                     lim = kin;
                     tlow = 10; thigh=150;
                 case 'lbd'
-                    kin = lkinbdangle; imu = limubdangle;
+                    kin = lkinbdangle; imu = limubd;
                     lim = kin;
                     tlow = 20; thigh=150;
                 case 'lelb'
-                    kin = lkinelbangle; imu = limuelbangle;
+                    kin = lkinelb; imu = limuelb;
                     lim = kin;
                     tlow = 20; thigh=130;
                 case 'lelb1'
-                    kin = lkinelbangle; imu = limuelbangle;
+                    kin = lkinelb; imu = limuelb;
                     lim = kin;
                     tlow = 20; thigh=130;
                 case 'lps'
-                    kin = lkinelb1angle; imu = limuelb1angle;
+                    kin = lkinelb1; imu = limuelb1;
                     lim = imu;
                     tlow = -45; thigh=45;
                 case 'lie'
-                    kin = lkinieangle; imu = limuieangle;
+                    kin = lkinie; imu = limuie;
                     lim = imu;
                     tlow = -40; thigh=40;
                 case 'lie1' 
-                    kin = lkinieangle; imu = limuieangle;
+                    kin = lkinie; imu = limuie;
                     lim = imu;
                     tlow = -40; thigh=40;
                 case 'ref'
-                    kin = rkinefangle; imu = rimuefangle;
+                    kin = rkinef; imu = rimuef;
                     lim = kin;
                     tlow = 10; thigh=150;
                 case 'rbd'
-                    kin = rkinbdangle; imu = rimubdangle;
+                    kin = rkinbd; imu = rimubd;
                     lim = kin;
                     tlow = 20; thigh=150;
                 case 'relb'
-                    kin = rkinelbangle; imu = rimuelbangle;
+                    kin = rkinelb; imu = rimuelb;
                     lim = kin;
                     tlow = 20; thigh=130;
                 case 'relb1'
-                    kin = rkinelbangle; imu = rimuelbangle;
+                    kin = rkinelb; imu = rimuelb;
                     lim = kin;
                     tlow = 20; thigh=130;
                 case 'rps'
-                    kin = rkinelb1angle; imu = rimuelb1angle;
+                    kin = rkinelb1; imu = rimuelb1;
                     lim = imu;
                     tlow = -45; thigh=45;
                 case 'rie'
-                    kin = rkinelb1angle; imu = rimuelb1angle;
+                    kin = rkinelb1; imu = rimuelb1;
                     lim = imu;
                     tlow = -40; thigh=40;
                 case  'rie1'
-                    kin = rkinieangle; imu = rimuieangle;
+                    kin = rkinie; imu = rimuie;
                     lim = imu;
                     tlow = -40; thigh=40;
            end
@@ -206,8 +212,8 @@ while (lc)
            % 'IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.',
            %'Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.','IMU_RightElbow_Pro.-Sup.');
            fprintf( fid, '%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n',telapsed,...
-           lkinefangle,limuefangle,lkinbdangle,limubdangle,lkinieangle,limuieangle,lkinelbangle,limuelbangle,limuelb1angle,rkinefangle,rimuefangle,...
-           rkinbdangle,rimubdangle,rkinieangle,rimuieangle,rkinelbangle,rimuelbangle,rimuelb1angle);
+           lkinef,limuef,lkinbdangle,limubd,lkinie,limuie,lkinelb,limuelb,limuelb1,rkinef,rimuef,...
+           rkinbd,rimubd,rkinie,rimuie,rkinelb,rimuelb,rimuelb1);
        
            if lim<=tlow
               lflag = 1;

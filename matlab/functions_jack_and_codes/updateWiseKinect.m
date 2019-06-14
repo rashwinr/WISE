@@ -65,6 +65,7 @@ switch char
         kiniestr = num2str(kin,'%.2f');    
         if kin==666
             kiniestr = strcat('NA');
+            kin = 0;
         end
         text(ls+lw/5,7*s,stext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
         text(ls+lw/5,8*s,iestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
@@ -104,6 +105,7 @@ switch char
         kiniestr = num2str(kin,'%.2f');    
         if kin==666
             kiniestr = strcat('NA');
+            kin = 0;
         end
         text(rs+rw/5,7*s,stext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
         text(rs+rw/5,8*s,iestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
@@ -112,7 +114,8 @@ switch char
         
 end
 
-addpoints(anline,time,kin);addpoints(anline1,time,imu);
+addpoints(anline,time,kin); 
+addpoints(anline1,time,imu);
 drawnow;
 
 end

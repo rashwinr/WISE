@@ -6,41 +6,39 @@ using UnityEngine.UI;
 
 public class Playback : MonoBehaviour
 {
-    public List<List<Quaternion>> DataCache;
-    public List<List<float>> TimeStampCache;
-    public int DataCacheToken = 0;
+    
     public string[] patientDetails;
-    public List<Quaternion> A_Quat;
-    public List<Quaternion> B_Quat;
-    public List<Quaternion> C_Quat;
-    public List<Quaternion> D_Quat;
-    public List<Quaternion> E_Quat;
+    public List<Vector3> A_Angles;
+    public List<Vector3> B_Angles;
+    public List<Vector3> C_Angles;
+    public List<Vector3> D_Angles;
+    public List<Vector3> E_Angles;
     public List<float> TimeStamp;
     public int LineCount;
-    //public string saveddatapath;
-    //public string Filename = "Test2_26_03_2019_12_49_06";
+    public string saveddatapath;
+    public string Filename = "Test2_26_03_2019_12_49_06";
     // Start is called before the first frame update
     void Start()
     {
         patientDetails = new string[4];
-        DataCache = new List<List<Quaternion>>();
-        TimeStampCache = new List<List<float>>();
-        A_Quat = new List<Quaternion>();
-        B_Quat = new List<Quaternion>();
-        C_Quat = new List<Quaternion>();
-        D_Quat = new List<Quaternion>();
-        E_Quat = new List<Quaternion>();
+        A_Angles = new List<Vector3>();
+        B_Angles = new List<Vector3>();
+        C_Angles = new List<Vector3>();
+        D_Angles = new List<Vector3>();
+        E_Angles = new List<Vector3>();
         TimeStamp = new List<float>();
         //LoadFile();
         //saveddatapath = Application.persistentDataPath + "/savedData/Test2/Shoulder Abduction";
     }
 
     // Update is called once per frame
-    public int LoadFile(string FilePath)
+    public void LoadFile()
     {
-        if (File.Exists(FilePath))
+        Directory.CreateDirectory(saveddatapath);
+        string[] filePaths = Directory.GetFiles(saveddatapath, "*.txt");
+        if (File.Exists(saveddatapath + "/" + "/" + Filename + ".txt"))
         {
-            string[] fileContent = File.ReadAllLines(FilePath);
+            string[] fileContent = File.ReadAllLines(saveddatapath + "/" + "/" + Filename + ".txt");
             int i = 0;
             foreach (string line in fileContent)
             {
@@ -55,8 +53,8 @@ public class Playback : MonoBehaviour
                 else
                 {
                     string[] buffer = line.Split(',');
-                    //Debug.Log(buffer.Length);
-                    if (buffer.Length == 26)
+                    Debug.Log(buffer.Length);
+                    if (buffer.Length == 21)
                     {
                         bool ReadStatus = true;
                         for (int j = 0; j < buffer.Length; j++)
@@ -68,42 +66,37 @@ public class Playback : MonoBehaviour
                         }
                         if (ReadStatus)
                         {
-                            TimeStamp.Add(float.Parse(buffer[25]));
-                            //Debug.Log("Timed");
+                            TimeStamp.Add(float.Parse(buffer[20]));
+                            Debug.Log("Timed");
                             try
                             {
                                 for (int j = 0; j < 5; j++)//5 is no_devices
                                 {
-                                    Quaternion Quat = Quaternion.identity;
-                                    switch (buffer[j * 5])//5 is dataset
+                                    Vector3 Angles;
+                                    switch (buffer[j * 4])//4 is dataset
                                     {
                                         case "a":
-                                            Quat = new Quaternion(float.Parse(buffer[2]), float.Parse(buffer[3]), float.Parse(buffer[4]), float.Parse(buffer[1]));
-                                            A_Quat.Add(Quat);
+                                            Angles = new Vector3(float.Parse(buffer[1]), float.Parse(buffer[2]), float.Parse(buffer[3]));
+                                            A_Angles.Add(Angles);
                                             break;
                                         case "b":
-                                            Quat = new Quaternion(float.Parse(buffer[7]), float.Parse(buffer[8]), float.Parse(buffer[9]), float.Parse(buffer[6]));
-                                            B_Quat.Add(Quat);
+                                            Angles = new Vector3(float.Parse(buffer[5]), float.Parse(buffer[6]), float.Parse(buffer[7]));
+                                            B_Angles.Add(Angles);
                                             break;
                                         case "c":
-                                            Quat = new Quaternion(float.Parse(buffer[12]), float.Parse(buffer[13]), float.Parse(buffer[14]), float.Parse(buffer[11]));
-                                            C_Quat.Add(Quat);
+                                            Angles = new Vector3(float.Parse(buffer[9]), float.Parse(buffer[10]), float.Parse(buffer[11]));
+                                            C_Angles.Add(Angles);
                                             break;
                                         case "d":
-                                            Quat = new Quaternion(float.Parse(buffer[17]), float.Parse(buffer[18]), float.Parse(buffer[19]), float.Parse(buffer[16]));
-                                            D_Quat.Add(Quat);
+                                            Angles = new Vector3(float.Parse(buffer[13]), float.Parse(buffer[14]), float.Parse(buffer[15]));
+                                            D_Angles.Add(Angles);
                                             break;
                                         case "e":
-                                            Quat = new Quaternion(float.Parse(buffer[22]), float.Parse(buffer[23]), float.Parse(buffer[24]), float.Parse(buffer[21]));
-                                            E_Quat.Add(Quat);
+                                            Angles = new Vector3(float.Parse(buffer[17]), float.Parse(buffer[18]), float.Parse(buffer[19]));
+                                            E_Angles.Add(Angles);
                                             break;
                                         default:
                                             break;
-                                    }
-
-                                    if(Quat.w == 0 && Quat.x == 0 && Quat.y == 0 && Quat.z == 0)
-                                    {
-                                        Quat = Quaternion.identity;
                                     }
                                 }
                             }
@@ -123,17 +116,5 @@ public class Playback : MonoBehaviour
         {
             Debug.Log("Path Does not exist");
         }
-
-        int token = DataCacheToken;
-        DataCache.Add(A_Quat);
-        DataCache.Add(B_Quat);
-        DataCache.Add(C_Quat);
-        DataCache.Add(D_Quat);
-        DataCache.Add(E_Quat);
-        TimeStampCache.Add(TimeStamp);
-        //Debug.Log(TimeStamp.Count);
-        DataCacheToken += 5;
-        return token;
     }
-    
 }

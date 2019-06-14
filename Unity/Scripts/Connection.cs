@@ -46,9 +46,6 @@ public class Connection : MonoBehaviour
     public Quaternion RightArm = Quaternion.identity;
     public Quaternion Back = Quaternion.identity;
 
-    public float[] LeftAngles = new float[5];
-    public float[] RightAngles = new float[5];
-
     public int no_devices = 5;
     bool[] _device;
     private bool SaveStatics;
@@ -117,7 +114,7 @@ public class Connection : MonoBehaviour
     public void Initialize()
     {
         Scan();
-
+        
         if (portExists.Count != 0)
         {
             sp = new SerialPort(portExists[ComPorts.value], 115200);
@@ -174,13 +171,10 @@ public class Connection : MonoBehaviour
             Quaternion Right_Arm = new Quaternion(x[3], y[3], z[3], w[3]);              //   D IMU
             Quaternion _Back_ = new Quaternion(x[4], y[4], z[4], w[4]);              //   E IMU
 
-            RightAngles = getrightarm(_Back_, Left_Arm, Left_Forearm);
-            LeftAngles = getleftarm(_Back_, Right_Arm, right_Forearm);
-
-            // Quaternion Left_Forearm = new Quaternion(z[0], -x[0], y[0], w[0]);           //   A IMU
+           // Quaternion Left_Forearm = new Quaternion(z[0], -x[0], y[0], w[0]);           //   A IMU
             //Quaternion right_Forearm = new Quaternion(z[1], -x[1], y[1], w[1]);          //   B IMU
             //Quaternion Left_Arm = new Quaternion(z[2], -x[2], y[2], w[2]);               //   C IMU
-            // Quaternion Right_Arm = new Quaternion(z[3], -x[3], y[3], w[3]);              //   D IMU
+           // Quaternion Right_Arm = new Quaternion(z[3], -x[3], y[3], w[3]);              //   D IMU
             //Quaternion _Back_ = new Quaternion(y[4], -x[4], -z[4], w[4]);              //   E IMU
 
             _Back_ = Rotatequat(_Back_);
@@ -213,10 +207,9 @@ public class Connection : MonoBehaviour
 
             Back = _Back_;
 
-            
             if (onlyX)
             {
-                angle_x = new float[] { quat2eul(LeftForearm, 0).x, quat2eul(rightForearm, 1).x, quat2eul(LeftArm, 2).x, quat2eul(RightArm, 3).x, quat2eul(Back, 4).x };
+                angle_x = new float[] { quat2eul(LeftForearm,0).x, quat2eul(rightForearm,1).x, quat2eul(LeftArm,2).x, quat2eul(RightArm,3).x, quat2eul(Back,4).x };
                 for (int i = 0; i < angle_x.Length; i++)
                 {
                     if (angle_x[i] > 180.0f)
@@ -231,7 +224,7 @@ public class Connection : MonoBehaviour
             }
             if (onlyY)
             {
-                angle_y = new float[] { quat2eul(LeftForearm, 0).y, quat2eul(rightForearm, 1).y, quat2eul(LeftArm, 2).y, quat2eul(RightArm, 3).y, quat2eul(Back, 4).y };
+                angle_y = new float[] { quat2eul(LeftForearm,0).y, quat2eul(rightForearm,1).y, quat2eul(LeftArm,2).y, quat2eul(RightArm,3).y, quat2eul(Back,4).y };
                 for (int i = 0; i < angle_y.Length; i++)
                 {
                     if (angle_y[i] > 180.0f)
@@ -246,12 +239,12 @@ public class Connection : MonoBehaviour
             }
             if (onlyZ)
             {
-                angle_z = new float[] { quat2eul(LeftForearm, 0).z, quat2eul(rightForearm, 1).z, quat2eul(LeftArm, 2).z, quat2eul(RightArm, 3).z, quat2eul(Back, 4).z };
+                angle_z = new float[] { quat2eul(LeftForearm,0).z, quat2eul(rightForearm,1).z, quat2eul(LeftArm,2).z, quat2eul(RightArm,3).z, quat2eul(Back,4).z };
                 for (int i = 0; i < angle_z.Length; i++)
                 {
                     if (angle_z[i] > 180.0f)
                     {
-                        angle_z[i] = angle_z[i] - 360.0f;
+                        angle_z[i] =  angle_z[i] - 360.0f;
                     }
                 }
                 A[2].text = angle_z[0].ToString("F2");
@@ -262,8 +255,8 @@ public class Connection : MonoBehaviour
             //angle_x = new float[] { LeftForearm.eulerAngles.x, rightForearm.eulerAngles.x, LeftArm.eulerAngles.x, RightArm.eulerAngles.x };
             //angle_y = new float[] { LeftForearm.eulerAngles.y, rightForearm.eulerAngles.y, LeftArm.eulerAngles.y, RightArm.eulerAngles.y };
             //angle_z = new float[] { LeftForearm.eulerAngles.z, rightForearm.eulerAngles.z, LeftArm.eulerAngles.z, RightArm.eulerAngles.z };
-            //DeviceLocalAngles = "a" + "," + angle_x[0].ToString("F2") + "," + angle_y[0].ToString("F2") + "," + angle_z[0].ToString("F2") + "," + "b" + "," + angle_x[1].ToString("F2") + "," + angle_y[1].ToString("F2") + "," + angle_z[1].ToString("F2") + "," + "c" + "," + angle_x[2].ToString("F2") + "," + angle_y[2].ToString("F2") + "," + angle_z[2].ToString("F2") + "," + "d" + "," + angle_x[3].ToString("F2") + "," + angle_y[3].ToString("F2") + "," + angle_z[3].ToString("F2") + "," + "e" + "," + angle_x[4].ToString("F2") + "," + angle_y[4].ToString("F2") + "," + angle_z[4].ToString("F2");
-            DeviceLocalAngles = "a" + "," + LeftForearm.w.ToString("F2") + "," + LeftForearm.x.ToString("F2") + "," + LeftForearm.y.ToString("F2") + "," + LeftForearm.z.ToString("F2") + "," + "b" + "," + rightForearm.w.ToString("F2") + "," + rightForearm.x.ToString("F2") + "," + rightForearm.y.ToString("F2") + "," + rightForearm.z.ToString("F2") + "," + "c" + "," + LeftArm.w.ToString("F2") + "," + LeftArm.x.ToString("F2") + "," + LeftArm.y.ToString("F2") + "," + LeftArm.z.ToString("F2") + "," + "d" + "," + RightArm.w.ToString("F2") + "," + RightArm.x.ToString("F2") + "," + RightArm.y.ToString("F2") + "," + RightArm.z.ToString("F2") + "," + "e" + "," + Back.w.ToString("F2") + "," + Back.x.ToString("F2") + "," + Back.y.ToString("F2") + "," + Back.z.ToString("F2");
+            DeviceLocalAngles = "a" + "," + angle_x[0].ToString("F2") + "," + angle_y[0].ToString("F2") + "," + angle_z[0].ToString("F2") + "," + "b" + "," + angle_x[1].ToString("F2") + "," + angle_y[1].ToString("F2") + "," + angle_z[1].ToString("F2") + "," + "c" + "," + angle_x[2].ToString("F2") + "," + angle_y[2].ToString("F2") + "," + angle_z[2].ToString("F2") + "," + "d" + "," + angle_x[3].ToString("F2") + "," + angle_y[3].ToString("F2") + "," + angle_z[3].ToString("F2") + "," + "e" + "," + angle_x[4].ToString("F2") + "," + angle_y[4].ToString("F2") + "," + angle_z[4].ToString("F2");
+            //DeviceLocalAngles = "a" + "," + LeftForearm.w.ToString("F2") + "," + LeftForearm.x.ToString("F2") + "," + LeftForearm.y.ToString("F2") + "," + LeftForearm.z.ToString("F2") + "," + "b" + "," + rightForearm.w.ToString("F2") + "," + rightForearm.x.ToString("F2") + "," + rightForearm.y.ToString("F2") + "," + rightForearm.z.ToString("F2") + "," + "c" + "," + LeftArm.w.ToString("F2") + "," + LeftArm.x.ToString("F2") + "," + LeftArm.y.ToString("F2") + "," + LeftArm.z.ToString("F2") + "," + "d" + "," + RightArm.w.ToString("F2") + "," + RightArm.x.ToString("F2") + "," + RightArm.y.ToString("F2") + "," + RightArm.z.ToString("F2") + "," + "e" + "," + Back.w.ToString("F2") + "," + Back.x.ToString("F2") + "," + Back.y.ToString("F2") + "," + Back.z.ToString("F2");
         }
     }
 
@@ -273,14 +266,14 @@ public class Connection : MonoBehaviour
         float cosr_cosp = 1.0f - (2.0f * (Q.x * Q.x + Q.y * Q.y));
         Vector3 euler = new Vector3();
         euler.x = Mathf.Rad2Deg * Mathf.Atan2(sinr_cosp, cosr_cosp);
-
+        
         float sinp = 2.0f * (Q.w * Q.y - Q.z * Q.x);
-        euler.y = -Mathf.Rad2Deg * Mathf.Asin(sinp);
-
+        euler.y = - Mathf.Rad2Deg * Mathf.Asin(sinp);
+        
         float siny_cosp = 2.0f * (Q.w * Q.z + Q.y * Q.x);
-        float cosy_cosp = 1.0f - (2.0f * (Q.y * Q.y + Q.z * Q.z));
+        float cosy_cosp = 1.0f -(2.0f * (Q.y * Q.y + Q.z * Q.z));
         euler.z = Mathf.Rad2Deg * Mathf.Atan2(siny_cosp, cosy_cosp);
-        if (float.IsNaN(euler.x) || float.IsNaN(euler.y) || float.IsNaN(euler.z))
+        if (float.IsNaN(euler.x)|| float.IsNaN(euler.y)||float.IsNaN(euler.z))
         {
             euler.x = angle_x[Device];
             euler.y = angle_y[Device];
@@ -316,121 +309,6 @@ public class Connection : MonoBehaviour
         }
         return euler;
     }*/
-
-    float[] getleftarm(Quaternion back, Quaternion arm, Quaternion wrist)
-    {
-        float[] lefthand = new float[5];
-        Quaternion Qi = new Quaternion(1, 0, 0, 0);
-        Quaternion Qj = new Quaternion(0, 1, 0, 0);
-        Quaternion Qk = new Quaternion(0, 0, 1, 0);
-
-        Quaternion Vxb = back * (Qi * Quaternion.Inverse(back));
-        Vector3 IE = new Vector3(Vxb.x, Vxb.y, Vxb.z);//Vxb
-        Quaternion Vzb_ = back * (Quaternion.Inverse(Qk) * Quaternion.Inverse(back));
-        Vector3 KE = new Vector3(Vzb_.x, Vzb_.y, Vzb_.z);//Vzb_
-        Quaternion Vxb_ = Quaternion.Inverse(Vxb);
-        Vector3 V_xb_ = new Vector3(Vxb_.x, Vxb_.y, Vxb_.z);//Vxb_
-        Quaternion Vyb_ = back * (Quaternion.Inverse(Qj) * Quaternion.Inverse(back));
-        Vector3 JE = new Vector3(Vyb_.x, Vyb_.y, Vyb_.z);//Vyb_
-        Quaternion Vza = arm * (Qk * Quaternion.Inverse(arm));
-        Vector3 V_za = new Vector3(Vza.x, Vza.y, Vza.z);//Vza
-        Quaternion Vxa_ = arm * (Quaternion.Inverse(Qi) * Quaternion.Inverse(arm));
-        Vector3 IC = new Vector3(Vxa_.x, Vxa_.y, Vxa_.z);//Vxa_
-        Quaternion Vzw = wrist * (Qk * Quaternion.Inverse(wrist));
-        Vector3 V_zw = new Vector3(Vzw.x, Vzw.y, Vzw.z);//Vzw
-        Quaternion Vxw_ = wrist * (Quaternion.Inverse(Qi) * Quaternion.Inverse(wrist));
-        Vector3 V_xw_ = new Vector3(Vxw_.x, Vxw_.y, Vxw_.z);//Vxw_
-
-        float[] V = { Vector3.Dot(IC, IE), Vector3.Dot(IC, JE), Vector3.Dot(IC, KE) };
-
-
-        // shoulder extension flexion
-        lefthand[0] = Mathf.Atan2(V[2], V[0]) * Mathf.Rad2Deg;
-
-        // shoulder abduction adduction
-        lefthand[1] = Mathf.Atan2(V[1], V[0]) * Mathf.Rad2Deg;
-
-        // shoulder internal external rotation 
-        Vector3 A1 = V_za;
-        Vector3 A2 = V_xb_ - (Vector3.Dot(V_xb_, IC) * IC);
-
-        if (Vector3.Dot(IC, IE) > 0.9)
-        {
-            A2 = JE - (Vector3.Dot(JE, IC) * IC);
-        }
-
-        lefthand[2] = Mathf.Acos(Vector3.Dot(A1, A2) / A2.magnitude) * Mathf.Rad2Deg;
-
-        // elbow extension flexion
-        Vector3 XW = V_xw_- Vector3.Dot(V_xw_, V_za) * V_za;
-        lefthand[3] = Mathf.Acos(Vector3.Dot(IC, XW) / XW.magnitude) * Mathf.Rad2Deg;
-
-        // elbow pronation supination
-        Vector3 ZWa = V_za - Vector3.Dot(V_za, V_xw_) * V_xw_;
-        Vector3 Ref = Vector3.Cross(V_xw_, V_za);
-        lefthand[4] = Mathf.Atan2(Vector3.Dot(V_zw,Ref), Vector3.Dot(V_zw, ZWa)) * Mathf.Rad2Deg; 
-
-        return lefthand;
-    }
-
-    float[] getrightarm(Quaternion back, Quaternion arm, Quaternion wrist)
-    {
-        float[] rightarm = new float[5];
-        Quaternion Qi = new Quaternion(1, 0, 0, 0);
-        Quaternion Qj = new Quaternion(0, 1, 0, 0);
-        Quaternion Qk = new Quaternion(0, 0, 1, 0);
-
-        Quaternion Vzb_ = back * (Quaternion.Inverse(Qk) * Quaternion.Inverse(back));
-        Vector3 KE = new Vector3(Vzb_.x, Vzb_.y, Vzb_.z);//Vzb_
-        Quaternion Vxb = back * (Qi * Quaternion.Inverse(back));
-        Vector3 IE = new Vector3(Vxb.x, Vxb.y, Vxb.z);//Vxb        
-        Quaternion Vxb_ = Quaternion.Inverse(Vxb);
-        Vector3 V_xb_ = new Vector3(Vxb_.x, Vxb_.y, Vxb_.z);//Vxb_
-        Quaternion Vyb = back * (Qj * Quaternion.Inverse(back));
-        Vector3 JE = new Vector3(Vyb.x, Vyb.y, Vyb.z);//Vyb_
-        Quaternion Vza = arm * (Qk * Quaternion.Inverse(arm));
-        Vector3 V_za = new Vector3(Vza.x, Vza.y, Vza.z);//Vza
-        Quaternion Vxa = arm * (Qi * Quaternion.Inverse(arm));
-        Vector3 IC = new Vector3(Vxa.x, Vxa.y, Vxa.z);//Vxa_
-        Quaternion Vxa_ = Quaternion.Inverse(Vxa);
-        Vector3 V_xa_ = new Vector3(Vxa_.x, Vxa_.y, Vxa_.z);//Vxb_
-        Quaternion Vzw = wrist * (Qk * Quaternion.Inverse(wrist));
-        Vector3 V_zw = new Vector3(Vzw.x, Vzw.y, Vzw.z);//Vzw
-        Quaternion Vxw = wrist * (Quaternion.Inverse(Qi) * Quaternion.Inverse(wrist));
-        Vector3 V_xw = new Vector3(Vxw.x, Vxw.y, Vxw.z);//Vxw_
-
-        float[] V = { Vector3.Dot(IC, IE), Vector3.Dot(IC, JE), Vector3.Dot(IC, KE) };
-
-
-        // shoulder extension flexion
-        rightarm[0] = Mathf.Atan2(V[2], V[0]) * Mathf.Rad2Deg;
-
-        // shoulder abduction adduction
-        rightarm[1] = Mathf.Atan2(V[1], V[0]) * Mathf.Rad2Deg;
-
-        // shoulder internal external rotation 
-        Vector3 A1 = V_za;
-        Vector3 A2 = V_xb_ - (Vector3.Dot(V_xb_, IC) * IC);
-
-        if (Vector3.Dot(IC, IE) > 0.9)
-        {
-            A2 = JE - (Vector3.Dot(JE, IC) * IC);
-        }
-
-        rightarm[2] = Mathf.Acos(Vector3.Dot(A1, A2) / A2.magnitude) * Mathf.Rad2Deg;
-
-        // elbow extension flexion
-        Vector3 XW = V_xw - Vector3.Dot(V_xw, V_za) * V_za;
-        rightarm[3] = Mathf.Acos(Vector3.Dot(IC, XW) / XW.magnitude) * Mathf.Rad2Deg;
-
-        // elbow pronation supination
-        Vector3 ZWa = V_za - Vector3.Dot(V_za, V_xw) * V_xw;
-        Vector3 Ref = Vector3.Cross(V_xw, V_za);
-        rightarm[4] = Mathf.Atan2(Vector3.Dot(V_zw, Ref), Vector3.Dot(V_zw, ZWa)) * Mathf.Rad2Deg;
-
-        return rightarm;
-    }
-
     Quaternion Rotatequat(Quaternion Q)
     {
         Quaternion Qk = new Quaternion(0, 0, 1, 0);

@@ -12,9 +12,6 @@ public class DeviceManager : MonoBehaviour
     public Dropdown Difficulty;
     public Dropdown Dexterity;
     public Dropdown Activties;
-    public Dropdown PatientMenu_Activities;
-    public GameObject cam;
-    public Dropdown CameraView;
     public Slider[] Sys;
     public Slider[] Acc;
     public Slider[] Gyro;
@@ -40,11 +37,6 @@ public class DeviceManager : MonoBehaviour
     string LocalAnglesCache;
     public bool ActivityChanged;
     public int SavingIteration;
-    public bool pause;
-    public Transform[] CameraTransforms;
-    public GameObject[] PlayerTexts;
-    public bool CameraChangeDone = false;
-    public GameObject[] PlayerModels;
 
     private void Start()
     {
@@ -53,9 +45,6 @@ public class DeviceManager : MonoBehaviour
         //Time.timeScale = 0.0f;
         savedDataPath = Application.persistentDataPath + "/savedData";
         Conn = GetComponent<Connection>();
-        PatientMenu_Activities.options = Activties.options;
-        cam.transform.position = CameraTransforms[CameraView.value].position;
-        cam.transform.rotation = CameraTransforms[CameraView.value].rotation;
     }
 
     private void Update()
@@ -65,9 +54,8 @@ public class DeviceManager : MonoBehaviour
 
     public void GameStart()
     {
-
-        pause = false;
         string Time_ = System.DateTime.Now.ToString("_dd_MM_yyyy_HH_mm_ss");
+        StartTime = Time.realtimeSinceStartup;
 
         PatientName = Name.text;
         gender = Gender.options[Gender.value].text;
@@ -137,8 +125,6 @@ public class DeviceManager : MonoBehaviour
         //Time.timeScale = 1.0f;
         Conn.Save_Statics();
         SaveEveryIteration(Patient_Data + "\n", true);
-
-        StartTime = Time.realtimeSinceStartup;
         InvokeRepeating("Saving", 0f, 0.01f);
     }
 
@@ -182,7 +168,6 @@ public class DeviceManager : MonoBehaviour
         //SaveInfo_P();
         //StopAllCoroutines();
         CancelInvoke();
-        pause = true;
     }
 
     #region MainMenu UI
@@ -190,48 +175,9 @@ public class DeviceManager : MonoBehaviour
     public Dropdown TabShift;
     public GameObject[] Tabs;
 
-    public void ChangeCameraView()
-    {
-        cam.transform.position = CameraTransforms[CameraView.value].position;
-        cam.transform.rotation = CameraTransforms[CameraView.value].rotation;
-        if(CameraView.value == 0 || CameraView.value == 1)
-        {
-            PlayerTexts[0].transform.rotation = Quaternion.Euler(0f, CameraView.value * 180.0f, 0f);
-            PlayerTexts[1].transform.rotation = Quaternion.Euler(0f, CameraView.value * 180.0f, 0f);
-            //Rotating Models when the camera view changes
-            PlayerModels[0].transform.rotation = Quaternion.Euler(0f, CameraView.value * -20.0f, 0f);
-            PlayerModels[1].transform.rotation = Quaternion.Euler(0f, CameraView.value * 20.0f, 0f);
-            PlayerModels[0].transform.localPosition = new Vector3(0.7f, 0.5f, -1.7f);
-            PlayerModels[1].transform.localPosition = new Vector3(-3.34f, 0.5f, -1.6f);
-        }
-        else if(CameraView.value == 2)
-        {
-            PlayerTexts[0].transform.rotation = Quaternion.Euler(0f, 90.0f, 0f);
-            PlayerTexts[1].transform.rotation = Quaternion.Euler(0f, 90.0f, 0f);
-            PlayerModels[0].transform.localPosition = new Vector3(0.7f, 0.5f, -3.7f);
-            PlayerModels[1].transform.localPosition = new Vector3(-3.34f, 0.5f, -1.6f);
-            PlayerTexts[0].transform.rotation = Quaternion.Euler(0f, -90.0f, 0f);
-            PlayerTexts[1].transform.rotation = Quaternion.Euler(0f, -90.0f, 0f);
-        }
-        else if(CameraView.value == 3)
-        {
-            PlayerTexts[0].transform.rotation = Quaternion.Euler(0f, -90.0f, 0f);
-            PlayerTexts[1].transform.rotation = Quaternion.Euler(0f, -90.0f, 0f);
-            PlayerModels[0].transform.localPosition = new Vector3(0.7f, 0.5f, -1.7f);
-            PlayerModels[1].transform.localPosition = new Vector3(-3.34f, 0.5f, -3.6f);
-            PlayerTexts[0].transform.rotation = Quaternion.Euler(0f, 90.0f, 0f);
-            PlayerTexts[1].transform.rotation = Quaternion.Euler(0f, 90.0f, 0f);
-        }
-        
-    }
     public void OnActivityChange()
     {
         ActivityChanged = true;
-        CameraChangeDone = false;
-        if(pause)
-        {
-            Activties.value = PatientMenu_Activities.value;
-        }
     }
 
     public void NextActivity()

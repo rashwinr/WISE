@@ -1,0 +1,23 @@
+function q = BNOgetQuat(bno)
+LSB_q0_r = hex2dec('20');
+LSB_q1_r = hex2dec('22');
+LSB_q2_r = hex2dec('24');
+LSB_q3_r = hex2dec('26');
+LSBq0 = int16(readRegister(bno,LSB_q0_r,'uint8'));
+MSBq0 = int16(readRegister(bno,LSB_q0_r+1,'uint8'));
+MSBq0 = bitshift(MSBq0,8);
+q0 = double(bitor(MSBq0,LSBq0))*2^(-14);
+LSBq1 = int16(readRegister(bno,LSB_q1_r,'uint8'));
+MSBq1 = int16(readRegister(bno,LSB_q1_r+1,'uint8'));
+MSBq1 = bitshift(MSBq1,8);
+q1 = double(bitor(MSBq1,LSBq1))*2^(-14);
+LSBq2 = int16(readRegister(bno,LSB_q2_r,'uint8'));
+MSBq2 = int16(readRegister(bno,LSB_q2_r+1,'uint8'));
+MSBq2 = bitshift(MSBq2,8);
+q2 = double(bitor(MSBq2,LSBq2))*2^(-14);
+LSBq3 = int16(readRegister(bno,LSB_q3_r,'uint8'));
+MSBq3 = int16(readRegister(bno,LSB_q3_r+1,'uint8'));
+MSBq3 = bitshift(MSBq3,8);
+q3 = double(bitor(MSBq3,LSBq3))*2^(-14);
+q = [q0 q1 q2 q3];
+end

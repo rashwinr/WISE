@@ -46,7 +46,7 @@ switch char
         text(ls+(lw/lkinlocationdiv),7.5*s,num2str(kin,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         text(ls+(limulocationdiv*lw),7.5*s,num2str(imu,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
    
-    case 'lelb'
+    case {'lelb','lelb1'}
         
         text(ls+lw/5,7*s,etext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
         text(ls+lw/5,8*s,efstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
@@ -60,7 +60,7 @@ switch char
         text(ls+(lw/lkinlocationdiv),7.5*s,'NA','Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         text(ls+(limulocationdiv*lw),7.5*s,num2str(imu,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 
-    case 'lie'
+    case {'lie','lie1'}
     
         kiniestr = num2str(kin,'%.2f');    
         if kin==666
@@ -85,7 +85,7 @@ switch char
         text(rs+(rw/rkinlocationdiv),7.5*s,num2str(kin,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         text(rs+(rimulocationdiv*rw),7.5*s,num2str(imu,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         
-    case 'relb'
+    case {'relb','relb1'}
         
         text(rs+rw/5,7*s,etext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
         text(rs+rw/5,8*s,efstr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
@@ -99,7 +99,7 @@ switch char
         text(rs+(rw/rkinlocationdiv),7.5*s,'NA','Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         text(rs+(rimulocationdiv*rw),7.5*s,num2str(imu,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
     
-    case 'rie'
+    case {'rie','rie1'}
         
         kiniestr = num2str(kin,'%.2f');    
         if kin==666

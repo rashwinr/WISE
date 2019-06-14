@@ -1,12 +1,16 @@
 %% Initialization section
 delete(instrfind({'Port'},{'COM15'}))
 clear all; close all;clc;
+markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
+
+SUBJECTID = 1234;
+
 flg = 1;
+
 if flg 
     Offsets = [0.8589,0.0411,-0.0170,-0.5101; 1.0000,0,0,0; -0.8954,0.0070,0.0010,0.4452; -0.9749,0.0070,-0.0250,0.2210; 0.9791,-0.0371,-0.0170,-0.1994];
 end
-SUBJECTID = 1234;font = 12;
-cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
+       
 %Kinect initialization script
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
@@ -29,7 +33,7 @@ ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
 delete(instrfind({'Port'},{'COM15'}))
 ser = serial('COM15','BaudRate',115200,'InputBufferSize',100);
 ser.ReadAsyncMode = 'continuous';
-fopen(ser);
+fopen(ser);k=[];
 
  %% IMU offsetdetermination
 while ~flg
@@ -96,33 +100,12 @@ while ~flg
     end
 end
 
-%%  Flexion-extension left arm 'lef'
-
-file = sprintf('%s_WISE+KINECT_testing_%s_%s.txt',num2str(SUBJECTID),datestr(now,'mm-dd-yyyy HH-MM'),'left_flex-ext');
-fid = fopen(file,'wt');
-fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect_LeftShoulder_Ext.-Flex.',...
-'IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.',...
-'IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Pro.-Sup.',...
-'Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.',...
-'Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.',...
-'IMU_RightElbow_Pro.-Sup.');
-figure(2)
-hold on
-title('Left shoulder flexion-extension','FontWeight','bold','FontSize',font);
-set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
-ylabel('Joint angles (degrees)','FontWeight','bold','FontSize',font);
-legend('Location','NorthWest','FontWeight','bold','FontSize',font);
-axes1 = gca;axes2  = gca;
-anline = animatedline(axes1,'Color','r','DisplayName','KINECT');
-anline1 = animatedline(axes2,'Color','b','DisplayName','IMU');
-hold off
-k=[];telapsed = 0;lflag = 0;l = 0;lc = 1;
-[~,~] = system('F:\unityrecordings\leftflexext.mp4');
-
-   
+%%  Complete routine for updating data with 14 different angles
+for i=1:14
+arg = char(markers(i));    
+[anline,anline1,fid] = TitleUpdate(arg,SUBJECTID);
+lc=1;l=0;lflag = 0;telapsed=0;
 while (lc) 
-
    tstart = tic;
    if ser.BytesAvailable
        [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
@@ -131,7 +114,6 @@ while (lc)
        qC = fix_imu('c',qC,Offsets);
        qD = fix_imu('d',qD,Offsets);
        qB = fix_imu('b',qB,Offsets); 
-
        lshoangle = getleftarm(qE,qC);
        limuieangle = lshoangle(3);limubdangle = lshoangle(2);limuefangle = lshoangle(1); 
        rshoangle = getrightarm(qE,qD);
@@ -145,8 +127,7 @@ while (lc)
        rimuelbangle = rwriangle(1);rimuelb1angle = rwriangle(2);
        rwriangle = getleftwrist(qD,qB);
        rimuelbangle = rwriangle(1);rimuelb1angle = rwriangle(2);     
-    end
-
+   end
    validData = k2.updateData;
    if validData
        depth = k2.getDepth;color = k2.getColor;face = k2.getFaces;
@@ -160,11 +141,66 @@ while (lc)
        if numBodies == 1
            pos2Dxxx = bodies(1).Position; 
            [lkinefangle,rkinefangle,lkinbdangle,rkinbdangle,lkinieangle,rkinieangle,lkinelbangle,rkinelbangle] = get_Kinect(pos2Dxxx);
-
            k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
-
-           updateWiseKinect('lef',lkinefangle,limuefangle,telapsed,anline,anline1)
-
+           switch arg
+                case 'lef'
+                    kin = lkinefangle; imu = limuefangle;
+                    lim = kin;
+                    tlow = 10; thigh=150;
+                case 'lbd'
+                    kin = lkinbdangle; imu = limubdangle;
+                    lim = kin;
+                    tlow = 20; thigh=150;
+                case 'lelb'
+                    kin = lkinelbangle; imu = limuelbangle;
+                    lim = kin;
+                    tlow = 20; thigh=130;
+                case 'lelb1'
+                    kin = lkinelbangle; imu = limuelbangle;
+                    lim = kin;
+                    tlow = 20; thigh=130;
+                case 'lps'
+                    kin = lkinelb1angle; imu = limuelb1angle;
+                    lim = imu;
+                    tlow = -45; thigh=45;
+                case 'lie'
+                    kin = lkinieangle; imu = limuieangle;
+                    lim = imu;
+                    tlow = -40; thigh=40;
+                case 'lie1' 
+                    kin = lkinieangle; imu = limuieangle;
+                    lim = imu;
+                    tlow = -40; thigh=40;
+                case 'ref'
+                    kin = rkinefangle; imu = rimuefangle;
+                    lim = kin;
+                    tlow = 10; thigh=150;
+                case 'rbd'
+                    kin = rkinbdangle; imu = rimubdangle;
+                    lim = kin;
+                    tlow = 20; thigh=150;
+                case 'relb'
+                    kin = rkinelbangle; imu = rimuelbangle;
+                    lim = kin;
+                    tlow = 20; thigh=130;
+                case 'relb1'
+                    kin = rkinelbangle; imu = rimuelbangle;
+                    lim = kin;
+                    tlow = 20; thigh=130;
+                case 'rps'
+                    kin = rkinelb1angle; imu = rimuelb1angle;
+                    lim = imu;
+                    tlow = -45; thigh=45;
+                case 'rie'
+                    kin = rkinelb1angle; imu = rimuelb1angle;
+                    lim = imu;
+                    tlow = -40; thigh=40;
+                case  'rie1'
+                    kin = rkinieangle; imu = rimuieangle;
+                    lim = imu;
+                    tlow = -40; thigh=40;
+           end
+           updateWiseKinect(arg,kin,imu,telapsed,anline,anline1)
            %'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_
            % LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.',
            % 'IMU_LeftElbow_Pro.-Sup.','Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.',
@@ -172,15 +208,16 @@ while (lc)
            fprintf( fid, '%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n',telapsed,...
            lkinefangle,limuefangle,lkinbdangle,limubdangle,lkinieangle,limuieangle,lkinelbangle,limuelbangle,limuelb1angle,rkinefangle,rimuefangle,...
            rkinbdangle,rimubdangle,rkinieangle,rimuieangle,rkinelbangle,rimuelbangle,rimuelb1angle);
-           if lkinefangle<=20
+       
+           if lim<=tlow
               lflag = 1;
            end
-           if (lkinefangle>=150) && lflag
+           if (lim>=thigh) && lflag
                l=l+1;
                lflag =0;
-               if l>=7
+               if l>=8
                    lc = 0;
-                   clearvars l lflag
+                   [~,~] = system('taskkill /F /IM Video.UI.exe');
                    break;
                end
            end
@@ -190,13 +227,11 @@ while (lc)
            figure(1)
            s1 = strcat('No persons in view');   
            text((1920/2) - 250,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
-           clearvars s1
        end      
        if numBodies > 1
            figure(1)
            s1 = strcat('Too many people in view');
            text(1920/2,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
-           clearvars s1
        end      
        if ~isempty(k)
            if strcmp(k,'q') 
@@ -213,10 +248,11 @@ while (lc)
 
 telapsed = telapsed+toc(tstart);
 end
-
+disp(telapsed);
 fclose(fid);
-clearvars fid lc file
-    
+
+clf(figure(2),'reset')
+end
 %% Closing everything 
 fclose(ser)
 delete(ser)

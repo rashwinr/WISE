@@ -17,14 +17,16 @@ public class RecordActivity : MonoBehaviour
     public GameObject cam;
     public Dropdown CameraView;
     public List<GameObject> ClonedObjects = new List<GameObject>();
-
+    private Playback PB;
+    public InputField KeyDiffTime;
     private static string savedActivityPath;
     private static string savedDataPath;
 
     public bool ver_log;
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        PB = GetComponent<Playback>();
         savedActivityPath = Application.persistentDataPath + "/ActivityData";
         savedDataPath = Application.persistentDataPath + "/savedData";
         Conn = GetComponent<Connection>();
@@ -36,6 +38,7 @@ public class RecordActivity : MonoBehaviour
         cam.transform.position = CameraTransforms[0].position;
         cam.transform.rotation = CameraTransforms[0].rotation;
         GetAllRecordedData();
+        Invoke("LoadActivities", 0.5f);
     }
 
     #region Recording Activities
@@ -47,7 +50,7 @@ public class RecordActivity : MonoBehaviour
         {
             ActivityName.text = "Untitled_Activity";
         }
-
+        
         string Path = savedActivityPath + "/" + ActivityName.text;
         Activity.Add(ActivityName.text, ActivityKeys);
         string Data = "";
@@ -67,8 +70,18 @@ public class RecordActivity : MonoBehaviour
     }
 
     public void AddKey()
-    {        
-        ActivityKeys.Add(Conn.DeviceLocalAngles);
+    {
+        float KeyDiff_Time; ;
+        try
+        {
+            KeyDiff_Time = float.Parse(KeyDiffTime.text);
+        }
+        catch (System.FormatException)
+        {
+            KeyDiff_Time = 5.0f;
+        }
+
+        ActivityKeys.Add(Conn.DeviceLocalAngles + "," + KeyDiff_Time.ToString("F2"));
         KeyNo = KeyNo + 1;
         PrintAllActivityElements(ActivityKeys);
     }
@@ -130,7 +143,7 @@ public class RecordActivity : MonoBehaviour
     public string[] ActivityFileNames;//Names of Activities
     public string[] SubjectIDs;//Names of Directories
 
-    void GetActivities()
+    public void GetActivities()
     {
         if (Directory.Exists(savedActivityPath))
         {
@@ -149,8 +162,17 @@ public class RecordActivity : MonoBehaviour
                 {
                     Debug.Log(Path.GetFileName(fileInfo[i]));
                 }
+                
             }
             ActivityFileNames = fileInfo;
+        }
+    }
+
+    void LoadActivities()
+    {
+        foreach (string ActivityName in ActivityFileNames)
+        {
+            PB.LoadActivityFile(ActivityName);
         }
     }
 

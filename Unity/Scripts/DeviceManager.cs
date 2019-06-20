@@ -45,9 +45,20 @@ public class DeviceManager : MonoBehaviour
     public GameObject[] PlayerTexts;
     public bool CameraChangeDone = false;
     public GameObject[] PlayerModels;
-
+    public List<string> ActivitiesNames;
+    public List<string> Rec_Activities;
+    private RecordActivity RA;
+    public Toggle RecordedAct;
     private void Start()
     {
+        RA = GetComponent<RecordActivity>();
+        ActivitiesNames = new List<string>();
+        Rec_Activities = new List<string>();
+        foreach (var Option in Activties.options)
+        {
+            ActivitiesNames.Add(Option.text);
+        }
+        RefreshActivities();
         PatientDictionary = new Dictionary<string, string>();
         PatientData = "";
         //Time.timeScale = 0.0f;
@@ -58,9 +69,32 @@ public class DeviceManager : MonoBehaviour
         cam.transform.rotation = CameraTransforms[CameraView.value].rotation;
     }
 
+    public void RefreshActivities()
+    {
+        RA.GetActivities();
+        Rec_Activities.AddRange(RA.ActivityFileNames);
+        Activties.ClearOptions();
+        Activties.AddOptions(Rec_Activities);
+    }
+
     private void Update()
     {
         UpdateCalibration();
+    }
+
+    public void SetActivities()
+    {
+        if (RecordedAct.isOn)
+        {
+            Activties.ClearOptions();
+            Activties.AddOptions(Rec_Activities);
+        }
+        else
+        {
+            Activties.ClearOptions();
+            Activties.AddOptions(ActivitiesNames);
+        }
+        PatientMenu_Activities.options = Activties.options;
     }
 
     public void GameStart()

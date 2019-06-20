@@ -29,8 +29,20 @@ public class PlayerController : MonoBehaviour {
     Transform[] PlayerShoulder;
     Transform[] PlayerForearm;
     Transform[] PlayerArm;
-    
+
+    GameObject Instructer;
+    Transform[] InstructerShoulder;
+    Transform[] InstructerForearm;
+    Transform[] InstructerArm;
+
+    public GameObject RecordModel;
+    public Transform[] RecordModelShoulder;
+    public Transform[] RecordModelForearm;
+    public Transform[] RecordModelArm;
+
     Transform PlayerBack;
+    Transform InstructerBack;
+    public Transform RecordModelBack;
 
     public Dropdown Gender;
     private Connection Conn;
@@ -52,6 +64,11 @@ public class PlayerController : MonoBehaviour {
     public bool PlayingBack;
     Vector3 BackAngle;
     public int TimeStampCount;
+    public Toggle RecordedActivities;
+    public int Act_iteration = 0;
+    public float Act_Timer;
+    public int Act_Times;
+    public bool Recording;
     // Use this for initialization
     void Start () {
         Forearm_x = new float[2];
@@ -67,6 +84,9 @@ public class PlayerController : MonoBehaviour {
         PlayerShoulder = new Transform[2];
         PlayerForearm = new Transform[2];
         PlayerArm = new Transform[2];
+        InstructerShoulder = new Transform[2];
+        InstructerForearm = new Transform[2];
+        InstructerArm = new Transform[2];
         SetGender();
         GameObject D_M = GameObject.FindGameObjectWithTag("DeviceManager");
         Conn = D_M.GetComponent<Connection>();
@@ -152,11 +172,17 @@ public class PlayerController : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        if(Recording)
+        {
+            MoveForearm(Conn.LeftForearm, Conn.rightForearm, RecordModelForearm);
+            MoveArm(Conn.LeftArm, Conn.RightArm, RecordModelArm);
+            MoveBack(Conn.Back, RecordModelBack);
+        }
         if (Live)
         {
-            MoveForearm(Conn.LeftForearm, Conn.rightForearm);
-            MoveArm(Conn.LeftArm, Conn.RightArm);
-            MoveBack(Conn.Back);
+            MoveForearm(Conn.LeftForearm, Conn.rightForearm, PlayerForearm);
+            MoveArm(Conn.LeftArm, Conn.RightArm, PlayerArm);
+            MoveBack(Conn.Back, PlayerBack);
         }
         else if (PlayingBack && PlayBackToken != -1 && TimeStampCount != -1)
         {
@@ -218,9 +244,9 @@ public class PlayerController : MonoBehaviour {
             Quaternion E_ApproxQuat = PB.DataCache[PlayBackToken + 4][PB_iteration];
 
             Iterations.value = PB_iteration;
-            MoveForearm(A_ApproxQuat, B_ApproxQuat);
-            MoveArm(C_ApproxQuat, D_ApproxQuat);
-            MoveBack(E_ApproxQuat);
+            MoveForearm(A_ApproxQuat, B_ApproxQuat, PlayerForearm);
+            MoveArm(C_ApproxQuat, D_ApproxQuat, PlayerArm);
+            MoveBack(E_ApproxQuat, PlayerBack);
         }
         else
         {
@@ -229,6 +255,51 @@ public class PlayerController : MonoBehaviour {
             percentage = 0;
             TimeStampCount = 0;
         }
+
+        if (Live && RecordedActivities.isOn && PB.ActivityTimeStampCache[(Activities.value)].Count != 0)
+        {
+            int Index = Activities.value * 5;
+            float T = PB.ActivityTimeStampCache[(Activities.value)][Act_iteration + 1];
+            Act_Timer += Time.fixedUnscaledDeltaTime;
+            percentage = Act_Timer / T;
+
+            if (percentage > 1)
+            {
+                Debug.Log(PB.ActivityCache[Index][Act_iteration].x);
+                Act_iteration++;
+                Act_Timer = 0;
+                percentage = 0;
+            }
+            
+            if (Act_iteration == PB.ActivityTimeStampCache[(Activities.value)].Count - 1)
+            {
+                Act_iteration = 0;
+                Act_Timer = 0;
+                percentage = 0;
+            }
+
+            Quaternion A_ApproxQuat = Quaternion.Slerp(PB.ActivityCache[Index][Act_iteration], PB.ActivityCache[Index][Act_iteration + 1], percentage);
+            Quaternion B_ApproxQuat = Quaternion.Slerp(PB.ActivityCache[Index + 1][Act_iteration], PB.ActivityCache[Index + 1][Act_iteration + 1], percentage);
+            Quaternion C_ApproxQuat = Quaternion.Slerp(PB.ActivityCache[Index + 2][Act_iteration], PB.ActivityCache[Index + 2][Act_iteration + 1], percentage);
+            Quaternion D_ApproxQuat = Quaternion.Slerp(PB.ActivityCache[Index + 3][Act_iteration], PB.ActivityCache[Index + 3][Act_iteration + 1], percentage);
+            Quaternion E_ApproxQuat = Quaternion.Slerp(PB.ActivityCache[Index + 4][Act_iteration], PB.ActivityCache[Index + 4][Act_iteration + 1], percentage);
+
+            MoveForearm(A_ApproxQuat, B_ApproxQuat, InstructerForearm);
+            MoveArm(C_ApproxQuat, D_ApproxQuat, InstructerArm);
+            MoveBack(E_ApproxQuat, InstructerBack);
+        }
+        else
+        {
+            Act_iteration = 0;
+            Act_Timer = 0;
+            percentage = 0;
+        }
+
+    }
+
+    public void RecordingStatus(bool Status)
+    {
+        Recording = Status;
     }
 
     #region Character Setup
@@ -245,9 +316,18 @@ public class PlayerController : MonoBehaviour {
             PlayerArm[0] = Players[3].transform;
             PlayerArm[1] = Players[4].transform;
             PlayerBack = Players[14].transform;
-            anim_M.enabled = false;
-            anim_F.enabled = false;
+            //anim_M.enabled = false;
+            //anim_F.enabled = false;
             Curr_Anim = anim_M;
+            Instructer = Players[7];
+            InstructerShoulder[0] = Players[8].transform;
+            InstructerShoulder[1] = Players[9].transform;
+            InstructerForearm[0] = Players[12].transform;
+            InstructerForearm[1] = Players[13].transform;
+            InstructerArm[0] = Players[10].transform;
+            InstructerArm[1] = Players[11].transform;
+            InstructerBack = Players[15].transform;
+
             //anim_F.SetBool("Hand Lift", true);
             Text_F.text = "Patient";
             Text_M.text = "Instructor";
@@ -262,9 +342,17 @@ public class PlayerController : MonoBehaviour {
             PlayerArm[0] = Players[10].transform;
             PlayerArm[1] = Players[11].transform;
             PlayerBack = Players[15].transform;
-            anim_M.enabled = false;
-            anim_F.enabled = true;
+            //anim_M.enabled = false;
+            //anim_F.enabled = true;
             Curr_Anim = anim_F;
+            Instructer = Players[7];
+            InstructerShoulder[0] = Players[1].transform;
+            InstructerShoulder[1] = Players[2].transform;
+            InstructerForearm[0] = Players[5].transform;
+            InstructerForearm[1] = Players[6].transform;
+            InstructerArm[0] = Players[3].transform;
+            InstructerArm[1] = Players[4].transform;
+            InstructerBack = Players[14].transform;
             //anim_M.SetBool("Hand Lift", true);
             Text_F.text = "Instructor";
             Text_M.text = "Patient";
@@ -335,10 +423,10 @@ public class PlayerController : MonoBehaviour {
         PlayerShoulder[1].localRotation = Quaternion.Euler(x[1], 0f, z_[1]);
     }
     */    
-    void MoveBack(Quaternion Back)
+    void MoveBack(Quaternion Back, Transform BackTransform)
     {
         BackAngle = quat2eul(Back);
-        PlayerBack.localRotation = Quaternion.Euler(-BackAngle.x, 0f, BackAngle.y);
+        BackTransform.localRotation = Quaternion.Euler(-BackAngle.x, 0f, BackAngle.y);
     }
 
     Vector3 quat2eul(Quaternion Q)
@@ -395,10 +483,10 @@ public class PlayerController : MonoBehaviour {
     //{
     //    y[1] = 100.0f;
     //}
-    void MoveForearm(Quaternion LeftForearm, Quaternion RightForearm)
+    void MoveForearm(Quaternion LeftForearm, Quaternion RightForearm, Transform[] Forearm)
     {
-        PlayerForearm[0].localRotation = LeftForearm;//Quaternion.Euler(-x[0], -z[0], y[0]);//Good
-        PlayerForearm[1].localRotation = RightForearm;//Quaternion.Euler(-x[1], -z[1], y[1]);
+        Forearm[0].localRotation = LeftForearm;//Quaternion.Euler(-x[0], -z[0], y[0]);//Good
+        Forearm[1].localRotation = RightForearm;//Quaternion.Euler(-x[1], -z[1], y[1]);
     }
 
     /* Previous Code for Euler Angles
@@ -453,10 +541,10 @@ public class PlayerController : MonoBehaviour {
     //    z[1] = 45.0f;
     //}
     */
-    void MoveArm(Quaternion LeftArm, Quaternion RightArm)
+    void MoveArm(Quaternion LeftArm, Quaternion RightArm, Transform[] Arm)
     {
-        PlayerArm[0].localRotation = LeftArm;//Quaternion.Euler(-x[0], -z[0], y[0]);//Good
-        PlayerArm[1].localRotation = RightArm;// Quaternion.Euler(-x[1], -z[1], y[1]);
+        Arm[0].localRotation = LeftArm;//Quaternion.Euler(-x[0], -z[0], y[0]);//Good
+        Arm[1].localRotation = RightArm;// Quaternion.Euler(-x[1], -z[1], y[1]);
     }
 
     #endregion
@@ -466,18 +554,27 @@ public class PlayerController : MonoBehaviour {
 
     public void Start_()
     {
-        Curr_Anim.SetBool("Pause", false);
+        if (!RecordedActivities.isOn)
+        {
+            Curr_Anim.SetBool("Pause", false);
+        }
         Live = true;
     }
 
     public void _animate()
     {
-        Curr_Anim.SetInteger("Activities", Activities.value);
+        if (!RecordedActivities.isOn)
+        {
+            Curr_Anim.SetInteger("Activities", Activities.value);
+        }
     }
 
     public void Exit_()
     {
-        Curr_Anim.SetBool("Pause", true);
+        if (!RecordedActivities.isOn)
+        {
+            Curr_Anim.SetBool("Pause", true);
+        }
         Live = false;
     }
 

@@ -78,20 +78,13 @@ while (lc)
        qC = match_frame('c',qC);
        qD = match_frame('d',qD);
        
-       
-       lshoangle = getleftarm(qE,qC);
-       limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
-       rshoangle = getrightarm(qE,qD);
+       rshoangle = getrightarm(qE,qD);          rwriangle = getrightwrist(qD,qB);
        rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1); 
-       lwriangle = getleftwrist(qC,qA);limuelb = lwriangle(1);limuelb1 = lwriangle(2);
-       lshoangle = getleftarm(qE,qC);lwriangle = getleftwrist(qC,qA);
+       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);
+    
+       lshoangle = getleftarm(qE,qC);           lwriangle = getleftwrist(qC,qA);
        limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
        limuelb = lwriangle(1);limuelb1 = lwriangle(2);
-       rshoangle = getrightarm(qE,qD);rwriangle = getrightwrist(qD,qB);
-       rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1);
-       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);
-       rwriangle = getleftwrist(qD,qB);
-       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);     
    end
    validData = k2.updateData;
    if validData

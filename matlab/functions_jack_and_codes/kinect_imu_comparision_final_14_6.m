@@ -8,7 +8,11 @@ SUBJECTID = 1234;
 flg = 1;
 
 if flg 
-    Offsets = [0.8589,0.0411,-0.0170,-0.5101; 1.0000,0,0,0; -0.8954,0.0070,0.0010,0.4452; -0.9749,0.0070,-0.0250,0.2210; 0.9791,-0.0371,-0.0170,-0.1994];
+    Offsets = [-0.6067    0.0090   -0.0170   -0.7947;
+                0.3736   -0.0391   -0.0270    0.9264;
+               -0.5604   -0.0090   -0.0050   -0.8281;
+               -0.7054    0.0630   -0.0270   -0.7054;
+               -0.7886    0.0470    0.0210   -0.6127];
 end
        
 %Kinect initialization script
@@ -44,67 +48,15 @@ fopen(ser);k=[];
  %% IMU offsetdetermination
 while ~flg
     
-    flushinput(ser);
-    line = fscanf(ser);   % get data if there exists data in the next line
-    data = strsplit(string(line),',');
-    if(length(data) == 5 || length(data) == 6)
-    switch data(1)
-        case 'cal'
-          switch data(2)
-                case 'b'
-                    B_mag = str2double(data(3));B_acc = str2double(data(4));B_gyr = str2double(data(5));B_sys = str2double(data(6));
-                    Cal_B = [B_mag B_acc B_gyr B_sys];
-                case 'a'
-                    A_mag = str2double(data(3));A_acc = str2double(data(4));A_gyr = str2double(data(5));A_sys = str2double(data(6));      
-                    Cal_A = [A_mag A_acc A_gyr A_sys];
-                case 'c'
-                    C_mag = str2double(data(3));C_acc = str2double(data(4));C_gyr = str2double(data(5));C_sys = str2double(data(6));  
-                    Cal_C = [C_mag C_acc C_gyr C_sys];
-                case 'd'
-                    D_mag = str2double(data(3));D_acc = str2double(data(4));D_gyr = str2double(data(5));D_sys = str2double(data(6));      
-                    Cal_D = [D_mag D_acc D_gyr D_sys];
-                case 'e'
-                    E_mag = str2double(data(3));E_acc = str2double(data(4));E_gyr = str2double(data(5));E_sys = str2double(data(6));      
-                    Cal_E = [E_mag E_acc E_gyr E_sys];
-          end 
-                case 'e'
-            qE = qconvert(data);
-            if flg
-                break
-            else 
-                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
-            end
-                case 'a'
-           qA = qconvert(data);
-           if flg
-               break
-           else 
-                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
-           end
-                case 'c'
-           qC = qconvert(data);
-           if flg
-               break
-           else 
-                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
-           end
-                case 'd'
-           qD = qconvert(data);
-           if flg
-               break
-           else 
-                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
-           end
-                case 'b'
-            qB = qconvert(data);
-            if flg
-               break
-            else 
-                [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
-            end
-    end 
+    [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
+    
+    if flg
+        break
+    else 
+        [flg,Offsets] = find_offsets(qA,qB,qC,qD,qE);
     end
-end
+           
+end 
 
 %%  Complete routine for updating data with 14 different angles
 for i=1:14
@@ -120,6 +72,13 @@ while (lc)
        qC = fix_imu('c',qC,Offsets);
        qD = fix_imu('d',qD,Offsets);
        qB = fix_imu('b',qB,Offsets); 
+       
+       qA = match_frame('a',qA);
+       qB = match_frame('b',qB);
+       qC = match_frame('c',qC);
+       qD = match_frame('d',qD);
+       
+       
        lshoangle = getleftarm(qE,qC);
        limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
        rshoangle = getrightarm(qE,qD);
@@ -260,6 +219,7 @@ fclose(fid);
 clf(figure(2),'reset')
 end
 %% Closing everything 
+
 fclose(ser)
 delete(ser)
 close all;clear all;

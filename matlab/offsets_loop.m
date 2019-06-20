@@ -30,62 +30,23 @@ qOFFd = [0,0,0,0];
 
 fopen(s);
 
-while true
-    flushinput(s);
-    pause(0.01);
-    line = fscanf(s);   % get data if there exists data in the next line
-    data = strsplit(string(line),',');
-    if(length(data) == 5 || length(data) == 6)
-    switch data(1) 
-        case 'e'
-            qE(1) = str2double(data(2))*m+p;
-            qE(2) = str2double(data(3))*m+p;
-            qE(3) = str2double(data(4))*m+p;
-            qE(4) = str2double(data(5))*m+p;
-            qE = quatnormalize(qE); 
-        case 'c'
-            qC(1) = str2double(data(2))*m+p;
-            qC(2) = str2double(data(3))*m+p;
-            qC(3) = str2double(data(4))*m+p;
-            qC(4) = str2double(data(5))*m+p;
-            qC = quatnormalize(qC);
-        case 'a'
-            qA(1) = str2double(data(2))*m+p;
-            qA(2) = str2double(data(3))*m+p;
-            qA(3) = str2double(data(4))*m+p;
-            qA(4) = str2double(data(5))*m+p;
-            qA = quatnormalize(qA);
-        case 'b'
-            qB(1) = str2double(data(2))*m+p;
-            qB(2) = str2double(data(3))*m+p;
-            qB(3) = str2double(data(4))*m+p;
-            qB(4) = str2double(data(5))*m+p;
-            qB = quatnormalize(qB);
-        case 'd'
-            qD(1) = str2double(data(2))*m+p;
-            qD(2) = str2double(data(3))*m+p;
-            qD(3) = str2double(data(4))*m+p;
-            qD(4) = str2double(data(5))*m+p;
-            qD = quatnormalize(qD);
-            
-    end
-            
-            if all(qOFFa == qA) && all(qOFFb == qB) && all(qOFFc == qC) && all(qOFFd == qD) && all(qOFFe == qE) && all(qOFFa ~= empty) && all(qOFFb ~= empty) && all(qOFFc ~= empty) && all(qOFFd ~= empty) && all(qOFFe ~= empty) 
-                qOFFa = quatmultiply(quatconj(qE),qA)
-                qOFFb = quatmultiply(quatconj(qE),qB)
-                qOFFc = quatmultiply(quatconj(qE),qC)
-                qOFFd = quatmultiply(quatconj(qE),qD)
-                break
-            end  
-            
-            qOFFa = qA
-            qOFFb = qB
-            qOFFc = qC
-            qOFFd = qD
-            qOFFe = qE
-    end
+while true  
     
+    [qA,qB,qC,qD,qE] = DataReceive(s,qA,qB,qC,qD,qE);
+            
+        if all(qOFFa == qA) && all(qOFFb == qB) && all(qOFFc == qC) && all(qOFFd == qD) && all(qOFFe == qE) && all(qOFFa ~= empty) && all(qOFFb ~= empty) && all(qOFFc ~= empty) && all(qOFFd ~= empty) && all(qOFFe ~= empty) 
+            qOFFa = quatmultiply(quatconj(qE),qA)
+            qOFFb = quatmultiply(quatconj(qE),qB)
+            qOFFc = quatmultiply(quatconj(qE),qC)
+            qOFFd = quatmultiply(quatconj(qE),qD)
+            break
+        end  
 
-
+        qOFFa = qA
+        qOFFb = qB
+        qOFFc = qC
+        qOFFd = qD
+        qOFFe = qE
 end
+    
 

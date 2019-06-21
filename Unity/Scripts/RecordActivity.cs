@@ -21,6 +21,8 @@ public class RecordActivity : MonoBehaviour
     public InputField KeyDiffTime;
     private static string savedActivityPath;
     private static string savedDataPath;
+    public Text Keys;
+    public GameObject SubjectUI;
 
     public bool ver_log;
     // Start is called before the first frame update
@@ -39,6 +41,7 @@ public class RecordActivity : MonoBehaviour
         cam.transform.rotation = CameraTransforms[0].rotation;
         GetAllRecordedData();
         Invoke("LoadActivities", 0.5f);
+        Keys.text = "0";
     }
 
     #region Recording Activities
@@ -58,6 +61,7 @@ public class RecordActivity : MonoBehaviour
         {
             Data += Key + "\n";
         }
+        Keys.text = "0";
         SaveActivity(Path,Data);
         PrintAllActivities();
         KeyNo = 0;
@@ -83,6 +87,7 @@ public class RecordActivity : MonoBehaviour
 
         ActivityKeys.Add(Conn.DeviceLocalAngles + "," + KeyDiff_Time.ToString("F2"));
         KeyNo = KeyNo + 1;
+        Keys.text = KeyNo.ToString();
         PrintAllActivityElements(ActivityKeys);
     }
 
@@ -90,6 +95,7 @@ public class RecordActivity : MonoBehaviour
     {
         ActivityKeys.RemoveAt(KeyNo-1);
         KeyNo = KeyNo - 1;
+        Keys.text = KeyNo.ToString();
     }
 
     public void PrintAllActivities()
@@ -142,6 +148,14 @@ public class RecordActivity : MonoBehaviour
 
     public string[] ActivityFileNames;//Names of Activities
     public string[] SubjectIDs;//Names of Directories
+
+    public void DeleteActivity()
+    {
+        if (Directory.Exists(savedActivityPath))
+        {
+            File.Delete(savedActivityPath + "/" + ActivityFileNames[Activities.value] + ".txt");
+        }
+    }
 
     public void GetActivities()
     {
@@ -274,7 +288,7 @@ public class RecordActivity : MonoBehaviour
 
         Sub_Act.AddRange(ActivityFileNames);
         Activities.AddOptions(Sub_Act);
-        Subjects.AddOptions(Sub_Act);
+        //Subjects.AddOptions(Sub_Act);
 
         foreach (string SubjectID in SubjectIDs)
         {
@@ -317,6 +331,8 @@ public class RecordActivity : MonoBehaviour
             SubjectsUI.Add(EmptySubject);
             DisableAllContent();
         }
+
+        SubjectUI.SetActive(false);
     }
 
     public void RefreshFiles()

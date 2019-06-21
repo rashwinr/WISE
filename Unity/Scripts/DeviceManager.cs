@@ -75,6 +75,7 @@ public class DeviceManager : MonoBehaviour
         Rec_Activities.AddRange(RA.ActivityFileNames);
         Activties.ClearOptions();
         Activties.AddOptions(Rec_Activities);
+        SetActivities();
     }
 
     private void Update()

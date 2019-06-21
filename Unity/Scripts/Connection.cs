@@ -168,14 +168,14 @@ public class Connection : MonoBehaviour
 
         if (start)
         {
-            Quaternion Left_Forearm = new Quaternion(x[0], y[0], z[0], w[0]);           //   A IMU
-            Quaternion right_Forearm = new Quaternion(x[1], y[1], z[1], w[1]);          //   B IMU
-            Quaternion Left_Arm = new Quaternion(x[2], y[2], z[2], w[2]);               //   C IMU
-            Quaternion Right_Arm = new Quaternion(x[3], y[3], z[3], w[3]);              //   D IMU
+            Quaternion _Left_Forearm_ = new Quaternion(x[0], y[0], z[0], w[0]);           //   A IMU
+            Quaternion _right_Forearm_ = new Quaternion(x[1], y[1], z[1], w[1]);          //   B IMU
+            Quaternion _Left_Arm_ = new Quaternion(x[2], y[2], z[2], w[2]);               //   C IMU
+            Quaternion _Right_Arm_ = new Quaternion(x[3], y[3], z[3], w[3]);              //   D IMU
             Quaternion _Back_ = new Quaternion(x[4], y[4], z[4], w[4]);              //   E IMU
 
-            RightAngles = getrightarm(_Back_, Left_Arm, Left_Forearm);
-            LeftAngles = getleftarm(_Back_, Right_Arm, right_Forearm);
+            // RightAngles = getrightarm(_Back_, Left_Arm, Left_Forearm);
+            // LeftAngles = getleftarm(_Back_, Right_Arm, right_Forearm);
 
             // Quaternion Left_Forearm = new Quaternion(z[0], -x[0], y[0], w[0]);           //   A IMU
             //Quaternion right_Forearm = new Quaternion(z[1], -x[1], y[1], w[1]);          //   B IMU
@@ -183,37 +183,47 @@ public class Connection : MonoBehaviour
             // Quaternion Right_Arm = new Quaternion(z[3], -x[3], y[3], w[3]);              //   D IMU
             //Quaternion _Back_ = new Quaternion(y[4], -x[4], -z[4], w[4]);              //   E IMU
 
-            _Back_ = Rotatequat(_Back_);
+
             //LeftArm = LeftArm * L_Arm;//C Testing
             //RightArm = RightArm * R_Arm;//D Testing
             //LeftForearm = LeftForearm * L_Forearm;//A Testing
             //rightForearm = rightForearm * R_Forearm;//B 
-            Left_Forearm = Quaternion.Inverse(Left_Arm) * Left_Forearm;
-            Left_Arm = Quaternion.Inverse(_Back_) * Left_Arm;
-            right_Forearm = Quaternion.Inverse(Right_Arm) * right_Forearm;
-            Right_Arm = Quaternion.Inverse(_Back_) * Right_Arm;
-            //rightForearm =   Quaternion.Inverse(RightArm)* rightForearm;
 
+            Quaternion Left_Arm = Quaternion.Inverse(RotateLeftArm(_Back_)) * _Left_Arm_;
+            Quaternion Left_Forearm = Quaternion.Inverse(RotateLeftForeArm(_Left_Arm_)) * _Left_Forearm_;
+            Quaternion Right_Arm = Quaternion.Inverse(_Back_) * _Right_Arm_;
+            //Quaternion right_Forearm = Quaternion.Inverse(_Right_Arm_) * _right_Forearm_;
+            Quaternion right_Forearm = Quaternion.Inverse(RotateRightForeArm(_Right_Arm_)) * _right_Forearm_;
+            
             //_Back_.ToAngleAxis(out angle, out axis);
             //Back = Quaternion.AngleAxis(angle, new Vector3(axis.x,-axis.z,axis.y));
             Vector3 axis;
             float angle;
 
             Left_Forearm.ToAngleAxis(out angle, out axis);
-            LeftForearm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));
+            //LeftForearm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));//Old Design
+            LeftForearm = Quaternion.AngleAxis(-angle, new Vector3(-axis.y, axis.z, axis.x));//New Design
 
             Left_Arm.ToAngleAxis(out angle, out axis);
-            LeftArm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));
+            //LeftArm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));//Old Design
+            LeftArm = Quaternion.AngleAxis(-angle, new Vector3(-axis.y, axis.x, -axis.z));//New Design
 
             Right_Arm.ToAngleAxis(out angle, out axis);
-            RightArm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));
+            //RightArm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));//Old Design
+            RightArm = Quaternion.AngleAxis(-angle, new Vector3(axis.y, -axis.x, -axis.z));//New Design
 
             right_Forearm.ToAngleAxis(out angle, out axis);
-            rightForearm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));
-
-            Back = _Back_;
-
+            //rightForearm = Quaternion.AngleAxis(-angle, new Vector3(axis.x, axis.z, axis.y));//Old Design
+            rightForearm = Quaternion.AngleAxis(-angle, new Vector3(axis.y, axis.z, -axis.x));//New Design
             
+            //Rotatequat(_Back_).ToAngleAxis(out angle, out axis);
+            //Back = Quaternion.AngleAxis(-angle, new Vector3(axis.y, -axis.x, -axis.z));
+
+            Back = BackAdjust(_Back_);
+            Back.ToAngleAxis(out angle, out axis);
+            Back = Quaternion.AngleAxis(-angle, new Vector3(axis.y, -axis.x, -axis.z));
+            //Back = Rotatequat(_Back_); //working solution
+
             if (onlyX)
             {
                 angle_x = new float[] { quat2eul(LeftForearm, 0).x, quat2eul(rightForearm, 1).x, quat2eul(LeftArm, 2).x, quat2eul(RightArm, 3).x, quat2eul(Back, 4).x };
@@ -444,6 +454,55 @@ public class Connection : MonoBehaviour
         Qe = Qx * Qe;
         return Qe;
     }
+
+    Quaternion BackAdjust(Quaternion Q)
+    {
+        Quaternion Qe = Quaternion.identity;
+
+        Quaternion Qj = new Quaternion(0, 1, 0, 0);
+        Quaternion Qy = Q * Qj * Quaternion.Inverse(Q);
+        Vector3 Y = new Vector3(Qy.x, Qy.y, Qy.z);
+        float th = -Mathf.Atan2(Y.x,Y.y);
+        Quaternion Qref = new Quaternion(0, 0, Mathf.Sin(th / 2), Mathf.Cos(th / 2));
+
+        Qj = new Quaternion(0, 1, 0, 0);
+        Qy = Qref * Qj * Quaternion.Inverse(Qref);
+        Qy = new Quaternion(Qy.x * Mathf.Sin(Mathf.PI / 4), Qy.y * Mathf.Sin(Mathf.PI / 4), Qy.z * Mathf.Sin(Mathf.PI / 4), Mathf.Cos(Mathf.PI / 4));
+        Qref = Qy * Qref;
+        Qe = Quaternion.Inverse(Qref) * Q;
+        return Qe;
+    }
+
+    Quaternion RotateLeftArm(Quaternion Q)
+    {
+        Quaternion Qk = new Quaternion(0, 0, 1, 0);
+        Quaternion Qe = Quaternion.identity;
+        Quaternion Qz = Q * Qk * Quaternion.Inverse(Q);
+        Qz = new Quaternion(Qz.x * Mathf.Sin(Mathf.PI / 2), Qz.y * Mathf.Sin(Mathf.PI / 2), Qz.z * Mathf.Sin(Mathf.PI / 2), Mathf.Cos(Mathf.PI / 2));
+        Qe = Qz * Q;
+        return Qe;
+    }
+
+    Quaternion RotateLeftForeArm(Quaternion Q)
+    {
+        Quaternion Qj = new Quaternion(0, 1, 0, 0);
+        Quaternion Qe = Quaternion.identity;
+        Quaternion Qy = Q * Qj * Quaternion.Inverse(Q);
+        Qy = new Quaternion(Qy.x * Mathf.Sin(-Mathf.PI / 4), Qy.y * Mathf.Sin(-Mathf.PI / 4), Qy.z * Mathf.Sin(-Mathf.PI / 4), Mathf.Cos(-Mathf.PI / 4));
+        Qe = Qy * Q;
+        return Qe;
+    }
+
+    Quaternion RotateRightForeArm(Quaternion Q)
+    {
+        Quaternion Qj = new Quaternion(0, -1, 0, 0);
+        Quaternion Qe = Quaternion.identity;
+        Quaternion Qy = Q * Qj * Quaternion.Inverse(Q);
+        Qy = new Quaternion(Qy.x * Mathf.Sin(Mathf.PI / 4), Qy.y * Mathf.Sin(Mathf.PI / 4), Qy.z * Mathf.Sin(Mathf.PI / 4), Mathf.Cos(Mathf.PI / 4));
+        Qe = Qy * Q;
+        return Qe;
+    }
+
 
     public float Hts;//Highest Time Stamp
     void InvokeMultipleStream()

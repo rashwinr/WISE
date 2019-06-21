@@ -69,6 +69,11 @@ public class PlayerController : MonoBehaviour {
     public float Act_Timer;
     public int Act_Times;
     public bool Recording;
+    public Text[] LeftAngles;
+    public Text[] RightAngles;
+    public Text[] PB_LeftAngles;
+    public Text[] PB_RightAngles;
+    public bool AngleInfo;
     // Use this for initialization
     void Start () {
         Forearm_x = new float[2];
@@ -169,10 +174,18 @@ public class PlayerController : MonoBehaviour {
     {
         PausePB = !PausePB;
     }
-
+    private void Update()
+    {
+        if (AngleInfo && (Live || PlayingBack))
+        {
+            ShowAngles();
+        }
+    }
     private void FixedUpdate()
     {
-        if(Recording)
+        
+        //Debug.Log("Live");
+        if(Recording && !Live)
         {
             MoveForearm(Conn.LeftForearm, Conn.rightForearm, RecordModelForearm);
             MoveArm(Conn.LeftArm, Conn.RightArm, RecordModelArm);
@@ -211,9 +224,17 @@ public class PlayerController : MonoBehaviour {
                             {
                                 int diff = i - PB_iteration;
                                 PB_iteration += diff;
+                                if(diff == 0)
+                                {
+                                    PB_iteration++;
+                                }
                                 Timer = 0f;
                                 break;
                             }
+                        }
+                        if(i == PB.TimeStampCache[(PlayBackToken / 5)].Count - 1)
+                        {
+                            PB_iteration++;
                         }
                     }
                 }
@@ -297,6 +318,41 @@ public class PlayerController : MonoBehaviour {
 
     }
 
+    public void AngleStatus(bool Status)
+    {
+        AngleInfo = Status;
+    }
+
+    void ShowAngles()
+    {
+        if (Live)
+        {
+            LeftAngles[0].text = PlayerArm[0].localEulerAngles.x.ToString();
+            LeftAngles[1].text = PlayerArm[0].localEulerAngles.y.ToString();
+            LeftAngles[2].text = PlayerArm[0].localEulerAngles.z.ToString();
+            LeftAngles[3].text = PlayerForearm[0].localEulerAngles.x.ToString();
+            LeftAngles[4].text = PlayerForearm[0].localEulerAngles.y.ToString();
+            RightAngles[0].text = PlayerArm[1].localEulerAngles.x.ToString();
+            RightAngles[1].text = (360.0f - PlayerArm[1].localEulerAngles.y).ToString();
+            RightAngles[2].text = (360.0f - PlayerArm[1].localEulerAngles.z).ToString();
+            RightAngles[3].text = PlayerForearm[1].localEulerAngles.x.ToString();
+            RightAngles[4].text = (360.0f - PlayerForearm[1].localEulerAngles.y).ToString();
+        }
+        if (PlayingBack)
+        {
+            PB_LeftAngles[0].text = PlayerArm[0].localEulerAngles.x.ToString();
+            PB_LeftAngles[1].text = PlayerArm[0].localEulerAngles.y.ToString();
+            PB_LeftAngles[2].text = PlayerArm[0].localEulerAngles.z.ToString();
+            PB_LeftAngles[3].text = PlayerForearm[0].localEulerAngles.x.ToString();
+            PB_LeftAngles[4].text = PlayerForearm[0].localEulerAngles.y.ToString();
+            PB_RightAngles[0].text = PlayerArm[1].localEulerAngles.x.ToString();
+            PB_RightAngles[1].text = (360.0f - PlayerArm[1].localEulerAngles.y).ToString();
+            PB_RightAngles[2].text = (360.0f - PlayerArm[1].localEulerAngles.z).ToString();
+            PB_RightAngles[3].text = PlayerForearm[1].localEulerAngles.x.ToString();
+            PB_RightAngles[4].text = (360.0f - PlayerForearm[1].localEulerAngles.y).ToString();
+        }
+    }
+
     public void RecordingStatus(bool Status)
     {
         Recording = Status;
@@ -357,7 +413,8 @@ public class PlayerController : MonoBehaviour {
             Text_F.text = "Instructor";
             Text_M.text = "Patient";
         }
-        Curr_Anim.enabled = true;
+
+        
         //Player.transform.rotation = Quaternion.Euler(0f, 0.0f, 0f);
     }
 
@@ -425,8 +482,11 @@ public class PlayerController : MonoBehaviour {
     */    
     void MoveBack(Quaternion Back, Transform BackTransform)
     {
-        BackAngle = quat2eul(Back);
-        BackTransform.localRotation = Quaternion.Euler(-BackAngle.x, 0f, BackAngle.y);
+        //Debug.Log("Moving");
+
+        //BackAngle = quat2eul(Back);
+        //BackTransform.localRotation = Quaternion.Euler(-BackAngle.x, 0f, BackAngle.y);
+        BackTransform.localRotation = Back;
     }
 
     Vector3 quat2eul(Quaternion Q)
@@ -556,7 +616,12 @@ public class PlayerController : MonoBehaviour {
     {
         if (!RecordedActivities.isOn)
         {
+            Curr_Anim.enabled = true;
             Curr_Anim.SetBool("Pause", false);
+        }
+        else
+        {
+            Curr_Anim.enabled = false;
         }
         Live = true;
     }
@@ -573,8 +638,14 @@ public class PlayerController : MonoBehaviour {
     {
         if (!RecordedActivities.isOn)
         {
+            Curr_Anim.enabled = false;
             Curr_Anim.SetBool("Pause", true);
         }
+        else
+        {
+            Curr_Anim.enabled = false;
+        }
+
         Live = false;
     }
 

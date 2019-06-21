@@ -39,24 +39,15 @@ AbsPP = abs(PP);
 [~,ind] = min(AbsPP);
 switch ind
     case 1
-        if Yb(2)>0
-            rightarm(3,1) = atan2d(Xb(3),Xb(1));
-        else 
-            Xb = -Xb;
-        end
+        disp("case 1")
+        rightarm(3,1) = atan2d(-Xb(3),Xb(1));
     case 2
-        if Xb(2)>0
-            rightarm(3,1) = atan2d(Yb(3),Yb(1));
-        else
-            rightarm(3,1) = atan2d(-Yb(3),Yb(1));
-        end
+        disp("case 2")
+        Yb = -Yb;
+        rightarm(3,1) = atan2d(-Yb(3),Yb(1));
     case 3
-        if Yb(2)>0
-            Zb = -Zb;
-            rightarm(3,1) = atan2d(-Zb(1),Zb(3));
-        else
-            rightarm(3,1) = atan2d(-Zb(1),Zb(3));
-        end
+        disp("case 3")
+        rightarm(3,1) = atan2d(Zb(1),Zb(3));
 end
 
 

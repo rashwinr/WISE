@@ -25,9 +25,10 @@ while true
        Lint_ext = Lsho(3);
        
        Rsho = get_Right_Arm(qE,qD);
-       Rint_ext = Rsho(3);
-       Rabd_add = Rsho(2);
        Rext_flex = Rsho(1);
+       Rabd_add = Rsho(2);
+       Rint_ext = Rsho(3)
+       
 %        
 %        Lwri = get_Left_Wrist(qC,qA);
 %        Lelb = Lwri(1);

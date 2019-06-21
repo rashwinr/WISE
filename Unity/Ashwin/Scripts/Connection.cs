@@ -488,7 +488,7 @@ public class Connection : MonoBehaviour
         Quaternion Qj = new Quaternion(0, 1, 0, 0);
         Quaternion Qe = Quaternion.identity;
         Quaternion Qy = Q * Qj * Quaternion.Inverse(Q);
-        Qy = new Quaternion(Qy.x * Mathf.Sin(-Mathf.PI / 4), Qy.y * Mathf.Sin(-Mathf.PI / 4), Qy.z * Mathf.Sin(-Mathf.PI / 4), Mathf.Cos(-Mathf.PI / 4));
+        Qy = new Quaternion(Qy.x * Mathf.Sin(Mathf.PI / 4), Qy.y * Mathf.Sin(Mathf.PI / 4), Qy.z * Mathf.Sin(Mathf.PI / 4), Mathf.Cos(Mathf.PI / 4));
         Qe = Qy * Q;
         return Qe;
     }

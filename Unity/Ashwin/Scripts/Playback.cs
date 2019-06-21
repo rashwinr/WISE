@@ -241,4 +241,12 @@ public class Playback : MonoBehaviour
         //Debug.Log(ActivityCache[0][1].x);
     }
 
+    public void ClearCache()
+    {
+        ActivityCache.Clear();
+        ActivityTimeStampCache.Clear();
+        DataCache.Clear();
+        TimeStampCache.Clear();
+    }
+
 }

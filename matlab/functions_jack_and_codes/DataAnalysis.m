@@ -6,6 +6,7 @@ close all
 cd('F:\github\wearable-jacket\matlab\kinect+imudata\')
 addpath('F:\github\wearable-jacket\matlab\kinect+imudata\')
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
+markers1 = ["flex-ext","abd-add","","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
 list = dir();
 spike_files=dir('*.txt');
@@ -20,9 +21,17 @@ spike_files=dir('*.txt');
 for i = 1:length(spike_files)
     f1 = strsplit(spike_files(i).name,'.');
     f2 = strsplit(string(f1(1)),'_');
-    if f2(2) == "WISE+KINECT" && f2.length()==4
+    if f2(2) == "WISE+KINECT" && f2.length()>=4
         sid = f2(1);
+        if f2.length()==4
         typ = f2(4);
+        end
+        if f2.length()>=5
+            typ = f2(5);
+        end
+        tf = strcat('F:\github\wearable-jacket\matlab\kinect+imudata\dataanalysis\',sid);
+        trfile = strcat(tf,'.txt');
+        fid = fopen(trfile,'wt');
         data = importWISEKINECT(spike_files(i).name);
         len = size(data,1);
         textvars = data(1,:);
@@ -50,38 +59,75 @@ for i = 1:length(spike_files)
         relbfe(j-1,:) = [str2double(data(j,17)) str2double(data(j,18))];
         rfps(j-1) = str2double(data(j,19));
         end
-        switch(arg)
+        
+        switch(typ)
             
             case markers(1)
-                
+                [pkinect,kloc] = findpeaks(lfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                rmse1 = sqrt(immse(lfe(:,1),lfe(:,2)));
             case markers(2)
-                
+                [pkinect,kloc] = findpeaks(lbd(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lbd(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8); 
+                rmse1 = sqrt(immse(lbd(:,1),lbd(:,2)));
             case markers(3)
-                
+                [pkinect,kloc] = findpeaks(lelbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lelbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8); 
+                rmse1 = sqrt(immse(lelbfe(:,1),lelbfe(:,2)));
             case markers(4)
-                
+                [pkinect,kloc] = findpeaks(lelbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lelbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);          
+                rmse1 = sqrt(immse(lelbfe(:,1),lelbfe(:,2)));
             case markers(5)
-                
+                [pwise,wloc] = findpeaks(lfps(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);         
+                rmse1 = 0;
             case markers(6)
-                
+                [pkinect,kloc] = findpeaks(lie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);         
+                rmse1 = sqrt(immse(lie(:,1),lie(:,2)));
             case markers(7)
-                
+                [pkinect,kloc] = findpeaks(lie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);      
+                rmse1 = sqrt(immse(lie(:,1),lie(:,2)));
             case markers(8)
-                
+                [pkinect,kloc] = findpeaks(rfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);      
+                rmse1 = sqrt(immse(rfe(:,1),rfe(:,2)));
             case markers(9)
-                
+                [pkinect,kloc] = findpeaks(rbd(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rbd(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);  
+                rmse1 = sqrt(immse(rbd(:,1),rbd(:,2)));
             case markers(10)
-                
+                [pkinect,kloc] = findpeaks(relbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(relbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);        
+                rmse1 = sqrt(immse(relbfe(:,1),relbfe(:,2)));
             case markers(11)
-                
+                [pkinect,kloc] = findpeaks(relbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(relbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);    
+                rmse1 = sqrt(immse(relbfe(:,1),relbfe(:,2)));
             case markers(12)
-            
+                [pwise,wloc] = findpeaks(rfps(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);      
+                rmse1 = 0;
+                rmse2 = 0;
             case markers(13)
-                
+                [pkinect,kloc] = findpeaks(rie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8); 
+                rmse1 = sqrt(immse(rie(:,1),rie(:,2)));
+
             case markers(14)
-                
+                [pkinect,kloc] = findpeaks(rie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);    
+                rmse1 = sqrt(immse(rie(:,1),rie(:,2)));
+
+        end
+        if size(pwise,1)~=0 || size(pkinect,1)~=0
+        for j=1:size(pwise,1)
+        fprintf(fid,"%s,%s,%s,%s\n",typ,string(pkinect(j)),string(pwise(j)),string(rmse1));
+        end
+        clearvars pkinect pwise wloc kloc rmse1
         end
     end
+    fclose(fid);
     
 end
 

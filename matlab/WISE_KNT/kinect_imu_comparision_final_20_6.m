@@ -25,7 +25,7 @@ color = zeros(c_height*COL_SCALE,c_width*COL_SCALE,3,'uint8');
 c.h = figure(1);c.ax = axes;c.im = imshow(color,[]);
 set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 %quaternion variables
-qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];empty = [1,0,0,0];
+qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 Cal_A = [0 0 0 0];Cal_B = [0 0 0 0];Cal_C = [0 0 0 0];Cal_D = [0 0 0 0];Cal_E = [0 0 0 0];
 limuef = 0;rimuef = 0;lkinef = 0;rkinef = 0;
 limubd = 0;rimubd = 0;lkinbdangle = 0;rkinbd = 0;
@@ -62,13 +62,17 @@ while (lc)
        qB = match_frame('b',qB); 
 
        
-       rshoangle = getrightarm(qE,qD);          rwriangle = getrightwrist(qD,qB);
-       rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1); 
-       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);
-    
-       lshoangle = getleftarm(qE,qC);           lwriangle = getleftwrist(qC,qA);
+       lshoangle = get_Left_Arm(qE,qC);
        limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
+       
+       rshoangle = get_Right_Arm(qE,qD);
+       rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1);
+       
+       lwriangle = get_Left_Wrist(qC,qA);
        limuelb = lwriangle(1);limuelb1 = lwriangle(2);
+       
+       rwriangle = get_Right_Wrist(qD,qB);
+       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);
        
    end
    validData = k2.updateData;

@@ -39,10 +39,10 @@ AbsPP = abs(PP);
 [~,ind] = min(AbsPP);
 switch ind
     case 1
-        if Yb(2)>0
-            rightarm(3,1) = atan2d(Xb(3),Xb(1));
+        if Yb(2)<0
+        Xb = -Xb;
+        rightarm(3,1) = atan2d(Xb(3),Xb(1));
         else 
-            Xb = -Xb;
         end
     case 2
         if Xb(2)>0

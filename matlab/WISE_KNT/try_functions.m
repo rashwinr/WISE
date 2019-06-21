@@ -1,10 +1,12 @@
 clear all, close all, clc
 
+qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
+
 %COM Port details
 
 delete(instrfind({'Port'},{'COM15'}))
 
-ser = serial('COM11','BaudRate',115200,'InputBufferSize',100);
+ser = serial('COM15','BaudRate',115200,'InputBufferSize',100);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);
 
@@ -17,16 +19,22 @@ while true
        qD = match_frame('d',qD);
        qB = match_frame('b',qB);
        
-       lshoangle = get_Left_Arm(qE,qC);
-       limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
+       Lsho = get_Left_Arm(qE,qC);
+       Lext_flex = Lsho(1);
+       Labd_add = Lsho(2);
+       Lint_ext = Lsho(3);
        
-       rshoangle = get_Right_Arm(qE,qD);
-       rimuie = rshoangle(3);rimubd = rshoangle(2);rimuef = rshoangle(1);
-       
-       lwriangle = get_Left_Wrist(qC,qA);
-       limuelb = lwriangle(1);limuelb1 = lwriangle(2);
-       
-       rwriangle = getrightwrist(qD,qB);
-       rimuelb = rwriangle(1);rimuelb1 = rwriangle(2);
+       Rsho = get_Right_Arm(qE,qD);
+       Rint_ext = Rsho(3);
+       Rabd_add = Rsho(2);
+       Rext_flex = Rsho(1);
+%        
+%        Lwri = get_Left_Wrist(qC,qA);
+%        Lelb = Lwri(1);
+%        Lelb1 = Lwri(2);
+%        
+%        rwriangle = get_Right_Wrist(qD,qB);
+%        Relb = rwriangle(1);
+%        Relb1 = rwriangle(2);
     end
 end

@@ -3,27 +3,26 @@ delete(instrfind({'Port'},{'COM15'}))
 clear all; close all;clc;
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 
-SUBJECTID = 1234;
+SUBJECTID = 2415; 
 
-flg = 1;
-
-if flg 
-    Offsets = [-0.6067    0.0090   -0.0170   -0.7947;
-                0.3736   -0.0391   -0.0270    0.9264;
-               -0.5604   -0.0090   -0.0050   -0.8281;
-               -0.7054    0.0630   -0.0270   -0.7054;
-               -0.7886    0.0470    0.0210   -0.6127];
-end
-       
 %Kinect initialization script
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
 addpath('F:\github\wearable-jacket\matlab\KInectProject');
 k2 = Kin2('color','depth','body','face');
-outOfRange = 4000;c_width = 1920; c_height = 1080;COL_SCALE = 1.0;
+
+outOfRange = 4000;
+
+sz1 = screensize(1);
+
+c_width = sz1(3); c_height = sz1(4);COL_SCALE = 1;
 color = zeros(c_height*COL_SCALE,c_width*COL_SCALE,3,'uint8');
-c.h = figure(1);c.ax = axes;c.im = imshow(color,[]);
-set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
+c.h = figure('units', 'pixels', 'outerposition', sz1);
+c.ax = axes;
+color = imresize(color,COL_SCALE);
+c.im = imshow(color, 'Parent', c.ax);
+
+set( figure(1) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 %quaternion variables
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 Cal_A = [0 0 0 0];Cal_B = [0 0 0 0];Cal_C = [0 0 0 0];Cal_D = [0 0 0 0];Cal_E = [0 0 0 0];
@@ -32,11 +31,6 @@ limubd = 0;rimubd = 0;lkinbdangle = 0;rkinbd = 0;
 limuie = 0;rimuie = 10;lkinie = 0;rkinie = 0;
 limuelb = 0;rimuelb = 0;lkinelb = 0;rkinelb = 0;
 limuelb1 = 0;rimuelb1 = 0;lkinelb1 = 0;rkinelb1 = 0;
-xlimuef = 0;xrimuef = 0;xlkinef = 0;xrkinef = 0;
-xlimubd = 0;xrimubd = 0;xlkinbd = 0;xrkinbd = 0;
-xlimuie = 0;xrimuie = 10;xlkinie = 0;xrkinie = 0;
-xlimuelb = 0;xrimuelb = 0;xlkinelb = 0;xrkinelb = 0;
-xlimuelb1 = 0;xrimuelb1 = 0;xlkinelb1 = 0;xrkinelb1 = 0;
 
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
 %COM Port details
@@ -44,8 +38,8 @@ delete(instrfind({'Port'},{'COM15'}))
 ser = serial('COM15','BaudRate',115200,'InputBufferSize',100);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);k=[];
-
-
+sz2 = screensize(2);
+figure('units', 'pixels', 'outerposition', sz2)
 %%  Complete routine for updating data with 14 different angles
 for i=1:14
 arg = char(markers(i));    
@@ -55,13 +49,7 @@ while (lc)
    tstart = tic;
    if ser.BytesAvailable
        [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
-       qE = match_frame('e',qE);
-       qA = match_frame('a',qA);
-       qC = match_frame('c',qC);
-       qD = match_frame('d',qD);
-       qB = match_frame('b',qB); 
 
-       
        lshoangle = get_Left_Arm(qE,qC);
        limuie = lshoangle(3);limubd = lshoangle(2);limuef = lshoangle(1); 
        

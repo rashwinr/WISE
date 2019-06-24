@@ -2,7 +2,7 @@
 function [anline,anline1,fid] = TitleUpdate(arg,SUBJECTID)
 cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
 font = 20;
-figure(2);
+figure(2)
 hold on
 set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 xlabel('Time (seconds)','FontWeight','bold','FontSize',font);

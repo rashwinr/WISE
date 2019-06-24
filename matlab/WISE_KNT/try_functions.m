@@ -13,11 +13,6 @@ fopen(ser);
 while true
     if ser.BytesAvailable
        [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
-       qE = match_frame('e',qE);
-       qA = match_frame('a',qA);
-       qC = match_frame('c',qC);
-       qD = match_frame('d',qD);
-       qB = match_frame('b',qB);
        
        Lsho = get_Left_Arm(qE,qC);
        Lext_flex = Lsho(1);
@@ -27,15 +22,15 @@ while true
        Rsho = get_Right_Arm(qE,qD);
        Rext_flex = Rsho(1);
        Rabd_add = Rsho(2);
-       Rint_ext = Rsho(3)
+       Rint_ext = Rsho(3);
        
-%        
-%        Lwri = get_Left_Wrist(qC,qA);
-%        Lelb = Lwri(1);
-%        Lelb1 = Lwri(2);
-%        
-%        rwriangle = get_Right_Wrist(qD,qB);
-%        Relb = rwriangle(1);
-%        Relb1 = rwriangle(2);
+       
+       Lwri = get_Left_Wrist(qC,qA);
+       Lelb = Lwri(1);
+       Lelb1 = Lwri(2);
+       
+       rwriangle = get_Right_Wrist(qD,qB);
+       Relb = rwriangle(1);
+       Relb1 = rwriangle(2)
     end
 end

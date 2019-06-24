@@ -16,7 +16,8 @@ YW = Vyw(2:4) - dot(Vyw(2:4),Vxa(2:4))*Vxa(2:4);
 rightwrist(1,1) = acosd(dot(Vya(2:4),YW)/norm(YW));
 
 % elbow pronation supination
-XWa = [dot(Vxa(2:4),Vxw(2:4)),dot(Vxa(2:4),Vyw(2:4)),dot(Vxa(2:4),Vzw(2:4))];
-rightwrist(2,1) = atan2d(-XWa(1),XWa(3));
+Ref = cross(Vxa(2:4),Vyw(2:4));
+Ref = [dot(Ref,Vxw(2:4)),dot(Ref,Vyw(2:4)),dot(Ref,Vzw(2:4))];
+rightwrist(2,1) = atan2d(-Ref(3),Ref(1));
 
 end

@@ -24,9 +24,15 @@ V = [dot(JC,IE) , dot(JC,JE) , dot(JC,KE)];
 
 % shoulder extension flexion
 rightarm(1,1) = atan2d(V(3),V(1));
+if -180<=rightarm(1,1) && rightarm(1,1)<-150
+    rightarm(1,1) = 360 + rightarm(1,1);
+end
 
 % shoulder abduction adduction 
 rightarm(2,1) = atan2d(V(2),V(1));
+if -180<=rightarm(2,1) && rightarm(2,1)<-150
+    rightarm(2,1) = 360 + rightarm(2,1);
+end
 
 % shoulder internal external rotation 
 
@@ -39,14 +45,11 @@ AbsPP = abs(PP);
 [~,ind] = min(AbsPP);
 switch ind
     case 1
-        disp("case 1")
         rightarm(3,1) = atan2d(-Xb(3),Xb(1));
     case 2
-        disp("case 2")
         Yb = -Yb;
         rightarm(3,1) = atan2d(-Yb(3),Yb(1));
     case 3
-        disp("case 3")
         rightarm(3,1) = atan2d(Zb(1),Zb(3));
 end
 

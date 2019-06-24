@@ -25,21 +25,21 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                 R_arm = [dot(R_arm,trans_X) , dot(R_arm,sag_Y) , dot(R_arm,cor_Z)];
                                                                                             %Shoulder extension flexion
                 lef = atan2d(L_arm(3),L_arm(1));
-                if lef <= -170
-                    lef = -lef;
+                if lef >= -180 && lef <= -150
+                    lef = 360+lef;
                 end
                 ref = atan2d(R_arm(3),R_arm(1));
-                if ref <= -170
-                    ref = -ref;
+                if ref >= -180 && ref <=-150
+                    ref = 360+ref;
                 end
                                                                                             %Shoulder abduction adduction
                 lbd = atan2d(L_arm(2),L_arm(1));
-                if lbd <= -170
-                    lbd = -lbd;
+                if lbd >= -180 && lbd<=-150
+                    lbd = 360+lbd;
                 end
                 rbd = atan2d(-R_arm(2),R_arm(1));
-                if rbd <= -170
-                    rbd = -rbd;
+                if rbd >= -180 && rbd<=-150
+                    rbd = 360+rbd;
                 end
                                                                                             %Elbow joint angle calculation
                 LA=(leftElbow-leftShoulder)/norm(leftElbow-leftShoulder);

@@ -9,7 +9,7 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                 spinebase = pos2Dxxx(:,1);
                 %BACK REFERENCE
                 TrunkVector = spinebase-spineShoulder;
-                RSLS = (leftShoulder-rightShoulder)/norm(leftShoulder-rightShoulder);
+                RSLS = (rightShoulder-leftShoulder)/norm(leftShoulder-rightShoulder);
                                                                                             %normal to transversal plane
                 trans_X = (TrunkVector/norm(TrunkVector)); 
                                                                                             %normal to saggital plane
@@ -19,10 +19,11 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                                                                                             %Shoulder orientation computation
                 L_arm = leftElbow-leftShoulder;
                 L_arm = (L_arm/norm(L_arm));
-                L_arm = [dot(L_arm,trans_X) , dot(L_arm,sag_Y) , dot(L_arm,cor_Z)];
+                L_arm = [dot(L_arm,trans_X) , dot(L_arm,-sag_Y) , dot(L_arm,-cor_Z)];
+                
                 R_arm = rightElbow-rightShoulder;
                 R_arm = (R_arm/norm(R_arm));
-                R_arm = [dot(R_arm,trans_X) , dot(R_arm,sag_Y) , dot(R_arm,cor_Z)];
+                R_arm = [dot(R_arm,trans_X) , dot(R_arm,sag_Y) , dot(R_arm,-cor_Z)];
                                                                                             %Shoulder extension flexion
                 lef = atan2d(L_arm(3),L_arm(1));
                 if lef >= -180 && lef <= -150
@@ -37,7 +38,7 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                 if lbd >= -180 && lbd<=-150
                     lbd = 360+lbd;
                 end
-                rbd = atan2d(-R_arm(2),R_arm(1));
+                rbd = atan2d(R_arm(2),R_arm(1));
                 if rbd >= -180 && rbd<=-150
                     rbd = 360+rbd;
                 end
@@ -50,47 +51,94 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                 RFA=(rightWrist-rightElbow)/norm(rightWrist-rightElbow);
                 relb=acosd(dot(RA,RFA));
                                                                                             %Shoulder internal external calculation
+                
+                LSH = (leftWrist-leftShoulder)/norm((leftWrist-leftShoulder));
+                RSH = (rightWrist-rightShoulder)/norm(rightWrist-rightShoulder);
+                
                 lie = 666;
                 if lelb > 30
-                    xA = -LA;
-                    zA = cross(LFA,LA)/norm(cross(LFA,LA));
-                    yA = cross(zA,xA);
-                    Xb = [dot(trans_X,xA),dot(trans_X,yA),dot(trans_X,zA)];
-                    Yb = [dot(sag_Y,xA),dot(sag_Y,yA),dot(sag_Y,zA)];
-                    Zb = [dot(cor_Z,xA),dot(cor_Z,yA),dot(cor_Z,zA)];
-                    PP = [Xb(1),Yb(1),Zb(1)];
+                    PP = [dot(LA,trans_X),dot(LA,sag_Y),dot(LA,cor_Z)];
                     AbsPP = abs(PP);
-                    [~,ind] = min(AbsPP);
+                    [~,ind] = max(AbsPP);
                     switch ind
                         case 1
-                            Xb = -Xb;
-                            if Yb(1)>0
-                                lie = -atan2d(Xb(2),Xb(3));            
-                            else
-                                lie = -atan2d(Xb(2),Xb(3));
-                            end
+                            Zref = -(cor_Z-dot(cor_Z,LA)*LA);
+                            Zref = Zref/norm(Zref);
+                            Yref = sag_Y-dot(sag_Y,LA)*LA;
+                            Yref = Yref/norm(Yref);
+                            lie = atan2d(dot(LFA,Yref),dot(LFA,Zref));
                         case 2
-                            if Xb(1)>0
-                                lie = -atan2d(Yb(2),Yb(3));
-                            else
-                                Yb = -Yb;
-                                lie = -atan2d(Yb(2),Yb(3));
-                            end
+                            Zref = -(cor_Z-dot(cor_Z,LA)*LA);
+                            Zref = Zref/norm(Zref);
+                            Xref = trans_X-dot(trans_X,LA)*LA;
+                            Xref = Xref/norm(Xref);
+                            lie = atan2d(dot(LFA,Xref),dot(LFA,Zref));
                         case 3
-                            if -Zb(2)>0
-                                Zb = -Zb;
-                                lie = atan2d(Zb(3),Zb(2));
-                            else
-                                lie = atan2d(Zb(3),Zb(2));
-                            end
+                            Xref = trans_X-dot(trans_X,LA)*LA;
+                            Xref = -Xref/norm(Xref);
+                            Yref = sag_Y-dot(sag_Y,LA)*LA;
+                            Yref = Yref/norm(Yref);
+                            lie = atan2d(dot(LFA,Yref),dot(LFA,Xref));
                     end
                 end
                 
                 rie = 666;
                 if relb > 30
-                    xA = RA;
-                    zA = cross(RA,RFA)/norm(cross(RA,RFA));
-                    yA = cross(zA,xA);
+                    PP = [dot(RA,trans_X),dot(RA,sag_Y),dot(RA,cor_Z)];
+                    AbsPP = abs(PP);
+                    [~,ind] = max(AbsPP);
+                    switch ind
+                        case 1
+                            Zref = -(cor_Z-dot(cor_Z,RA)*RA);
+                            Zref = Zref/norm(Zref);
+                            Yref = sag_Y-dot(sag_Y,RA)*RA;
+                            Yref = -Yref/norm(Yref);
+                            rie = atan2d(dot(RFA,Yref),dot(RFA,Zref));
+                        case 2
+                            Zref = -(cor_Z-dot(cor_Z,RA)*RA);
+                            Zref = Zref/norm(Zref);
+                            Xref = trans_X-dot(trans_X,RA)*RA;
+                            Xref = Xref/norm(Xref);
+                            rie = atan2d(dot(RFA,Xref),dot(RFA,Zref));
+                        case 3
+                            Xref = trans_X-dot(trans_X,RA)*RA;
+                            Xref = -Xref/norm(Xref);
+                            Yref = sag_Y-dot(sag_Y,RA)*RA;
+                            Yref = -Yref/norm(Yref);
+                            rie = atan2d(dot(RFA,Yref),dot(RFA,Xref));
+                    end
+                    
+                end
+                
+                %{
+                lie = 666;
+                if lelb > 30
+                    yA = -LA;
+                    xA = cross(LSH,LA)/norm(cross(LSH,LA));
+                    zA = cross(xA,yA);
+                    Xb = [dot(trans_X,xA),dot(trans_X,yA),dot(trans_X,zA)];
+                    Yb = [dot(sag_Y,xA),dot(sag_Y,yA),dot(sag_Y,zA)];
+                    Zb = [dot(cor_Z,xA),dot(cor_Z,yA),dot(cor_Z,zA)];
+                    PP = [Xb(1),Yb(1),Zb(1)];
+                    AbsPP = abs(PP);
+                    [~,ind] = min(AbsPP);
+                    switch ind
+                        case 1
+                            Xb = -Xb;
+                            lie = atan2d(Xb(3),Xb(1));            
+                        case 2
+                            Yb = -Yb;
+                            lie = atan2d(Yb(3),Yb(1));
+                        case 3
+                            lie = atan2d(-Zb(1),Zb(3)); 
+                    end
+                end
+                
+                rie = 666;
+                if relb > 30
+                    yA = RA;
+                    xA = cross(RSH,RA)/norm(cross(RSH,RA));
+                    zA = cross(xA,yA);
                     
                     Xb = [dot(trans_X,xA),dot(trans_X,yA),dot(trans_X,zA)];
                     Yb = [dot(sag_Y,xA),dot(sag_Y,yA),dot(sag_Y,zA)];
@@ -101,27 +149,14 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                     [~,ind] = min(AbsPP);
                     switch ind
                         case 1
-                            Xb = -Xb;
-                            if Yb(1)>0
-                                rie = -atan2d(Xb(2),Xb(3));            
-                            else
-                                rie = -atan2d(Xb(2),Xb(3));
-                            end
+                            rie = atan2d(-Xb(3),Xb(1));          
                         case 2
-                            if Xb(1)>0
-                                rie = -atan2d(Yb(2),Yb(3));
-                            else
-                                Yb = -Yb;
-                                rie = -atan2d(Yb(2),Yb(3));
-                            end
+                            Yb = -Yb;
+                            rie = atan2d(-Yb(3),Yb(1));
                         case 3
-                            if -Zb(2)>0
-                                Zb = -Zb;
-                                rie = atan2d(Zb(3),Zb(2));
-                            else
-                                rie = atan2d(Zb(3),Zb(2));
-                            end
+                            rie = atan2d(Zb(1),Zb(3));
                     end
                 end
+                %}
 end
 

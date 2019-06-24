@@ -127,7 +127,7 @@ while (lc)
                     lim = imu;
                     tlow = -45; thigh=45;
                 case 'rie'
-                    kin = rkinelb1; imu = rimuelb1;
+                    kin = rkinie; imu = rimuie;
                     lim = imu;
                     tlow = -40; thigh=40;
                 case  'rie1'

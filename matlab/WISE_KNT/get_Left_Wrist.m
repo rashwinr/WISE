@@ -19,6 +19,6 @@ leftwrist(1,1) = acosd(dot(Vya(2:4),YW)/norm(YW));
 % elbow pronation supination
 Ref = cross(Vxa(2:4),Vyw(2:4));
 Ref = [dot(Ref,Vxw(2:4)),dot(Ref,Vyw(2:4)),dot(Ref,Vzw(2:4))];
-leftwrist(2,1) = atan2d(-Ref(3),Ref(1));
+leftwrist(2,1) = atan2d(-Ref(3),-Ref(1));
 
 end

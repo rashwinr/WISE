@@ -64,36 +64,69 @@ for i = 1:length(spike_files)
         switch(typ)
             
             case markers(1)
-                [pkinect,kloc] = findpeaks(lfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(lfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-%                 rmse1 = sqrt(immse(lfe(:,1),lfe(:,2)));
+                [pkinect,kloc] = findpeaks(lfe(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
+                [pwise,wloc] = findpeaks(lfe(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
                 rmse1 = signal_RMSE(lfe(:,1),lfe(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,lfe(:,1));
+                hold on
+                plot(Time,abs(lfe(:,1)-lfe(:,2)));
+                plot(Time,lfe(:,2));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ left arm flexion-extension'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off        
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(2)
-                [pkinect,kloc] = findpeaks(lbd(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(lbd(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8); 
-%                 rmse1 = sqrt(immse(lbd(:,1),lbd(:,2)));
+                [pkinect,kloc] = findpeaks(lbd(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
+                [pwise,wloc] = findpeaks(lbd(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
                 rmse1 = signal_RMSE(lbd(:,1),lbd(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,lbd(:,1));
+                hold on
+                plot(Time,lbd(:,2));
+                plot(Time,abs(lbd(:,1)-lbd(:,2)));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ left arm abduction-adduction'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off    
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(3)
-                [pkinect,kloc] = findpeaks(lelbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(lelbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8); 
+                [pkinect,kloc] = findpeaks(lelbfe(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
+                [pwise,wloc] = findpeaks(lelbfe(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
                 rmse1 = signal_RMSE(lelbfe(:,1),lelbfe(:,2));
-                figure
-                plot(lelbfe(:,1));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
+                figure(i)
+                plot(Time,lelbfe(:,1));
                 hold on
-                plot(lelbfe(:,2));
-                title('Left forearm Flexion-Extension')
+                plot(Time,lelbfe(:,2));
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                title(strcat(sid,' _ left forearm Flexion-Extension without abduction'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
                 hold off
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
@@ -102,136 +135,244 @@ for i = 1:length(spike_files)
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(4)
-                [pkinect,kloc] = findpeaks(lelbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(lelbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);          
+                [pkinect,kloc] = findpeaks(lelbfe(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)
+                [pwise,wloc] = findpeaks(lelbfe(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)         
                 rmse1 = signal_RMSE(lelbfe(:,1),lelbfe(:,2));
-                figure
-                plot(lelbfe(:,1));
-                hold on
-                plot(lelbfe(:,2));
-                title('Left forearm Flexion-Extension 1')
-                hold off
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,lelbfe(:,1));
+                hold on
+                plot(Time,lelbfe(:,2));
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                title(strcat(sid,'_ left forearm flexion-extension with abduction'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(5)
-                [pwise,wloc] = findpeaks(lfps(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);         
+                [pwise,wloc] = findpeaks(lfps(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8)      
                 rmse1 = 0;
                 if size(pwise,1)~=0
                         for j=1:size(pwise,1)
                             fprintf(fid,"%s,%s,%s,%s\n",typ,string(j),string(pwise(j)),string(rmse1));
                         end
-                clearvars pkinect pwise wloc kloc rmse1
+                figure(i)
+                plot(Time,lfps(:,1));
+                hold on
+                scatter(wloc,pwise);
+                text(10,10,strcat('RMSE: ',num2str(rmse1)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,' _ left forearm pronation-supination'))
+                legend('WISE','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
+                clearvars pwise wloc rmse1
                 end
             case markers(6)
-                [pkinect,kloc] = findpeaks(lie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(lie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);         
+                [pkinect,kloc] = findpeaks(lie(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);
+                [pwise,wloc] = findpeaks(lie(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);         
                 rmse1 = signal_RMSE(lie(:,1),lie(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,lie(:,1));
+                hold on
+                plot(Time,lie(:,2));
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                title(strcat(sid,'_ left arm internal-external rotation with flexion'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(7)
-                [pkinect,kloc] = findpeaks(lie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(lie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);      
-                rmse1 = signal_RMSE(lie(:,1),lie(:,2));
-                if size(pwise,1)~=0 && size(pkinect,1)~=0
-                        for j=1:min(size(pwise,1),size(pkinect,1))
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
+                [pwise,wloc] = findpeaks(lie(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);      
+                rmse1 = 0;
+                if size(pwise,1)~=0
+                        for j=1:min(size(pwise,1))
+                            fprintf(fid,"%s,%s,%s,%s\n",typ,string(j),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,lie(:,2));
+                hold on
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ left arm internal-external rotation with abduction'))
+                legend('WISE','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(8)
-                [pkinect,kloc] = findpeaks(rfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(rfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);      
+                [pkinect,kloc] = findpeaks(rfe(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rfe(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);      
                 rmse1 = signal_RMSE(rfe(:,1),rfe(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,rfe(:,1));
+                hold on
+                plot(Time,rfe(:,2));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,' _ right arm flexion extension'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
-                figure
-                plot(rfe(:,1));
-                hold on
-                plot(rfe(:,2));
-                title('Right Shoulder Extension Flexion')
-                hold off
+
             case markers(9)
-                [pkinect,kloc] = findpeaks(rbd(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(rbd(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);  
+                [pkinect,kloc] = findpeaks(rbd(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rbd(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);  
                 rmse1 = signal_RMSE(rbd(:,1),rbd(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,rbd(:,1));
+                hold on
+                plot(Time,rbd(:,2));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,' _ right arm abduction-adduction'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off        
                 clearvars pkinect pwise wloc kloc rmse1
                 end
-                figure
-                plot(rbd(:,1));
-                hold on
-                plot(rbd(:,2));
-                title('Right Shoulder Abduction-adduction')
-                hold off
+
             case markers(10)
-                [pkinect,kloc] = findpeaks(relbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(relbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);        
+                [pkinect,kloc] = findpeaks(relbfe(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);
+                [pwise,wloc] = findpeaks(relbfe(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);        
                 rmse1 = signal_RMSE(relbfe(:,1),relbfe(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,relbfe(:,1));
+                hold on
+                plot(Time,relbfe(:,2));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ right forearm flexion-extension without abduction'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
-                figure
-                plot(relbfe(:,1));
-                hold on
-                plot(relbfe(:,2));
-                title('Right Elbow flexion-extension')
-                hold off
+
             case markers(11)
-                [pkinect,kloc] = findpeaks(relbfe(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(relbfe(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);    
+                [pkinect,kloc] = findpeaks(relbfe(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);
+                [pwise,wloc] = findpeaks(relbfe(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);    
                 rmse1 = signal_RMSE(relbfe(:,1),relbfe(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,relbfe(:,1));
+                hold on
+                plot(Time,relbfe(:,2));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ right elbow flexion-extension with abduction'))
+                legend('Kinect','WISE','Kinect peaks','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(12)
-                [pwise,wloc] = findpeaks(rfps(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);      
+                [pwise,wloc] = findpeaks(rfps(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);      
                 rmse1 = 0;
                 if size(pwise,1)~=0
                         for j=1:size(pwise,1)
                             fprintf(fid,"%s,%s,%s,%s\n",typ,string(j),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,rfps(:,1));
+                hold on
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ right elbow pronation-supination'))
+                legend('WISE','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
             case markers(13)
-                [pkinect,kloc] = findpeaks(rie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(rie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8); 
+                [pkinect,kloc] = findpeaks(rie(:,1),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);
+                [pwise,wloc] = findpeaks(rie(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8); 
                 rmse1 = signal_RMSE(rie(:,1),rie(:,2));
+                rmse2 = signal_RMSE(pkinect(1:min(size(pwise,1),size(pkinect,1))),pwise(1:min(size(pwise,1),size(pkinect,1))));
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                         for j=1:min(size(pwise,1),size(pkinect,1))
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                plot(Time,rie(:,1));
+                hold on
+                plot(Time,rie(:,2));
+                scatter(kloc,pkinect)
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1),', RMSE _ peaks: ',num2str(rmse2)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ right arm internal-external rotation with flexion'))
+                legend('KINECT','WISE','KINECT peak','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
 
             case markers(14)
-                [pkinect,kloc] = findpeaks(rie(:,1),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);
-                [pwise,wloc] = findpeaks(rie(:,2),'MinPeakDistance',10,'MinPeakHeight',40,'NPeaks',8);    
-                rmse1 = signal_RMSE(rie(:,1),rie(:,2));
-                if size(pwise,1)~=0 && size(pkinect,1)~=0
-                        for j=1:min(size(pwise,1),size(pkinect,1))
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
+                [pwise,wloc] = findpeaks(rie(:,2),Time,'MinPeakDistance',1,'MinPeakHeight',60,'NPeaks',8);    
+                rmse1 = 0;
+                if size(pwise,1)~=0
+                        for j=1:min(size(pwise,1))
+                            fprintf(fid,"%s,%s,%s,%s\n",typ,string(j),string(pwise(j)),string(rmse1));
                         end
+                figure(i)
+                hold on
+                plot(Time,rie(:,2));
+                scatter(wloc,pwise)
+                text(10,10,strcat('RMSE: ',num2str(rmse1)),'FontWeight','bold','FontSize',15)
+                title(strcat(sid,'_ right arm internal-external rotation with abduction'))
+                legend('WISE','WISE peaks')
+                ylabel('Joint angle (degrees)')
+                xlabel('Time (seconds)')
+                hold off
                 clearvars pkinect pwise wloc kloc rmse1
                 end
         end

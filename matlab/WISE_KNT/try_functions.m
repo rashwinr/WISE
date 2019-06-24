@@ -27,10 +27,10 @@ while true
        
        Lwri = get_Left_Wrist(qC,qA);
        Lelb = Lwri(1);
-       Lelb1 = Lwri(2);
+       Lelb1 = Lwri(2)
        
        rwriangle = get_Right_Wrist(qD,qB);
        Relb = rwriangle(1);
-       Relb1 = rwriangle(2)
+       Relb1 = rwriangle(2);
     end
 end

@@ -43,12 +43,10 @@ figure('units', 'pixels', 'outerposition', sz2)
 %% find and fix the wearing offsets
 
 G = [0,0,-1];
+Gr = [0,0,0];
 qI = [0,1,0,0];
 qJ = [0,0,1,0];
 qK = [0,0,0,1];
-
-thl_old = 0;
-thg_old = 0;
 
 while lc
     if ser.BytesAvailable
@@ -57,22 +55,18 @@ while lc
        qX = quatmultiply(qE,quatmultiply(qI,quatconj(qE)));
        qY = quatmultiply(qE,quatmultiply(qJ,quatconj(qE)));
        
-       thg = -atan2(dot(G,qY(2:4)),dot(G,qX(2:4)));
+       Gr = [dot(G,qX(2:4)),dot(G,qY(2:4)),0];
+       thg = -atan2(G(2),G(1));
+       
        disp(-thg*180/pi)
        
        [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,0);
        qX = quatmultiply(qE,quatmultiply(qI,quatconj(qE)));
        qZ = quatmultiply(qE,quatmultiply(qK,quatconj(qE)));
        
-       thl = -atan2(dot(G,qZ(2:4)),dot(G,qX(2:4)));
-       disp(-thl*180/pi)
+       thl = -atan2(dot(G,qZ));
        
-       if thl_old == thl && thg_old == thg
-           break
-       else 
-           thl_old = thl;
-           thg_old = thg;
-       end
+       
 
 
        lshoangle = get_Left_Arm(qE,qC);

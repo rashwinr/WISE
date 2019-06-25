@@ -32,6 +32,8 @@ end
 
 switch char
     
+    case 'offset'
+    
     case 'lef'  
 
         text(ls+lw/5,7*s,stext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');

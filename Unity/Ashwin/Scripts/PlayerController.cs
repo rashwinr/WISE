@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour {
     public Text[] PB_LeftAngles;
     public Text[] PB_RightAngles;
     public bool AngleInfo;
+    public int ActivityIteration = 0;
+    public int TargetIteration = 5;
     // Use this for initialization
     void Start () {
         Forearm_x = new float[2];
@@ -193,6 +195,11 @@ public class PlayerController : MonoBehaviour {
         }
         if (Live)
         {
+            if (ActivityIteration > TargetIteration)
+            {
+                ActivityIteration = 0;
+                DM.NextActivity();
+            }
             MoveForearm(Conn.LeftForearm, Conn.rightForearm, PlayerForearm);
             MoveArm(Conn.LeftArm, Conn.RightArm, PlayerArm);
             MoveBack(Conn.Back, PlayerBack);
@@ -279,6 +286,15 @@ public class PlayerController : MonoBehaviour {
 
         if (Live && RecordedActivities.isOn && PB.ActivityTimeStampCache[(Activities.value)].Count != 0)
         {
+            if (ActivityIteration > TargetIteration)
+            {
+                Act_iteration = 0;
+                Act_Timer = 0;
+                percentage = 0;
+                ActivityIteration = 0;
+                DM.NextActivity();
+            }
+
             int Index = Activities.value * 5;
             float T = PB.ActivityTimeStampCache[(Activities.value)][Act_iteration + 1];
             Act_Timer += Time.fixedUnscaledDeltaTime;
@@ -290,6 +306,7 @@ public class PlayerController : MonoBehaviour {
                 Act_iteration++;
                 Act_Timer = 0;
                 percentage = 0;
+                ActivityIteration++;
             }
             
             if (Act_iteration == PB.ActivityTimeStampCache[(Activities.value)].Count - 1)
@@ -297,6 +314,7 @@ public class PlayerController : MonoBehaviour {
                 Act_iteration = 0;
                 Act_Timer = 0;
                 percentage = 0;
+                ActivityIteration++;
             }
 
             Quaternion A_ApproxQuat = Quaternion.Slerp(PB.ActivityCache[Index][Act_iteration], PB.ActivityCache[Index][Act_iteration + 1], percentage);
@@ -618,14 +636,17 @@ public class PlayerController : MonoBehaviour {
         {
             Curr_Anim.enabled = true;
             Curr_Anim.SetBool("Pause", false);
+            ActivityIteration = 0;
         }
         else
         {
             Curr_Anim.enabled = false;
+            ActivityIteration = 0;
         }
         Live = true;
     }
 
+    
     public void _animate()
     {
         if (!RecordedActivities.isOn)
@@ -640,10 +661,12 @@ public class PlayerController : MonoBehaviour {
         {
             Curr_Anim.enabled = false;
             Curr_Anim.SetBool("Pause", true);
+            ActivityIteration = 0;
         }
         else
         {
             Curr_Anim.enabled = false;
+            ActivityIteration = 0;
         }
 
         Live = false;

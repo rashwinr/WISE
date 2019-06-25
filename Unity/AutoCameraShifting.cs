@@ -5,6 +5,7 @@ using UnityEngine;
 public class AutoCameraShifting : MonoBehaviour
 {
     public DeviceManager DM;
+    public PlayerController PC;
     public void CameraShiftFront()
     {
         if (!DM.CameraChangeDone)
@@ -43,5 +44,10 @@ public class AutoCameraShifting : MonoBehaviour
             DM.ChangeCameraView();
             DM.CameraChangeDone = true;
         }
+    }
+
+    public void NextActivityIteration()
+    {
+        PC.ActivityIteration++;
     }
 }

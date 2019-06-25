@@ -22,7 +22,6 @@ public class RecordActivity : MonoBehaviour
     private static string savedActivityPath;
     private static string savedDataPath;
     public Text Keys;
-    public GameObject SubjectUI;
 
     public bool ver_log;
     // Start is called before the first frame update
@@ -275,7 +274,6 @@ public class RecordActivity : MonoBehaviour
 
     void GetAllRecordedData()//Should be called only once at the start of the program
     {
-        PB.ClearCache();
         Activities.ClearOptions();
         Subjects.ClearOptions();
         ContentSize.Clear();
@@ -332,8 +330,8 @@ public class RecordActivity : MonoBehaviour
             SubjectsUI.Add(EmptySubject);
             DisableAllContent();
         }
+        PB.ClearCache();
         LoadActivities();
-        SubjectUI.SetActive(false);
     }
 
     public void RefreshFiles()

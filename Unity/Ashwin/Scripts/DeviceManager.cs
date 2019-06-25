@@ -51,6 +51,7 @@ public class DeviceManager : MonoBehaviour
     public Toggle RecordedAct;
     private void Start()
     {
+        pause = true;
         RA = GetComponent<RecordActivity>();
         ActivitiesNames = new List<string>();
         Rec_Activities = new List<string>();
@@ -266,6 +267,10 @@ public class DeviceManager : MonoBehaviour
         if(pause)
         {
             Activties.value = PatientMenu_Activities.value;
+        }
+        else
+        {
+            PatientMenu_Activities.value = Activties.value;
         }
     }
 

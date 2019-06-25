@@ -243,10 +243,11 @@ public class Playback : MonoBehaviour
 
     public void ClearCache()
     {
-        ActivityCache.Clear();
-        ActivityTimeStampCache.Clear();
-        DataCache.Clear();
-        TimeStampCache.Clear();
+            ActivityCache = new List<List<Quaternion>>();
+            ActivityTimeStampCache = new List<List<float>>();
+            DataCache = new List<List<Quaternion>>();
+            TimeStampCache = new List<List<float>>();
+            Debug.Log("Initiated");
     }
 
 }

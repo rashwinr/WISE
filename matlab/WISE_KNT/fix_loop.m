@@ -2,7 +2,7 @@ clear all, close all, clc
 
 addpath('C:\Users\fabio\Documents\MATLAB\Functions')
 
-delete(instrfind({'Port'},{'COM11'}))
+delete(instrfind({'Port'},{'COM15'}))
 s = serial('COM11','BaudRate',115200);
 s.ReadAsyncMode = 'continuous';
 p = -1; %y = m x + p where y(-1 1) x(0 999) from rfduino z(-2^14 2^14)

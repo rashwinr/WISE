@@ -3,7 +3,7 @@ delete(instrfind({'Port'},{'COM15'}))
 clear all; close all;clc;
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 
-SUBJECTID = 2415; 
+SUBJECTID = 2410; 
 
 %Kinect initialization script
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
@@ -31,6 +31,10 @@ limubd = 0;rimubd = 0;lkinbdangle = 0;rkinbd = 0;
 limuie = 0;rimuie = 10;lkinie = 0;rkinie = 0;
 limuelb = 0;rimuelb = 0;lkinelb = 0;rkinelb = 0;
 limuelb1 = 0;rimuelb1 = 0;lkinelb1 = 0;rkinelb1 = 0;
+lshoangle = [0,0,0]';
+rshoangle = [0,0,0]';
+lwriangle = [0,0]';
+rwriangle = [0,0]';
 
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     %rectangle coordinates
 %COM Port details
@@ -47,52 +51,56 @@ qI = [0,1,0,0];
 qJ = [0,0,1,0];
 qK = [0,0,0,1];
 
+qEg = [1,0,0,0];
+qEl = [1,0,0,0];
+
 thl_old = 0;
 thg_old = 0;
 
+lshoangle_x = [0,0,0]';
+rshoangle_x = [0,0,0]';
+
+tol = 0.1;
+    
+lc=1;
 while lc
     if ser.BytesAvailable
-       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,0,0);
+        
+       [qA,qB,qC,qD,qEg] = DataReceive(ser,qA,qB,qC,qD,qEg,0,0);
        
-       qX = quatmultiply(qE,quatmultiply(qI,quatconj(qE)));
-       qY = quatmultiply(qE,quatmultiply(qJ,quatconj(qE)));
+       qX = quatmultiply(qEg,quatmultiply(qI,quatconj(qEg)));
+       qY = quatmultiply(qEg,quatmultiply(qJ,quatconj(qEg)));
        
-       thg = -atan2(dot(G,qY(2:4)),dot(G,qX(2:4)));
-       disp(-thg*180/pi)
+       thg = atan2(dot(G,qY(2:4)),dot(G,qX(2:4)));
+       disp(strcat('Mounting offset: ',num2str(thg*180/pi)))
        
-       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,0);
-       qX = quatmultiply(qE,quatmultiply(qI,quatconj(qE)));
-       qZ = quatmultiply(qE,quatmultiply(qK,quatconj(qE)));
+       [qA,qB,qC,qD,qEl] = DataReceive(ser,qA,qB,qC,qD,qEg,thg,0);
        
-       thl = -atan2(dot(G,qZ(2:4)),dot(G,qX(2:4)));
-       disp(-thl*180/pi)
+       qX = quatmultiply(qEl,quatmultiply(qI,quatconj(qEl)));
+       qZ = quatmultiply(qEl,quatmultiply(qK,quatconj(qEl)));
        
-       if thl_old == thl && thg_old == thg
-           break
+       thl = atan2(dot(G,qZ(2:4)),dot(G,qX(2:4)));
+       disp(strcat('Lumbar spine: ',num2str(thl*180/pi)))
+       
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
+       
+       lshoangle = get_Left_Arm(qE,qC);
+       
+       rshoangle = get_Right_Arm(qE,qD);
+       
+       if thl_old == thl && thg_old == thg && all(abs(lshoangle(1:2)-lshoangle_x(1:2))<tol) && all(abs(rshoangle(1:2)-rshoangle_x(1:2))<tol)
+           lc = 0;
+           lshoangle_x = lshoangle;
+           rshoangle_x = rshoangle;
+           disp(lshoangle_x)
+           disp(rshoangle_x)
        else 
            thl_old = thl;
            thg_old = thg;
+           lshoangle_x = lshoangle;
+           rshoangle_x = rshoangle;
        end
 
-
-       lshoangle = get_Left_Arm(qE,qC);
-       limuef = lshoangle(1);
-       limubd = lshoangle(2);
-       limuie = lshoangle(3); 
-       
-       rshoangle = get_Right_Arm(qE,qD);
-       rimuef = rshoangle(1);
-       rimubd = rshoangle(2);
-       rimuie = rshoangle(3);
-       
-       lwriangle = get_Left_Wrist(qC,qA);
-       limuelb = lwriangle(1);
-       limuelb1 = lwriangle(2);
-       
-       rwriangle = get_Right_Wrist(qD,qB);
-       rimuelb = rwriangle(1);
-       rimuelb1 = rwriangle(2);
-       
     end
     
     validData = k2.updateData;
@@ -110,11 +118,11 @@ while lc
            [lkinef,rkinef,lkinbdangle,rkinbd,lkinie,rkinie,lkinelb,rkinelb] = get_Kinect(pos2Dxxx);
            k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
            
-           kin = lkinef; imu = limuef;
-           updateWiseKinect('lef',kin,imu,telapsed,0,0)
-           
-           kin = rkinef; imu = rimuef;
-           updateWiseKinect('ref',kin,imu,telapsed,0,0)
+%            kin = lkinef; imu = limuef;
+% %            updateWiseKinect('lef',kin,imu,telapsed,0,0)
+%            
+%            kin = rkinef; imu = rimuef;
+% %            updateWiseKinect('ref',kin,imu,telapsed,0,0)
        end
        
        
@@ -124,6 +132,10 @@ while lc
 end
 
 %%  Complete routine for updating data with 14 different angles
+
+lshoangle_x(3) = 0;
+rshoangle_x(3) = 0;
+
 for i=1:14
 arg = char(markers(i));    
 [anline,anline1,fid] = TitleUpdate(arg,SUBJECTID);
@@ -131,14 +143,14 @@ lc=1;l=0;lflag = 0;telapsed=0;
 while (lc) 
    tstart = tic;
    if ser.BytesAvailable
-       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thl,thg);
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
 
-       lshoangle = get_Left_Arm(qE,qC);
+       lshoangle = get_Left_Arm(qE,qC)-lshoangle_x;
        limuef = lshoangle(1);
        limubd = lshoangle(2);
        limuie = lshoangle(3); 
        
-       rshoangle = get_Right_Arm(qE,qD);
+       rshoangle = get_Right_Arm(qE,qD)-rshoangle_x;
        rimuef = rshoangle(1);
        rimubd = rshoangle(2);
        rimuie = rshoangle(3);

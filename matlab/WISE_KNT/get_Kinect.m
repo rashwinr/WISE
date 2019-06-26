@@ -1,5 +1,5 @@
-function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
-
+function [kinect_ang] = get_Kinect(pos2Dxxx)
+% lef,ref,lbd,rbd,lie,rie,lelb,relb
                 %Left Side Joints
                 leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);
                 %Right Side Joints
@@ -158,5 +158,10 @@ function [lef,ref,lbd,rbd,lie,rie,lelb,relb] = get_Kinect(pos2Dxxx)
                     end
                 end
                 %}
+                
+                
+                kinect_ang = [lef;ref;lbd;rbd;lie;rie;lelb;relb];
+                
+                
 end
 

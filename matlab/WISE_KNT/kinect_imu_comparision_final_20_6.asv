@@ -42,7 +42,7 @@ end
 cd(strcat(sts,num2str(SUBJECTID),'\'));
 clearvars sts;
 f = sprintf('%s_WISE+KINECT_offset_%s.txt',num2str(SUBJECTID),datestr(now,'mm-dd-yyyy HH-MM'));
-fwrite = fopen(f,'wt');
+fwrite = fopen(file,'wt');
 %Kinect rectangle coordinates
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     
 %quaternion variables
@@ -317,8 +317,8 @@ lshoangle_x(3) = 0;
 rshoangle_x(3) = 0;
 kinoff(5:8) = 0;
 
-fprintf(fwrite,'Mounting offset angle: %s in radians\n',num2str(thg));
-fprintf(fwrite,'Lumbar spine angle: %s in radians\n',num2str(thl));
+fprintf(fwrite,'Mounting offset angle: %s in degrees\n',num2str(thg));
+fprintf(fwrite,'Lumbar spine angle: %s in degrees\n',num2str(thl));
 fprintf(fwrite,'Kinect offset angles: %f in degrees\n',kinoff);
 fprintf(fwrite,'WISE left side offset angles: %f in degrees\n',lshoangle_x);
 fprintf(fwrite,'WISE right side offset angles: %f in degrees\n',rshoangle_x);
@@ -405,7 +405,7 @@ while (lc)
                 case 'lelb1'
                     kin = lkinelb; imu = limuelb;
                     lim = kin;
-                    tlow = 30; thigh=100;
+                    tlow = 20; thigh=130;
                 case 'lps'
                     kin = lkinelb1; imu = limuelb1;
                     lim = imu;

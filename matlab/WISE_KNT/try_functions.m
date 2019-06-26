@@ -12,7 +12,7 @@ fopen(ser);
 
 while true
     if ser.BytesAvailable
-       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,0,0);
        
        Lsho = get_Left_Arm(qE,qC);
        Lext_flex = Lsho(1);
@@ -27,10 +27,12 @@ while true
        
        Lwri = get_Left_Wrist(qC,qA);
        Lelb = Lwri(1);
-       Lelb1 = Lwri(2)
+       Lelb1 = Lwri(2);
        
        rwriangle = get_Right_Wrist(qD,qB);
        Relb = rwriangle(1);
        Relb1 = rwriangle(2);
+       
+       disp(strcat('L int ext',num2str(Lsho(3))))
     end
 end

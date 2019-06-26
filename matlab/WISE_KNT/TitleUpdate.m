@@ -1,6 +1,11 @@
 
 function [anline,anline1,fid] = TitleUpdate(arg,SUBJECTID)
-cd('F:\github\wearable-jacket\matlab\kinect+imudata\');
+fileext = 'F:\github\wearable-jacket\matlab\kinect+imudata\';
+cd(fileext);
+if ~exist(num2str(SUBJECTID),'dir')
+mkdir(num2str(SUBJECTID));
+end
+cd(strcat(fileext,num2str(SUBJECTID),'\'));
 font = 20;
 figure(2)
 hold on

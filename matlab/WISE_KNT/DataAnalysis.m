@@ -2,7 +2,8 @@
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
-SID = 2418;
+SID = 2420;
+addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
 cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
 list = dir();
 spike_files=dir('*.txt');
@@ -90,7 +91,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,1)
                 plot(Time,abs(lfe(:,1)-lfe(:,2)),'k');
-                title(strcat('Left arm flexion-extension ','RMSE = ',num2str(rmse1)))
+                title(strcat('Left arm flexion-extension ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -133,7 +134,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,3)
                 plot(Time,abs(lbd(:,1)-lbd(:,2)),'k');
-                title(strcat(' Left arm abduction-adduction ','RMSE = ',num2str(rmse1)))
+                title(strcat(' Left arm abduction-adduction ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -175,7 +176,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,5)
                 plot(Time,abs(lelbfe(:,1)-lelbfe(:,2)),'k');
-                title(strcat('Left forearm Flexion-Extension without abduction ','RMSE = ',num2str(rmse1)))
+                title(strcat('Left forearm Flexion-Extension without abduction ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -218,7 +219,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,7)
                 plot(Time,abs(lelbfe(:,1)-lelbfe(:,2)),'k');
-                title(strcat('Left forearm flexion-extension without abduction ','RMSE = ',num2str(rmse1)))
+                title(strcat('Left forearm flexion-extension without abduction ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -270,7 +271,7 @@ for i = 1:length(spike_files)
                 plot(Time,lie(:,2),'b');
                 title(strcat('Left arm internal-external rotation with flexion'))
                 ylabel('Joint angle (degrees)')
-                xlabel('Sample number')
+                xlabel('Time (seconds)')
                 hold off
                 
                 rmse1 = signal_RMSE(lie(:,1),lie(:,2));
@@ -278,16 +279,16 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,11)
                 plot(Time,abs(lie(:,1)-lie(:,2)),'k');
-                title(strcat('Left arm internal-external rotation with flexion ','RMSE = ',num2str(rmse1)))
+                title(strcat('Left arm internal-external rotation with flexion ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
-                xlabel('sample number')
+                xlabel('Time (seconds)')
                 hold off
                 
-                [pkinect,kloc] = findpeaks(lie(:,1),Time,'MinPeakHeight',50,'NPeaks',7,'MinPeakProminence',50);
-                [pwise,wloc] = findpeaks(lie(:,2),Time,'MinPeakHeight',50,'NPeaks',7,'MinPeakProminence',50);
+                [pkinect,kloc] = findpeaks(lie(:,1),Time,'MinPeakHeight',40,'NPeaks',7,'MinPeakProminence',50);
+                [pwise,wloc] = findpeaks(lie(:,2),Time,'MinPeakHeight',40,'NPeaks',7,'MinPeakProminence',50);
                 
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
-                    rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
+                   rmse2 = 0;%signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
@@ -322,7 +323,7 @@ for i = 1:length(spike_files)
                 plot(Time,rfe(:,1),'r');
                 hold on
                 plot(Time,rfe(:,2),'b');
-                title(strcat('right arm flexion extension'))
+                title(strcat('Right arm flexion extension'))
                 ylabel('Joint angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -332,7 +333,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,2)
                 plot(Time,abs(rfe(:,1)-rfe(:,2)),'k');
-                title(strcat('Right arm flexion extension ','RMSE = ',num2str(rmse1)))
+                title(strcat('Right arm flexion extension ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -375,7 +376,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,4)
                 plot(Time,abs(rbd(:,1)-rbd(:,2)),'k');
-                title(strcat('Right arm abduction-adduction ','RMSE = ',num2str(rmse1)))
+                title(strcat('Right arm abduction-adduction ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -418,7 +419,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,6)
                 plot(Time,abs(relbfe(:,1)-relbfe(:,2)),'k');
-                title(strcat('Right forearm flexion-extension without abduction ','RMSE = ',num2str(rmse1)))
+                title(strcat('Right forearm flexion-extension without abduction ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -461,7 +462,7 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,8)
                 plot(Time,abs(relbfe(:,1)-relbfe(:,2)),'k');
-                title(strcat('Right elbow flexion-extension with abduction ','RMSE = ',num2str(rmse1)))
+                title(strcat('Right elbow flexion-extension with abduction ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
@@ -520,13 +521,13 @@ for i = 1:length(spike_files)
                 hold on
                 subplot(7,2,12)
                 plot(Time,abs(rie(:,1)-rie(:,2)),'k');
-                title(strcat('Right arm internal-external rotation with flexion ','RMSE = ',num2str(rmse1)))
+                title(strcat('Right arm internal-external rotation with flexion ',' RMSE = ',num2str(rmse1)))
                 ylabel('Error angle (degrees)')
                 xlabel('Time (seconds)')
                 hold off
                 
-                [pkinect,kloc] = findpeaks(rie(:,1),Time,'MinPeakHeight',50,'NPeaks',7,'MinPeakProminence',50);
-                [pwise,wloc] = findpeaks(rie(:,2),Time,'MinPeakHeight',50,'NPeaks',7,'MinPeakProminence',50);
+                [pkinect,kloc] = findpeaks(rie(:,1),Time,'MinPeakHeight',40,'NPeaks',7,'MinPeakProminence',50);
+                [pwise,wloc] = findpeaks(rie(:,2),Time,'MinPeakHeight',40,'NPeaks',7,'MinPeakProminence',50);
                 
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                     

@@ -25,13 +25,13 @@ V = [dot(Ja,IE) , dot(Ja,JE) , dot(Ja,KE)];
 
 % shoulder extension flexion
 leftarm(1,1) = atan2d(V(3),V(1));
-if -180<=leftarm(1,1) && leftarm(1,1)<-150
+if -180<=leftarm(1,1) && leftarm(1,1)<-90
     leftarm(1,1) = 360 + leftarm(1,1);
 end
 
 % shoulder abduction adduction 
 leftarm(2,1) = atan2d(V(2),V(1));
-if -180<=leftarm(2,1) && leftarm(2,1)<-150
+if -180<=leftarm(2,1) && leftarm(2,1)<-90
     leftarm(2,1) = 360 + leftarm(2,1);
 end
 

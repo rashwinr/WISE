@@ -208,3 +208,100 @@ while true
        E3 = plot3([0,K(1)],[0,K(2)],[0,K(3)],'b');
     end
 end
+
+%%
+TXT = text(-1,0,'initial');
+while true
+    if ser.BytesAvailable
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,0,0);
+           
+       [~,I1,I2,I3] = parts(quaternion(quatmultiply(qE,quatmultiply(qI,quatconj(qE)))));
+       I = [I1,I2,I3];
+       [~,J1,J2,J3] = parts(quaternion(quatmultiply(qE,quatmultiply(qJ,quatconj(qE)))));
+       J = [J1,J2,J3];
+       [~,K1,K2,K3] = parts(quaternion(quatmultiply(qE,quatmultiply(qK,quatconj(qE)))));
+       K = [K1,K2,K3];
+       
+       figure(1)
+       hold on
+       delete([E1,E2,E3,TXT])
+       E1 = plot3([0,I(1)],[0,I(2)],[0,I(3)],'r');  
+       E2 = plot3([0,J(1)],[0,J(2)],[0,J(3)],'g');
+       E3 = plot3([0,K(1)],[0,K(2)],[0,K(3)],'b');
+       TXT = text(-1,0,'initial');
+       
+       pause(1)
+       qE = [0,0,0,0];
+       
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,0);
+           
+       [~,I1,I2,I3] = parts(quaternion(quatmultiply(qE,quatmultiply(qI,quatconj(qE)))));
+       I = [I1,I2,I3];
+       [~,J1,J2,J3] = parts(quaternion(quatmultiply(qE,quatmultiply(qJ,quatconj(qE)))));
+       J = [J1,J2,J3];
+       [~,K1,K2,K3] = parts(quaternion(quatmultiply(qE,quatmultiply(qK,quatconj(qE)))));
+       K = [K1,K2,K3];
+       
+       
+       figure(1)
+       hold on
+       delete([E1,E2,E3,TXT])
+       E1 = plot3([0,I(1)],[0,I(2)],[0,I(3)],'r');  
+       E2 = plot3([0,J(1)],[0,J(2)],[0,J(3)],'g');
+       E3 = plot3([0,K(1)],[0,K(2)],[0,K(3)],'b');
+       TXT = text(-1,0,num2str(dot(G,J)));
+       
+    end
+    pause(1)
+    qE = [0,0,0,0];
+end
+
+%%
+thg = 1.2777*pi/180;
+thl = 0.43898*pi/180;
+
+TXT = text(-1,0,'initial');
+while true
+    if ser.BytesAvailable
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,0);
+           
+       [~,I1,I2,I3] = parts(quaternion(quatmultiply(qE,quatmultiply(qI,quatconj(qE)))));
+       I = [I1,I2,I3];
+       [~,J1,J2,J3] = parts(quaternion(quatmultiply(qE,quatmultiply(qJ,quatconj(qE)))));
+       J = [J1,J2,J3];
+       [~,K1,K2,K3] = parts(quaternion(quatmultiply(qE,quatmultiply(qK,quatconj(qE)))));
+       K = [K1,K2,K3];
+       
+       figure(1)
+       hold on
+       delete([E1,E2,E3,TXT])
+       E1 = plot3([0,I(1)],[0,I(2)],[0,I(3)],'r');  
+       E2 = plot3([0,J(1)],[0,J(2)],[0,J(3)],'g');
+       E3 = plot3([0,K(1)],[0,K(2)],[0,K(3)],'b');
+       TXT = text(-1,0,'initial');
+       
+       pause(1)
+       qE = [0,0,0,0];
+       
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
+           
+       [~,I1,I2,I3] = parts(quaternion(quatmultiply(qE,quatmultiply(qI,quatconj(qE)))));
+       I = [I1,I2,I3];
+       [~,J1,J2,J3] = parts(quaternion(quatmultiply(qE,quatmultiply(qJ,quatconj(qE)))));
+       J = [J1,J2,J3];
+       [~,K1,K2,K3] = parts(quaternion(quatmultiply(qE,quatmultiply(qK,quatconj(qE)))));
+       K = [K1,K2,K3];
+       
+       
+       figure(1)
+       hold on
+       delete([E1,E2,E3,TXT])
+       E1 = plot3([0,I(1)],[0,I(2)],[0,I(3)],'r');  
+       E2 = plot3([0,J(1)],[0,J(2)],[0,J(3)],'g');
+       E3 = plot3([0,K(1)],[0,K(2)],[0,K(3)],'b');
+       TXT = text(-1,0,num2str(dot(G,J)));
+       
+    end
+    pause(1)
+    qE = [0,0,0,0];
+end

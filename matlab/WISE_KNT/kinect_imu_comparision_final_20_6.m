@@ -1,7 +1,7 @@
 %% Initialization section
 clear all; close all;clc;
 
-SUBJECTID = 2418; 
+SUBJECTID = 2420; 
 
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 
@@ -22,11 +22,9 @@ c.im = imshow(color, 'Parent', c.ax);
 
 set( figure(1) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 
-
-
 %COM Port details
 delete(instrfind({'Port'},{'COM15'}))
-ser = serial('COM15','BaudRate',115200,'InputBufferSize',100);
+ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);k=[];
 
@@ -40,7 +38,9 @@ if ~exist(num2str(SUBJECTID),'dir')
 mkdir(num2str(SUBJECTID));
 end
 cd(strcat(sts,num2str(SUBJECTID),'\'));
+
 clearvars sts;
+
 f = sprintf('%s_WISE+KINECT_offset_%s.txt',num2str(SUBJECTID),datestr(now,'mm-dd-yyyy HH-MM'));
 fwrite = fopen(f,'wt');
 %Kinect rectangle coordinates
@@ -146,7 +146,7 @@ while count<=25
             thg_avg = thg+thg_avg;
             thg_old = thg;
             count = count+1;
-            addpoints(Moff_line,count,thg); 
+            addpoints(Moff_line,count,thg*180/pi); 
             drawnow;
        else
             
@@ -191,7 +191,7 @@ while count<=25
             thl_avg = thl+thl_avg;
             thl_old = thl;
             count = count+1;
-            addpoints(LumbSpine_line,count,thl); 
+            addpoints(LumbSpine_line,count,thl*180/pi); 
             drawnow;
        else
 
@@ -239,37 +239,34 @@ while tl <=4
                k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
            end
     end
-    
-    pause(0.01);
+%     flushinput(ser);
+    pause(0.02);
     tl = tl+ toc; 
 
 end
 
-disp('exited')
 
 count=0;
 while count<=25
     
-       if ser.BytesAvailable
-           [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);       
-           lshoangle = get_Left_Arm(qE,qC);
-           rshoangle = get_Right_Arm(qE,qD);
-       end
-       
-       validData = k2.updateData;       
-    if validData
+    validData = k2.updateData;
+       if ser.BytesAvailable && validData
            depth = k2.getDepth;color = k2.getColor;face = k2.getFaces;
            depth8u = uint8(depth*(255/outOfRange));depth8uc3 = repmat(depth8u,[1 1 3]);
-           figure(1)
-           color = imresize(color,COL_SCALE);
-           c.im = imshow(color, 'Parent', c.ax);
-           rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
-           rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
            [bodies, fcp, timeStamp] = k2.getBodies('Quat');
            numBodies = size(bodies,2);
            if numBodies == 1
                pos2Dxxx = bodies(1).Position; 
+               [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);       
+               lshoangle = get_Left_Arm(qE,qC);
+               rshoangle = get_Right_Arm(qE,qD);
                kinect_angles = get_Kinect(pos2Dxxx);
+      
+               figure(1)
+               color = imresize(color,COL_SCALE);
+               c.im = imshow(color, 'Parent', c.ax);
+               rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
+               rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
                k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
                
               if all(abs(kinect_angles(1:4)-kinoff(1:4))<tol) && all(abs(lshoangle(1:2)-lshoangle_x(1:2))<tol) && all(abs(rshoangle(1:2)-rshoangle_x(1:2))<tol)
@@ -305,8 +302,9 @@ while count<=25
               
            end
 
-              
-    end
+%           flushinput(ser); 
+          pause(0.02);    
+        end
         
 end
 lshoangle_x = lshoangle_avg/count;
@@ -317,8 +315,8 @@ lshoangle_x(3) = 0;
 rshoangle_x(3) = 0;
 kinoff(5:8) = 0;
 
-fprintf(fwrite,'Mounting offset angle: %s in radians\n',num2str(thg));
-fprintf(fwrite,'Lumbar spine angle: %s in radians\n',num2str(thl));
+fprintf(fwrite,'Mounting offset angle: %s in degrees\n',num2str(thg*180/pi));
+fprintf(fwrite,'Lumbar spine angle: %s in degrees\n',num2str(thl*180/pi));
 fprintf(fwrite,'Kinect offset angles: %f in degrees\n',kinoff);
 fprintf(fwrite,'WISE left side offset angles: %f in degrees\n',lshoangle_x);
 fprintf(fwrite,'WISE right side offset angles: %f in degrees\n',rshoangle_x);
@@ -349,22 +347,24 @@ while (lc)
    tstart = tic;
    validData = k2.updateData;
    if ser.BytesAvailable && validData
-       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
        depth = k2.getDepth;color = k2.getColor;face = k2.getFaces;
        depth8u = uint8(depth*(255/outOfRange));depth8uc3 = repmat(depth8u,[1 1 3]);
        [bodies, fcp, timeStamp] = k2.getBodies('Quat');
        numBodies = size(bodies,2);
-       figure(1)
-       color = imresize(color,COL_SCALE);c.im = imshow(color, 'Parent', c.ax);
-       rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
-       rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
        
-       lshoangle = get_Left_Arm(qE,qC)-lshoangle_x;
+       if numBodies == 1
+
+       pos2Dxxx = bodies(1).Position; 
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
+
+       lshoangle = get_Left_Arm(qE,qC);
+       lshoangle = lshoangle-lshoangle_x;
        limuef = lshoangle(1);
        limubd = lshoangle(2);
        limuie = lshoangle(3); 
        
-       rshoangle = get_Right_Arm(qE,qD)-rshoangle_x;
+       rshoangle = get_Right_Arm(qE,qD);
+       rshoangle = rshoangle - rshoangle_x;
        rimuef = rshoangle(1);
        rimubd = rshoangle(2);
        rimuie = rshoangle(3);
@@ -376,9 +376,7 @@ while (lc)
        rwriangle = get_Right_Wrist(qD,qB);
        rimuelb = rwriangle(1);
        rimuelb1 = rwriangle(2);
-       
-       if numBodies == 1
-           pos2Dxxx = bodies(1).Position; 
+
            kinect_ang = get_Kinect(pos2Dxxx)-kinoff;
            lkinef = kinect_ang(1);
            rkinef = kinect_ang(2);
@@ -387,8 +385,14 @@ while (lc)
            lkinie = kinect_ang(5);
            rkinie = kinect_ang(6);
            lkinelb = kinect_ang(7);
-           rkinelb = kinect_ang(8);     
-           k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
+           rkinelb = kinect_ang(8); 
+           
+       figure(1)
+       color = imresize(color,COL_SCALE);c.im = imshow(color, 'Parent', c.ax);
+       rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
+       rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
+       k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
+       
            switch arg
                 case 'lef'
                     kin = lkinef; imu = limuef;
@@ -487,7 +491,8 @@ while (lc)
            end
        end
    end
- pause(0.01);
+%    flushinput(ser);
+   pause(0.02);
 
  if telapsed>=60
      break;

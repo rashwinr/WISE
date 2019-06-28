@@ -3,8 +3,10 @@ clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
 SID = 2420;
-addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
+% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
 list = dir();
 spike_files=dir('*.txt');
 

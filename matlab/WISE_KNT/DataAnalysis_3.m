@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 clc;clear all;
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
@@ -6,6 +7,16 @@ addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
 % addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
 cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
 % cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
+=======
+clc;clear all;close all
+markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
+subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
+SID = 2420;
+% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
+% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
 list = dir();
 spike_files=dir('*.txt');
 
@@ -25,21 +36,34 @@ font = 15;
 
 
 
+<<<<<<< HEAD
 figure(4)
+=======
+figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
 sgtitle(strcat(num2str(SID),' Kinect+WISE',' errors vs angles'));
 subplot(1,2,1)
 polarscatter(circleth,circlero,MS,'r','filled','DisplayName','10° Limit cirlce');
 hold on
+<<<<<<< HEAD
 rlim([0 30])
+=======
+rlim([0 40])
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
 
 subplot(1,2,2)
 polarscatter(circleth,circlero,MS,'r','filled');
 hold on
 rlim([0 40])
 
+<<<<<<< HEAD
 figure(5)
 sgtitle(strcat(num2str(SID),' Kinect+WISE',' errors distribution'));
 axis('equal')
+=======
+figure(2)
+sgtitle(strcat(num2str(SID),' Kinect+WISE',' errors distribution'));
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
 
 tf = strcat(num2str(SID));
 trfile = strcat(tf,'.txt');
@@ -94,28 +118,45 @@ for i = 1:length(spike_files)
             case markers(1)
                 err = abs(lfe(:,1)-lfe(:,2));
                 
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,1)
                 polarscatter(lfe(:,2)*pi/180,err,MS,'k','filled','DisplayName','Flex-Ext');  
                 
                 err = lfe(:,1)-lfe(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,1)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,1)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'k','filled')
                 
                     
             case markers(2)
                 err = abs(lbd(:,1)-lbd(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,1)
                 polarscatter(lbd(:,2)*pi/180,err,MS,'b','filled','DisplayName','Abd-Add');
                 
                 err = lbd(:,1)-lbd(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,3)
                                                 xlim([-50 50])
@@ -129,31 +170,63 @@ for i = 1:length(spike_files)
             case markers(3)
                 err = abs(lelbfe(:,1)-lelbfe(:,2));
                 figure(4)
+=======
+                figure(2)
+                subplot(5,2,3)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+                scatter(err,y,MS,'b','filled')
+                      
+            case markers(3)
+                err = abs(lelbfe(:,1)-lelbfe(:,2));
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,1)
                 polarscatter(lelbfe(:,2)*pi/180,err,MS,'g','filled','DisplayName','Elb Flex-Ext');
                 
                 err = lelbfe(:,1)-lelbfe(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,5)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,5)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'g','filled')
 
             case markers(4)
                 err = abs(lelbfe(:,1)-lelbfe(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,1)
                 polarscatter(lelbfe(:,2)*pi/180,err,MS,'m','filled','DisplayName','Elb Flex-Ext 2');
                 
                 err = lelbfe(:,1)-lelbfe(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,7)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,7)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'m','filled')
 
             case markers(5)
@@ -165,80 +238,140 @@ for i = 1:length(spike_files)
                 lie(Row,:) = [];
                 
                 err = abs(lie(:,1)-lie(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,1)
                 polarscatter(lie(:,2)*pi/180,err,MS,'c','filled','DisplayName','Int-Ext Rot.');
                 legend('Location','Best','FontWeight','bold','FontSize',font);
                 
                 err = lie(:,1)-lie(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,9)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,9)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'c','filled')
        
             case markers(7)
 
             case markers(8)
                 err = abs(rfe(:,1)-rfe(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,2)
                 polarscatter(rfe(:,2)*pi/180,err,MS,'k','filled');
                 
                 err = rfe(:,1)-rfe(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,2)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,2)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'k','filled')
 
             case markers(9)
                 err = abs(rbd(:,1)-rbd(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,2)
                 polarscatter(rbd(:,2)*pi/180,err,MS,'b','filled');
                 
                 err = rbd(:,1)-rbd(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,4)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,4)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'b','filled')
  
             case markers(10)
                 err = abs(relbfe(:,1)-relbfe(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,2)
                 polarscatter(relbfe(:,2)*pi/180,err,MS,'g','filled');
                 
                 err = relbfe(:,1)-relbfe(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,6)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,6)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'g','filled')
 
             case markers(11)
                 err = abs(relbfe(:,1)-relbfe(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,2)
                 polarscatter(relbfe(:,2)*pi/180,err,MS,'m','filled');
                 
                 err = relbfe(:,1)-relbfe(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,8)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,8)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'m','filled')
   
             case markers(12)
@@ -251,17 +384,29 @@ for i = 1:length(spike_files)
                 Time(length(rie)+1:length(Time)) = [];
                 
                 err = abs(rie(:,1)-rie(:,2));
+<<<<<<< HEAD
                 figure(4)
+=======
+                figure(1)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 subplot(1,2,2)
                 polarscatter(rie(:,2)*pi/180,err,MS,'c','filled');
                 
                 err = rie(:,1)-rie(:,2);
                 
+<<<<<<< HEAD
                 figure(5)
                 subplot(5,2,10)
                 [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(5)
+=======
+                figure(2)
+                subplot(5,2,10)
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+>>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
                 scatter(err,y,MS,'c','filled')
      
             case markers(14)

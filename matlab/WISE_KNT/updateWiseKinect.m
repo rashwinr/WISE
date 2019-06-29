@@ -65,7 +65,7 @@ switch char
     case {'lie','lie1'}
     
         kiniestr = num2str(kin,'%.2f');    
-        if kin==666
+        if kin>=500
             kiniestr = strcat('NA');
             kin = 0;
         end
@@ -105,7 +105,7 @@ switch char
     case {'rie','rie1'}
         
         kiniestr = num2str(kin,'%.2f');    
-        if kin==666
+        if kin>=500
             kiniestr = strcat('NA');
             kin = 0;
         end

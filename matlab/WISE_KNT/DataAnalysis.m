@@ -2,9 +2,11 @@
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
-SID = 2420;
+SID = 2430;
 addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
 cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
 list = dir();
 spike_files=dir('*.txt');
 
@@ -185,9 +187,9 @@ for i = 1:length(spike_files)
                 [pwise,wloc] = findpeaks(lelbfe(:,2),Time,'MinPeakHeight',100,'MinPeakProminence',50,'NPeaks',7);
                 
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
-                    rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
+                    rmse2 = 0;%signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
+%                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
                         figure(3)
                         subplot(7,2,5)
@@ -228,9 +230,9 @@ for i = 1:length(spike_files)
                 [pwise,wloc] = findpeaks(lelbfe(:,2),Time,'MinPeakHeight',100,'MinPeakProminence',50,'NPeaks',7);
                 
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
-                    rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
+                    rmse2 = 0;%signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
+%                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
                         figure(3)
                         subplot(7,2,7)
@@ -259,7 +261,7 @@ for i = 1:length(spike_files)
                 
             case markers(6)
                 
-                lie(lie==666) = NaN;
+                lie(lie>=500) = NaN;
                 [Row] = find(isnan(lie(:,1)));
                 lie(Row,:) = [];
                 Time(length(lie)+1:length(Time)) = [];
@@ -307,6 +309,10 @@ for i = 1:length(spike_files)
                 
             case markers(7)
                 
+                lie(lie>=500) = NaN;
+                [Row] = find(isnan(lie(:,1)));
+                lie(Row,:) = [];
+                Time(length(lie)+1:length(Time)) = [];
                 figure(1)
                 subplot(7,2,13)
                 plot(Time,lie(:,2),'b');
@@ -385,9 +391,9 @@ for i = 1:length(spike_files)
                 [pwise,wloc] = findpeaks(rbd(:,2),Time,'MinPeakHeight',100,'MinPeakProminence',50,'NPeaks',7);
                 
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
-                    rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
+                    rmse2 = 0;%signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
+%                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
                         end
                         figure(3)
                         subplot(7,2,4)
@@ -501,7 +507,7 @@ for i = 1:length(spike_files)
                 
             case markers(13)
                 
-                rie(rie==666) = NaN;
+                rie(rie>=500) = NaN;
                 [Row] = find(isnan(rie(:,1)));
                 rie(Row,:) = [];
                 Time(length(rie)+1:length(Time)) = [];
@@ -550,6 +556,10 @@ for i = 1:length(spike_files)
                 
             case markers(14)
                 
+                rie(rie>=500) = NaN;
+                [Row] = find(isnan(rie(:,1)));
+                rie(Row,:) = [];
+                Time(length(rie)+1:length(Time)) = [];
                 figure(1)
                 subplot(7,2,14)
                 hold on

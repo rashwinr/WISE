@@ -78,7 +78,7 @@ for k = 1:length(spike_files)
             case markers(5)
                 
             case markers(6)
-                lie(lie==666) = NaN;
+                lie(lie>=500) = NaN;
                 [Row] = find(isnan(lie(:,1)));
                 lie(Row,:) = [];
                 lieglobal = [lieglobal;lie];
@@ -95,7 +95,7 @@ for k = 1:length(spike_files)
             case markers(12)
                 
             case markers(13)
-                rie(rie==666) = NaN;
+                rie(rie>=500) = NaN;
                 [Row] = find(isnan(rie(:,1)));
                 rie(Row,:) = [];
                 rieglobal = [rieglobal;lie];
@@ -114,6 +114,3 @@ end
 
 
 %%
-
- polarscatter(lfeglobal(:,1),(lfeglobal(:,1)-lfeglobal(:,2)));
- rlim([0 40])

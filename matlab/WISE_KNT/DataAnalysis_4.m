@@ -40,10 +40,6 @@ rlim([0 40])
 figure(2)
 sgtitle(strcat(num2str(SID),' Kinect+WISE',' errors distribution'));
 
-figure(3)
-sgtitle(strcat(num2str(SID),' Kinect+WISE',' errors vs angles'));
-
-
 tf = strcat(num2str(SID));
 trfile = strcat(tf,'.txt');
 fid = fopen(trfile,'wt');
@@ -103,38 +99,43 @@ for i = 1:length(spike_files)
                 
                 err = lfe(:,1)-lfe(:,2);
                 
-                [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
-                y = gaussmf(err,[sigmaHat muHat]);
-                
+                k = 1;
+                ind = [];
+                Bin = [];
+                err = lfe(:,1)-lfe(:,2);
+                d = lfe(:,1)-lfe(:,2);
+
+                while ~isempty(err)
+                        ind = find(err(:)==err(1));
+                        Bin(k,1) = err(1);
+                        err(ind) = [];
+                        ind = [];
+                        k=k+1;
+                end
+
+                len = length(Bin);
+
+                [muHat,sigmaHat] = normfit(d);
+                pd = fitdist(d,'Normal');
+
+
+
                 figure(2)
                 subplot(5,2,1)
                 hold on
-                scatter(err,y,MS,'k','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                f = fit(lfe(:,2),err,'poly4');
-                figure(3)
-                subplot(5,2,1)
-                plot(f,lfe(:,2),err)
-%                 scatter(lfe(:,2),err,MS,'k','filled')
+                title(strcat("Mu = ",num2str(muHat)," ",num2str(pd.mu)," ","S = ",num2str(sigmaHat)," ",num2str(pd.sigma)," "))
+                h=histogram(d);
+                h.NumBins = len;
+                histfit(d,len);
 
-                TH = lfe(:,2);
-                RO = abs(err);
-                f = fit(TH,RO,'smoothingspline','SmoothingParam',0.5);
-%                 [th, ro] = PolarBound(TH,RO);
-%                 f = fit(th,ro,'smoothingspline','SmoothingParam',0.5);
-%                 p = polyfit(th,ro,0);
-                figure(4)
-%                 polarplot(th*pi/180,f(th))
-%                 polarplot(th*pi/180,polyval(p,ro))
-                hold on
-                polarscatter(lfe(:,2)*pi/180,abs(err),MS,'k','filled','DisplayName','Flex-Ext');
-%                 rlim([0 20])
-                   
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
+                
+                scatter(err,y,MS,'k','filled')
+                
+                
+                    
             case markers(2)
                 err = abs(lbd(:,1)-lbd(:,2));
                 figure(1)
@@ -144,20 +145,14 @@ for i = 1:length(spike_files)
                 err = lbd(:,1)-lbd(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,3)
-                hold on
                 scatter(err,y,MS,'b','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
                 
                 figure(3)
                 subplot(5,2,3)
-                scatter(lbd(:,2),err,MS,'b','filled')
+                histogram(err)
                 
             case markers(3)
                 err = abs(lelbfe(:,1)-lelbfe(:,2));
@@ -168,20 +163,10 @@ for i = 1:length(spike_files)
                 err = lelbfe(:,1)-lelbfe(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,5)
-                hold on
                 scatter(err,y,MS,'g','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,5)
-                scatter(lelbfe(:,2),err,MS,'g','filled')
 
             case markers(4)
                 err = abs(lelbfe(:,1)-lelbfe(:,2));
@@ -192,20 +177,10 @@ for i = 1:length(spike_files)
                 err = lelbfe(:,1)-lelbfe(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,7)
-                hold on
                 scatter(err,y,MS,'m','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,7)
-                scatter(lelbfe(:,2),err,MS,'m','filled')
 
             case markers(5)
 
@@ -224,21 +199,11 @@ for i = 1:length(spike_files)
                 err = lie(:,1)-lie(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 
                 figure(2)
                 subplot(5,2,9)
-                hold on
                 scatter(err,y,MS,'c','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,9)
-                scatter(lie(:,2),err,MS,'c','filled')
        
             case markers(7)
 
@@ -250,21 +215,12 @@ for i = 1:length(spike_files)
                 
                 err = rfe(:,1)-rfe(:,2);
                 
-                [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
                 
+                [muHat,sigmaHat] = normfit(err);
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,2)
-                hold on
                 scatter(err,y,MS,'k','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,2)
-                scatter(rfe(:,2),err,MS,'k','filled')
 
             case markers(9)
                 err = abs(rbd(:,1)-rbd(:,2));
@@ -275,21 +231,10 @@ for i = 1:length(spike_files)
                 err = rbd(:,1)-rbd(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,4)
-                hold on
                 scatter(err,y,MS,'b','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,4)
-                scatter(rbd(:,2),err,MS,'b','filled')
-
  
             case markers(10)
                 err = abs(relbfe(:,1)-relbfe(:,2));
@@ -300,20 +245,10 @@ for i = 1:length(spike_files)
                 err = relbfe(:,1)-relbfe(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,6)
-                hold on
                 scatter(err,y,MS,'g','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,6)
-                scatter(relbfe(:,2),err,MS,'g','filled')
 
             case markers(11)
                 err = abs(relbfe(:,1)-relbfe(:,2));
@@ -324,20 +259,10 @@ for i = 1:length(spike_files)
                 err = relbfe(:,1)-relbfe(:,2);
                 
                 [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
                 y = gaussmf(err,[sigmaHat muHat]);
                 figure(2)
                 subplot(5,2,8)
-                hold on
                 scatter(err,y,MS,'m','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,8)
-                scatter(relbfe(:,2),err,MS,'m','filled')
   
             case markers(12)
      
@@ -354,23 +279,13 @@ for i = 1:length(spike_files)
                 polarscatter(rie(:,2)*pi/180,err,MS,'c','filled');
                 
                 err = rie(:,1)-rie(:,2);
-   
-                [muHat,sigmaHat] = normfit(err);
-                sk = skewness(err);
-                ku = kurtosis(err);
-                
-                y = gaussmf(err,[sigmaHat muHat]);
                 
                 figure(2)
                 subplot(5,2,10)
-                hold on
+                [muHat,sigmaHat] = normfit(err);
+                y = gaussmf(err,[sigmaHat muHat]);
+                figure(2)
                 scatter(err,y,MS,'c','filled')
-                title(strcat("Sigma = ",num2str(sigmaHat)," Mu = ",num2str(muHat)," Skewness = ",num2str(sk)," Kurtosis = ",num2str(ku)))
-                hold off
-                
-                figure(3)
-                subplot(5,2,10)
-                scatter(rie(:,2),err,MS,'c','filled')
      
             case markers(14)
           

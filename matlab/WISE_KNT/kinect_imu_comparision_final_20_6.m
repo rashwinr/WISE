@@ -1,7 +1,7 @@
 %% Initialization section
 clear all; close all;clc;
 
-SUBJECTID = 2420; 
+SUBJECTID = 2430; 
 
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 
@@ -311,9 +311,7 @@ lshoangle_x = lshoangle_avg/count;
 rshoangle_x = rshoangle_avg/count;
 kinoff = kin_avg/count;
 
-lshoangle_x(3) = 0;
-rshoangle_x(3) = 0;
-kinoff(5:8) = 0;
+
 
 fprintf(fwrite,'Mounting offset angle: %s in degrees\n',num2str(thg*180/pi));
 fprintf(fwrite,'Lumbar spine angle: %s in degrees\n',num2str(thl*180/pi));
@@ -337,6 +335,9 @@ close figure 2
 sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)
 
+% lshoangle_x(3) = 0;
+% rshoangle_x(3) = 0;
+kinoff(7:8) = 0;
 
 kinect_ang = zeros(8,1);
 for i=1:14
@@ -377,7 +378,8 @@ while (lc)
        rimuelb = rwriangle(1);
        rimuelb1 = rwriangle(2);
 
-           kinect_ang = get_Kinect(pos2Dxxx)-kinoff;
+           kinect_ang = get_Kinect(pos2Dxxx);
+           kinect_ang = kinect_ang-kinoff;
            lkinef = kinect_ang(1);
            rkinef = kinect_ang(2);
            lkinbd = kinect_ang(3);
@@ -460,18 +462,18 @@ while (lc)
            lkinef,limuef,lkinbd,limubd,lkinie,limuie,lkinelb,limuelb,limuelb1,rkinef,rimuef,...
            rkinbd,rimubd,rkinie,rimuie,rkinelb,rimuelb,rimuelb1);
        
-           if lim<=tlow
-              lflag = 1;
-           end
-           if (lim>=thigh) && lflag
-               l=l+1;
-               lflag =0;
-               if l>=8
-                   lc = 0;
-                   [~,~] = system('taskkill /F /IM Video.UI.exe');
-                   break;
-               end
-           end
+%            if lim<=tlow
+%               lflag = 1;
+%            end
+%            if (lim>=thigh) && lflag
+%                l=l+1;
+%                lflag =0;
+%                if l>=8
+%                    lc = 0;
+%                    [~,~] = system('taskkill /F /IM Video.UI.exe');
+%                    break;
+%                end
+%            end
        end
 
        if numBodies == 0
@@ -494,7 +496,7 @@ while (lc)
 %    flushinput(ser);
    pause(0.02);
 
- if telapsed>=60
+ if telapsed>=65
      break;
  end
 

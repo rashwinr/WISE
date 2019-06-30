@@ -48,7 +48,7 @@ fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Time
 'Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.',...
 'Kinect_RightShoulder_Int.-Ext.','IMU_RightShoulder_Int.-Ext.','Kinect_RightElbow_Ext.-Flex.','IMU_RightElbow_Ext.-Flex.',...
 'IMU_RightElbow_Pro.-Sup.');
-vi = sprintf('%s%s.mp4','F:\unityrecordings\vid_',arg);
+vi = sprintf('%s%s.mp4','F:\unityrecordings\',arg);
 [~,~] = system(vi);
 end
 

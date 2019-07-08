@@ -1,7 +1,7 @@
 %% Initialization section
 clear all; close all;clc;
 
-SUBJECTID = 2430; 
+SUBJECTID = 2432; 
 
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 
@@ -9,6 +9,7 @@ markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","rel
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2\Mex');
 addpath('F:\github\wearable-jacket\matlab\KInectProject');
+addpath('F:\github\wearable-jacket\matlab\WISE_KNT');
 k2 = Kin2('color','depth','body','face');
 outOfRange = 4000;
 
@@ -118,7 +119,7 @@ thg_old = 0;
 thg_avg = 0;
 
 tl = 0;
-while tl <=2
+while tl <=5
     tic
 if ser.BytesAvailable
         
@@ -133,7 +134,7 @@ end
 end
 
 count = 0;
-while count<=25
+while count<=50
     if ser.BytesAvailable
         
        [qA,qB,qC,qD,qEg] = DataReceive(ser,qA,qB,qC,qD,qEg,0,0);
@@ -162,7 +163,7 @@ thl_old = 0;
 thl_avg = 0;
 
 tl = 0;
-while tl <=2
+while tl <=5
     tic
 if ser.BytesAvailable
         
@@ -178,7 +179,7 @@ end
 
 
 count = 0;
-while count<=25
+while count<=50
     if ser.BytesAvailable
         
        [qA,qB,qC,qD,qEl] = DataReceive(ser,qA,qB,qC,qD,qEg,thg,0);
@@ -211,7 +212,7 @@ kinoff = [0;0;0;0;0;0;0;0];
 kin_avg = [0;0;0;0;0;0;0;0];
 
 tl = 0;
-while tl <=4
+while tl <=5
     tic
     
     if ser.BytesAvailable
@@ -247,7 +248,7 @@ end
 
 
 count=0;
-while count<=25
+while count<=50
     
     validData = k2.updateData;
        if ser.BytesAvailable && validData
@@ -335,9 +336,9 @@ close figure 2
 sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)
 
-% lshoangle_x(3) = 0;
-% rshoangle_x(3) = 0;
-kinoff(7:8) = 0;
+lshoangle_x(3) = 0;
+rshoangle_x(3) = 0;
+kinoff(5:8) = 0;
 
 kinect_ang = zeros(8,1);
 for i=1:14

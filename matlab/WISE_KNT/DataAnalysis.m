@@ -2,19 +2,19 @@
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
-<<<<<<< HEAD
-SID = 2430;
+% <<<<<<< HEAD
+SID = 2431;
 addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
 % addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
 cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
 % cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
-=======
-SID = 2420;
-% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
->>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
+% =======
+% SID = 2420;
+addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
+cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
+% >>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
 list = dir();
 spike_files=dir('*.txt');
 
@@ -299,9 +299,9 @@ for i = 1:length(spike_files)
                 
                 if size(pwise,1)~=0 && size(pkinect,1)~=0
                    rmse2 = 0;%signal_RMSE(pkinect(1:7),pwise(1:7));
-                        for j=1:7
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
-                        end
+%                         for j=1:7
+%                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
+%                         end
                         figure(3)
                         subplot(7,2,11)
                         plot(Time,lie(:,1),'r');

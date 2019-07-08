@@ -126,5 +126,6 @@ for i = 1:length(spike_files)
 
    end 
 end
-
+%%
+close all
 ThorPlot(1,Lfe,Lbd,Lelbfe,Lelbfe1,Lie,Rfe,Rbd,Relbfe,Relbfe1,Rie)

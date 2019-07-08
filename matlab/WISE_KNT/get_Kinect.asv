@@ -70,23 +70,6 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     rie = atan2(R(1,3),R(3,3));
                 end
                 
-                lie = 666;
-                if lelb > 30
-                    thz = pi/2;
-                    Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0;0 0 1];
-                    lY = -LA;
-                    lX = cross(LA,LFA);
-                    lX = lX/norm(lX);
-                    lZ = cross(lX,lY);
-                    Rb = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(3),sag_Y(3),cor_Z(3);trans_X(3),sag_Y(3),cor_Z(3)];
-                    Rb = Rz*Rb;
-                    bX = Rb(:,1);
-                    bY = Rb(:,2);
-                    bZ = Rb(:,3);
-                    R = [dot(lX,bX),dot(lY,bX),dot(lZ,bX);dot(lX,bY),dot(lY,bY),dot(lZ,bY);dot(lX,bZ),dot(lY,bZ),dot(lZ,bZ)];
-                    lie = -atan2(R(1,3),R(3,3));
-                end
-                
                 
                 % kinect paper algorithm
                 %{

@@ -11,9 +11,9 @@ Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
 Vyb_ = -Vyb;
 Vzb_ = -Vzb;
 
-Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+% Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
-Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
+% Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
 
 Ja = Vya(2:4);
 
@@ -37,6 +37,14 @@ end
 
 % shoulder internal external rotation 
 
+th = pi/2;
+Qz = [cos(th/2),Vzb(2)*sin(th/2),Vzb(3)*sin(th/2),Vzb(4)*sin(th/2)];
+Qback = quatmultiply(Qz,back);
+Qr = quatmultiply(quatconj(Qback),arm);
+R = quat2rotm(Qr);
+leftarm(3,1) = -atan2(R(1,3),R(3,3));
+
+%{ 
 Xb = [dot(Vxb(2:4),Vxa(2:4)),dot(Vxb(2:4),Vya(2:4)),dot(Vxb(2:4),Vza(2:4))];
 Yb = [dot(Vyb(2:4),Vxa(2:4)),dot(Vyb(2:4),Vya(2:4)),dot(Vyb(2:4),Vza(2:4))];
 Zb = [dot(Vzb(2:4),Vxa(2:4)),dot(Vzb(2:4),Vya(2:4)),dot(Vzb(2:4),Vza(2:4))];
@@ -54,5 +62,5 @@ switch ind
     case 3
         leftarm(3,1) = atan2d(-Zb(1),Zb(3));
 end
-
+%}
 end

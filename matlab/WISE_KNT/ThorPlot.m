@@ -2,15 +2,22 @@ function ThorPlot(figNum,lfe,lbd,lelbfe,lelbfe1,lie,rfe,rbd,relbfe,relbfe1,rie)
 LW = 1;
 LWref = 0.5;
 font = 15;
+
 span = 5;
 scale = 0.1;
+
 cmax = 20;
 cmin = -20;
-thcol = 0:1*pi/180:2*pi;
-Rmin = 0;
 
+Rmin = 0.1;
+Zstep = 7;
+Rint = 10;
+
+thcol = 0:1*pi/180:2*pi;
 thref = 0:30*pi/180:2*pi;
 txref = 0:pi/2:(3/2)*pi;
+txRad = 55*Rint/100;
+txthshift = -17*pi/180;
 
 % Figure(figNum) subplot(1) reference and color map initialization
 
@@ -27,24 +34,22 @@ colormap(SubP1,ThMean_Cmap.ThMean_Cmap );
 set(CLbar, 'Position', [0.3375 0.0945 0.3347 0.0221])
 hold on
 axis equal
-% axis off
+axis off
 
-for ref =1:length(thref)
-    if thref(ref)~=0 && thref(ref)*180/pi~=90 && thref(ref)*180/pi~=180 && thref(ref)*180/pi~=270 && thref(ref)*180/pi~=360
-        Rref = linspace(0,10,100);
-        [Xref,Yref] = pol2cart(thref(ref)*ones(size(Rref)),Rref);
-        plot3(Xref,Yref,20*ones(size(Yref)),'k--','LineWidth',LWref)   
-    end
+for ref =1:length(txref)
+        Rref = linspace(0,Rint,100);
+        [Xref,Yref] = pol2cart(txref(ref)*ones(size(Rref)),Rref);
+        plot3(Xref,Yref,4*Zstep*ones(size(Yref)),'k--','LineWidth',LWref)   
 end
 for ref =1:length(thref)
-    Rref = linspace(10,30,100);
+    Rref = linspace(Rint,Rint + 4*Zstep,100);
     [Xref,Yref] = pol2cart(thref(ref)*ones(size(Rref)),Rref);
-    Zref = linspace(20,0,100);
+    Zref = linspace(4*Zstep,0,100);
     plot3(Xref,Yref,Zref,'k--','LineWidth',LWref)   
 end
 for ref=1:length(txref)
-    [Xtxt,Ytxt] = pol2cart(txref(ref),7);
-    text(Xtxt,Ytxt,20,num2str(txref(ref)*180/pi),'HorizontalAlignment','center','VerticalAlignment','middle')
+    [Xtxt,Ytxt] = pol2cart(txref(ref)+txthshift,txRad);
+    text(Xtxt,Ytxt,4*Zstep,num2str(txref(ref)*180/pi),'HorizontalAlignment','center','VerticalAlignment','middle')
 end
 
 % Figure(figNum) subplot(1) reference and color map initialization
@@ -57,38 +62,37 @@ colormap(SubP2,ThMean_Cmap.ThMean_Cmap );
 colorbar('off')
 hold on
 axis equal
-% axis off
+axis off
 
-for ref =1:length(thref)
-    if thref(ref)~=0 && thref(ref)*180/pi~=90 && thref(ref)*180/pi~=180 && thref(ref)*180/pi~=270 && thref(ref)*180/pi~=360
-        Rref = linspace(0,10,100);
-        [Xref,Yref] = pol2cart(thref(ref)*ones(size(Rref)),Rref);
-        plot3(Xref,Yref,20*ones(size(Yref)),'k--','LineWidth',LWref)
-    end
+for ref =1:length(txref)
+        Rref = linspace(0,Rint,100);
+        [Xref,Yref] = pol2cart(txref(ref)*ones(size(Rref)),Rref);
+        plot3(Xref,Yref,4*Zstep*ones(size(Yref)),'k--','LineWidth',LWref)   
 end
 for ref =1:length(thref)
-    Rref = linspace(10,30,100);
+    Rref = linspace(Rint,Rint + 4*Zstep,100);
     [Xref,Yref] = pol2cart(thref(ref)*ones(size(Rref)),Rref);
-    Zref = linspace(20,0,100);
+    Zref = linspace(4*Zstep,0,100);
     plot3(Xref,Yref,Zref,'k--','LineWidth',LWref)   
 end
 for ref=1:length(txref)
-    [Xtxt,Ytxt] = pol2cart(txref(ref),7);
-    text(Xtxt,Ytxt,20,num2str(txref(ref)*180/pi),'HorizontalAlignment','center','VerticalAlignment','middle')
+    [Xtxt,Ytxt] = pol2cart(txref(ref)+txthshift,txRad);
+    text(Xtxt,Ytxt,4*Zstep,num2str(txref(ref)*180/pi),'HorizontalAlignment','center','VerticalAlignment','middle')
 end
 
-SubP1.ZLim = [-10,40];
-SubP1.XLim = [-40,40];
-SubP1.YLim = [-40,40];
+SubP1.ZLim = [-5,5+4*Zstep];
+SubP1.XLim = [-(Rint+4*Zstep+5),Rint+4*Zstep+5];
+SubP1.YLim = [-(Rint+4*Zstep+5),Rint+4*Zstep+5];
 view(SubP1,[73,60])
 
-SubP2.ZLim = [-10,40];
-SubP2.XLim = [-40,40];
-SubP2.YLim = [-40,40];
+SubP2.ZLim = [-5,5+4*Zstep];
+SubP2.XLim = [-(Rint+4*Zstep+5),Rint+4*Zstep+5];
+SubP2.YLim = [-(Rint+4*Zstep+5),Rint+4*Zstep+5];
 view(SubP2,[73,60])
 
 %Left Arm flexion-extension 'lfe'
-Radius = 10;
+Radius = Rint;
+offZ = 4*Zstep;
 
     err = lfe(:,1)-lfe(:,2);
                 
@@ -117,15 +121,16 @@ Radius = 10;
     subplot(1,2,1)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+20,Cmap)
+    surf(X,Y,Z+offZ,Cmap)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+20,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    flex_ext = plot3(Xcol,Ycol,20*ones(size(Ycol)),'r','DisplayName','Arm flexion-extension','LineWidth',LW);
+    flex_ext = plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'r','DisplayName','Arm flexion-extension','LineWidth',LW);
     
 % Left Arm abduction-adduction 'lbd' 
-Radius = 15;
+Radius = Rint + Zstep;
+offZ = 3*Zstep;
 
     err = lbd(:,1)-lbd(:,2);
 
@@ -154,15 +159,16 @@ Radius = 15;
     subplot(1,2,1)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+15,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+15,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    abd_add = plot3(Xcol,Ycol,15*ones(size(Ycol)),'b','DisplayName','Arm abduction-adduction','LineWidth',LW);
+    abd_add = plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'b','DisplayName','Arm abduction-adduction','LineWidth',LW);
 
 % Left Forearm flexion-extension without abduction 'lelbfe'
-Radius = 20;
+Radius = Rint + 2*Zstep;
+offZ = 2*Zstep;
 
     err = lelbfe(:,1)-lelbfe(:,2);
 
@@ -191,15 +197,16 @@ Radius = 20;
     subplot(1,2,1)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+10,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+10,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    Elb_felxext = plot3(Xcol,Ycol,10*ones(size(Ycol)),'k','DisplayName','Forearm flexion-extension without abduction','LineWidth',LW);
+    Elb_felxext = plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'k','DisplayName','Forearm flexion-extension without abduction','LineWidth',LW);
 
 % Left Forearm flexion-extension with abduction 'lelbfe1'
-Radius = 25;
+Radius = Rint + 3*Zstep;
+offZ = Zstep;
 
     err = lelbfe1(:,1)-lelbfe1(:,2);
 
@@ -228,15 +235,15 @@ Radius = 25;
     subplot(1,2,1)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+5,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+5,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    Elb_felxext1 = plot3(Xcol,Ycol,5*ones(size(Ycol)),'Color',[0 153/255 51/255],'DisplayName','Forearm flexion-extension with abduction','LineWidth',LW);
+    Elb_felxext1 = plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'Color',[0 153/255 51/255],'DisplayName','Forearm flexion-extension with abduction','LineWidth',LW);
 
 % Left Arm internal-external rotation with flexion 'lie'
-Radius = 30;
+Radius = Rint + 4*Zstep;
 
     err = lie(:,1)-lie(:,2);
                 
@@ -273,7 +280,8 @@ Radius = 30;
     int_ext = plot(Xcol,Ycol,'m','DisplayName','Arm internal-external rotation with flexion','LineWidth',LW);
     
 % 'rfe'
-Radius = 10;
+Radius = Rint;
+offZ = 4*Zstep;
 
     err = rfe(:,1)-rfe(:,2);
 
@@ -302,15 +310,16 @@ Radius = 10;
     subplot(1,2,2)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+20,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+20,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    plot3(Xcol,Ycol,20*ones(size(Ycol)),'r','LineWidth',LW)
+    plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'r','LineWidth',LW)
     
 % 'rbd'
-Radius = 15;
+Radius = Rint + Zstep;
+offZ = 3*Zstep;
 
     err = rbd(:,1)-rbd(:,2);
 
@@ -339,15 +348,16 @@ Radius = 15;
     subplot(1,2,2)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+15,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+15,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    plot3(Xcol,Ycol,15*ones(size(Ycol)),'b','LineWidth',LW)
+    plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'b','LineWidth',LW)
     
 % 'relbfe'
-Radius = 20;
+Radius = Rint + 2*Zstep;
+offZ = 2*Zstep;
 
     err = relbfe(:,1)-relbfe(:,2);
 
@@ -376,15 +386,16 @@ Radius = 20;
     subplot(1,2,2)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+10,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+10,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    plot3(Xcol,Ycol,10*ones(size(Ycol)),'k','LineWidth',LW)
+    plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'k','LineWidth',LW)
     
 % 'relbfe1'
-Radius = 25;
+Radius = Rint + 3*Zstep;
+offZ = Zstep;
 
     err = relbfe1(:,1)-relbfe1(:,2);
 
@@ -413,15 +424,15 @@ Radius = 25;
     subplot(1,2,2)
     [X,Y,Z] = pol2cart(thTor,rTor,Z_top);
     caxis('manual');
-    surf(X,Y,Z+5,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     [X,Y,Z] = pol2cart(thTor,rTor,Z_bottom);
     caxis('manual');
-    surf(X,Y,Z+5,Cmap);
+    surf(X,Y,Z+offZ,Cmap);
     shading interp
-    plot3(Xcol,Ycol,5*ones(size(Ycol)),'Color',[0 153/255 51/255],'LineWidth',LW)
+    plot3(Xcol,Ycol,offZ*ones(size(Ycol)),'Color',[0 153/255 51/255],'LineWidth',LW)
     
 % 'rie'
-Radius = 30;
+Radius = Rint + 4*Zstep;
 
     err = rie(:,1)-rie(:,2);
                 

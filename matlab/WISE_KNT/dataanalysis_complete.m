@@ -114,6 +114,7 @@ end
 
 
 %%
+<<<<<<< HEAD
 MS = 30;
 LW = 1;
 LWref = 0.5;
@@ -639,3 +640,7 @@ CLbar = colorbar(SubP1,'southoutside');
 lgnd  = legend(SubP1,[flex_ext,abd_add,Elb_felxext,Elb_felxext1,int_ext],'Location','none','FontSize',font);
 set(lgnd, 'Position', [0.4498 0.7788 0.1495 0.0891])
 set(CLbar, 'Position', [0.3375 0.0945 0.3347 0.0221])
+=======
+
+
+>>>>>>> 93a0a0813f533ed1abbbe5ab9be9612391c4420b

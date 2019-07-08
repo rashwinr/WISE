@@ -1,4 +1,4 @@
-function [angles,Mean] = PolarMean(TH,Err,span)
+function [angles,Mean,Std] = PolarMean(TH,Err,span)
 
 if isrow(Err)
     Err = Err';
@@ -8,6 +8,7 @@ if isrow(TH)
 end
 
 Mean = [];
+Std = [];
 angles = [];
 ind = [];
 k = 1;
@@ -17,9 +18,10 @@ Points = sortrows(Points,1);
 P = Points;
 
 while ~isempty(P)
-    ind = P(:,1)<=P(1,1)+span;
+    ind = find(P(:,1)<=P(1,1)+span);
     Mean(1,k) = mean(P(ind,2));
-    angles(1,k) = P(1,1);
+    Std(1,k) = std(P(ind,2));
+    angles(1,k) = mean(P(ind,1));
     P(ind,:)=[];
     ind = [];
     k = k+1;

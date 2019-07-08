@@ -55,10 +55,10 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 %JCS algorithm
                 rie = 666;
                 if relb > 30
-                    thz = -pi/2;
+                    thz = pi/2;
                     Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0;0 0 1];
-                    rY = RA;
-                    rX = cross(RFA,rY);
+                    rY = -RA;
+                    rX = cross(RA,RFA);
                     rX = rX/norm(rX);
                     rZ = cross(rX,rY);
                     Rb = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(3),sag_Y(3),cor_Z(3);trans_X(3),sag_Y(3),cor_Z(3)];
@@ -67,24 +67,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     bY = Rb(:,2);
                     bZ = Rb(:,3);
                     R = [dot(rX,bX),dot(rY,bX),dot(rZ,bX);dot(rX,bY),dot(rY,bY),dot(rZ,bY);dot(rX,bZ),dot(rY,bZ),dot(rZ,bZ)];
-                    rie = -atan2d(R(1,3),R(3,3));
-                end
-                
-                lie = 666;
-                if lelb > 30
-                    thz = -pi/2;
-                    Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0;0 0 1];
-                    lY = LA;
-                    lX = cross(LFA,lY);
-                    lX = lX/norm(lX);
-                    lZ = cross(lX,lY);
-                    Rb = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(3),sag_Y(3),cor_Z(3);trans_X(3),sag_Y(3),cor_Z(3)];
-                    Rb = Rz*Rb;
-                    bX = Rb(:,1);
-                    bY = Rb(:,2);
-                    bZ = Rb(:,3);
-                    R = [dot(lX,bX),dot(lY,bX),dot(lZ,bX);dot(lX,bY),dot(lY,bY),dot(lZ,bY);dot(lX,bZ),dot(lY,bZ),dot(lZ,bZ)];
-                    lie = atan2d(R(1,3),R(3,3));
+                    rie = atan2(R(1,3),R(3,3));
                 end
                 
                 

@@ -36,12 +36,12 @@ end
 
 % shoulder internal external rotation 
 
-th = pi/2;
+th = -pi/2;
 Qz = [cos(th/2),Vzb(2)*sin(th/2),Vzb(3)*sin(th/2),Vzb(4)*sin(th/2)];
 Qback = quatmultiply(Qz,back);
 Qr = quatmultiply(quatconj(Qback),arm);
 R = quat2rotm(Qr);
-rightarm(3,1) = atan2(R(1,3),R(3,3));
+rightarm(3,1) = -atan2(R(1,3),R(3,3));
 
 
 

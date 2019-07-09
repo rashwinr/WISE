@@ -1,12 +1,13 @@
-clear all, close all, clc
-addpath('F:\github\wearable-jacket\matlab\IEEE_spmb');
-delete(instrfind({'Port'},{'COM15'}))
-ser = serial('COM15','BaudRate',115200);
+clear all, clc
+clf(figure(1),'reset')
+addpath('C:\Users\ranst\OneDrive\Documents\GitHub\WISE\matlab\IEEE_spmb\');
+delete(instrfind({'Port'},{'COM9'}))
+ser = serial('COM9','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);k=[];
-sts = 'F:\github\wearable-jacket\matlab\IEEE_spmb\data\';
+sts = 'C:\Users\ranst\OneDrive\Documents\GitHub\WISE\matlab\IEEE_spmb\data\';
 cd(sts);
-ttotal = 0.5*60;
+ttotal = .75*60;
 prompt1 = 'Please enter the sensor ID attached on the moving arm (A,B,C,D): ';
 WISESENSORID = input(prompt1,'s');
 % WISESENSORID = 'A';
@@ -44,8 +45,8 @@ Cx = R*cos(th);
 Cy = R*sin(th);
 
 time= 0;
-sz2 = screensize(2);
-figure('units', 'pixels', 'outerposition', sz2)
+% sz2 = screensize(2);
+figure(1)
 set(figure (1),'keypress','k=get(gcf,''currentchar'');' );
 hold on
 
@@ -193,9 +194,9 @@ t17 = text(-6.5,0,'180^o','FontSize',fs);
 t18 = text(0,+5.5,'90^o','FontSize',fs);
 t19 = text(0,-5.5,'270^o','FontSize',fs);
 t20 = text(0.25+1.2*R*cos(theta),0.25+1.2*R*sin(theta),strcat(num2str(theta*180/pi),'^{o}'),'FontSize',fs);
-sgtitle(strcat('Turntable testing sensorID:   ',WISESENSORID, '   ',AX,' axis'));
+% suptitle(strcat('Turntable testing sensorID:   ',WISESENSORID, '   ',AX,' axis'));
 hold off
-fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',time,q1(2),q1(3),q1(4),q2(1),q2(2),q2(3),q2(4),theta);
+fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',time,q1(1),q1(2),q1(3),q1(4),q2(1),q2(2),q2(3),q2(4),theta);
 time = time+toc;
        if ~isempty(k)
            if strcmp(k,'q') 
@@ -206,3 +207,4 @@ time = time+toc;
        end
 pause(0.1);       
 end
+fclose(fwrite);

@@ -53,10 +53,12 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 %Shoulder internal external calculation
                 
                 %JCS algorithm
+                %{
                 rie = 666;
                 if relb > 30
                     thz = -pi/2;
-                    Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0;0 0 1];
+                    Qz = [cos(thz/2),cor_Z(1)*sin(thz/2),cor_Z(2)*sin(thz/2),cor_Z(3)*sin(thz/2)];
+                    Rz = quat2rotm(Qz);
                     rY = RA;
                     rX = cross(RFA,rY);
                     rX = rX/norm(rX);
@@ -73,7 +75,8 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 lie = 666;
                 if lelb > 30
                     thz = -pi/2;
-                    Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0;0 0 1];
+                    Qz = [cos(thz/2),cor_Z(1)*sin(thz/2),cor_Z(2)*sin(thz/2),cor_Z(3)*sin(thz/2)];
+                    Rz = quat2rotm(Qz);
                     lY = LA;
                     lX = cross(LFA,lY);
                     lX = lX/norm(lX);
@@ -86,10 +89,10 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     R = [dot(lX,bX),dot(lY,bX),dot(lZ,bX);dot(lX,bY),dot(lY,bY),dot(lZ,bY);dot(lX,bZ),dot(lY,bZ),dot(lZ,bZ)];
                     lie = atan2d(R(1,3),R(3,3));
                 end
-                
+                %}
                 
                 % kinect paper algorithm
-                %{
+%                 %{
                 lie = 666;
                 if lelb > 30
                     PP = [dot(LA,trans_X),dot(LA,sag_Y),dot(LA,cor_Z)];

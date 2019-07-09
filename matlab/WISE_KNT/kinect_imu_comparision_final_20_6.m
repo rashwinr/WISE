@@ -1,7 +1,7 @@
 %% Initialization section
 clear all; close all;clc;
-
-SUBJECTID = 2432; 
+tp = 0.001;
+SUBJECTID = 2469;
 
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
 
@@ -241,7 +241,7 @@ while tl <=5
            end
     end
 %     flushinput(ser);
-    pause(0.02);
+    pause(tp);
     tl = tl+ toc; 
 
 end
@@ -304,7 +304,7 @@ while count<=50
            end
 
 %           flushinput(ser); 
-          pause(0.02);    
+          pause(tp);    
         end
         
 end
@@ -495,7 +495,7 @@ while (lc)
        end
    end
 %    flushinput(ser);
-   pause(0.02);
+   pause(tp);
 
  if telapsed>=65
      break;

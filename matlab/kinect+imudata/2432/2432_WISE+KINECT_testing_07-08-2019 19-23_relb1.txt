@@ -1,0 +1,6 @@
+Timestamp,Kinect_LeftShoulder_Ext.-Flex.,IMU_LeftShoulder_Ext.-Flex.,Kinect_LeftShoulder_Abd.-Add.,IMU_LeftShoulder_Abd.-Add.,Kinect_LeftShoulder_Int.-Ext.,IMU_LeftShoulder_Int.-Ext.,Kinect_LeftElbow_Ext.-Flex.,IMU_LeftElbow_Ext.-Flex.,IMU_LeftElbow_Pro.-Sup.,Kinect_RightShoulder_Ext.-Flex.,IMU_RightShoulder_Ext.-Flex.,Kinect_RightShoulder_Abd.-Add.,IMU_RightShoulder_Abd.-Add.,Kinect_RightShoulder_Int.-Ext.,IMU_RightShoulder_Int.-Ext.,Kinect_RightElbow_Ext.-Flex.,IMU_RightElbow_Ext.-Flex.,IMU_RightElbow_Pro.-Sup.
+0.00,-1.16,-1.10,3.58,0.60,666.00,0.23,24.52,28.80,27.14,4.62,0.32,-2.37,2.48,666.00,0.07,23.02,26.07,12.59
+0.24,-0.73,-0.63,3.87,1.04,666.00,0.24,23.31,27.44,25.06,4.52,0.16,-2.30,2.33,666.00,0.08,21.52,26.41,12.63
+0.40,-1.14,-0.84,3.75,1.06,666.00,0.25,23.61,27.65,24.86,4.47,0.16,-2.22,2.33,666.00,0.08,21.32,26.10,12.66
+0.56,-1.01,-0.88,3.59,0.83,666.00,0.24,23.55,27.59,24.78,4.56,0.16,-2.31,2.33,666.00,0.08,21.05,26.10,12.66
+0.72,-1.26,-0.74,3.40,0.85,666.00,0.24,23.70,27.49,24.96,4.62,0.32,-2.35,2.32,666.00,0.08,20.91,26.20,12.42

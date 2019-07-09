@@ -7,7 +7,7 @@ ser.ReadAsyncMode = 'continuous';
 fopen(ser);k=[];
 sts = 'C:\Users\ranst\OneDrive\Documents\GitHub\WISE\matlab\IEEE_spmb\data\';
 cd(sts);
-ttotal = .75*60;
+ttotal = 0.5*60;
 prompt1 = 'Please enter the sensor ID attached on the moving arm (A,B,C,D): ';
 WISESENSORID = input(prompt1,'s');
 % WISESENSORID = 'A';

@@ -1,13 +1,14 @@
 clear all, clc
 clf(figure(1),'reset')
-addpath('C:\Users\ranst\OneDrive\Documents\GitHub\WISE\matlab\IEEE_spmb\');
-delete(instrfind({'Port'},{'COM9'}))
-ser = serial('COM9','BaudRate',115200);
+addpath('F:\github\wearable-jacket\matlab\IEEE_spmb\');
+delete(instrfind({'Port'},{'COM15'}))
+ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);k=[];
-sts = 'C:\Users\ranst\OneDrive\Documents\GitHub\WISE\matlab\IEEE_spmb\data_matched\';
+pause(2);
+sts = 'F:\github\wearable-jacket\matlab\IEEE_spmb\data_matched\';
 cd(sts);
-ttotal = 0.5*60;
+ttotal = 1*60;
 prompt1 = 'Please enter the sensor ID attached on the moving arm respond A,B,C,D: ';
 WISESENSORID = input(prompt1,'s');
 % WISESENSORID = 'A';
@@ -36,7 +37,7 @@ qI = [0,1,0,0];qJ = [0,0,1,0];qK = [0,0,0,1];qR = [1,0,0,0];
 I1 = [1 0 0]; I2 = [1 0 0]; I3 = [1 0 0];I4 = [1 0 0]; I5 = [1 0 0];
 J1 = [0 1 0]; J2 = [0 1 0]; J3 = [0 1 0];J4 = [0 1 0]; J5 = [0 1 0];
 K1 = [0 0 1]; K2 = [0 0 1]; K3 = [0 0 1];K4 = [0 0 1]; K5 = [0 0 1];
-sp = 3;lw = 1.25;fs = 12;
+sp = 3;lw = 2;fs = 12;
 theta1 = 0;theta2 = 0;theta3 = 0;theta4 = 0;
 th = linspace( -pi, pi, 40);
 R = 5;  %or whatever radius you want
@@ -212,9 +213,9 @@ B1 = plot3([-1*sp,-1*sp+I3(1)],[0,I3(2)],[0,I3(3)],'r','LineWidth',lw);
 B2 = plot3([-1*sp,-1*sp+J3(1)],[0,J3(2)],[0,J3(3)],'g','LineWidth',lw);
 B3 = plot3([-1*sp,-1*sp+K3(1)],[0,K3(2)],[0,K3(3)],'b','LineWidth',lw);
 Bt1 = text(-0.5-1*sp,0,-0.1,'B','FontSize',fs);
-Bt2 = text(-1*sp+I3(1),I2(2),I2(3),'X','FontSize',fs);
-Bt3 = text(-1*sp+J3(1),J2(2),J2(3),'Y','FontSize',fs);
-Bt4 = text(-1*sp+K3(1),K2(2),K2(3),'Z','FontSize',fs);
+Bt2 = text(-1*sp+I3(1),I3(2),I3(3),'X','FontSize',fs);
+Bt3 = text(-1*sp+J3(1),J3(2),J3(3),'Y','FontSize',fs);
+Bt4 = text(-1*sp+K3(1),K3(2),K3(3),'Z','FontSize',fs);
 
 C1 = plot3([0,I4(1)],[0,I4(2)],[0,I4(3)],'r','LineWidth',lw);  
 C2 = plot3([0,J4(1)],[0,J4(2)],[0,J4(3)],'g','LineWidth',lw);
@@ -240,7 +241,6 @@ delete([t16,t17,t18,t19,t20,Cl1,Cl2,Cl3,Cl4,t21,t22,t23])
 % grid on
 axis equal
 axis([-8 8 -8 8])
-Cir1 = plot(Cx,Cy,'k.'); 
 Cl1 = plot([0,0.25*R*cos(theta1)],[0,0.25*R*sin(theta1)],'r','LineWidth',lw);
 Cl2 = plot([0.25*R*cos(theta2),0.5*R*cos(theta2)],[0.25*R*sin(theta2),0.5*R*sin(theta2)],'g','LineWidth',lw);
 Cl3 = plot([0.5*R*cos(theta3),0.75*R*cos(theta3)],[0.5*R*sin(theta3),0.75*R*sin(theta3)],'y','LineWidth',lw);
@@ -264,7 +264,6 @@ time = time+toc;
            fclose(fwrite);
            break; 
            end
-       end
-pause(0.1);       
+       end      
 end
 fclose(fwrite);

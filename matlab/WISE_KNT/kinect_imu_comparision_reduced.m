@@ -343,7 +343,7 @@ kinoff(5:8) = 0;
 kinect_ang = zeros(8,1);
 for i=1:14
 arg = char(markers(i));    
-[anline,anline1,fid] = TitleUpdate(arg,SUBJECTID);
+[anline,anline1,fid] = TitleUpdate_red(arg,SUBJECTID);
 lc=1;l=0;lflag = 0;telapsed=0;
 while (lc) 
    tstart = tic;
@@ -417,10 +417,6 @@ while (lc)
                     kin = lkinie; imu = limuie;
                     lim = imu;
                     tlow = -40; thigh=40;
-                case 'lie1' 
-                    kin = lkinie; imu = limuie;
-                    lim = imu;
-                    tlow = -40; thigh=40;
                 case 'ref'
                     kin = rkinef; imu = rimuef;
                     lim = kin;
@@ -441,12 +437,8 @@ while (lc)
                     kin = rkinie; imu = rimuie;
                     lim = imu;
                     tlow = -40; thigh=40;
-                case  'rie1'
-                    kin = rkinie; imu = rimuie;
-                    lim = imu;
-                    tlow = -40; thigh=40;
            end
-           updateWiseKinect(arg,kin,imu,telapsed,anline,anline1)
+           updateWiseKinect_red(arg,kin,imu,telapsed,anline,anline1)
            %'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_
            % LeftShoulder_Abd.-Add.','Kinect_LeftShoulder_Int.-Ext.','IMU_LeftShoulder_Int.-Ext.','Kinect_LeftElbow_Ext.-Flex.','IMU_LeftElbow_Ext.-Flex.',
            %'Kinect_RightShoulder_Ext.-Flex.','IMU_RightShoulder_Ext.-Flex.','Kinect_RightShoulder_Abd.-Add.','IMU_RightShoulder_Abd.-Add.',

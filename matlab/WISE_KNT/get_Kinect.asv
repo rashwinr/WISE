@@ -55,23 +55,56 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 % kinect paper algorithm reduced
                 lie = 666;
                 if lelb > 30
-                    
-                    Zref = -(cor_Z-dot(cor_Z,LA)*LA);
-                    Zref = Zref/norm(Zref);
-                    Yref = sag_Y-dot(sag_Y,LA)*LA;
-                    Yref = Yref/norm(Yref);
-                    lie = atan2d(dot(LFA,Yref),dot(LFA,Zref));
-                        
+                    PP = [dot(LA,trans_X),dot(LA,sag_Y),dot(LA,cor_Z)];
+                    AbsPP = abs(PP);
+                    [~,ind] = max(AbsPP);
+                    switch ind
+                        case 1
+                            Zref = -(cor_Z-dot(cor_Z,LA)*LA);
+                            Zref = Zref/norm(Zref);
+                            Yref = sag_Y-dot(sag_Y,LA)*LA;
+                            Yref = Yref/norm(Yref);
+                            lie = atan2d(dot(LFA,Yref),dot(LFA,Zref));
+                        case 2
+                            Zref = -(cor_Z-dot(cor_Z,LA)*LA);
+                            Zref = Zref/norm(Zref);
+                            Xref = trans_X-dot(trans_X,LA)*LA;
+                            Xref = Xref/norm(Xref);
+                            lie = atan2d(dot(LFA,Xref),dot(LFA,Zref));
+                        case 3
+                            Xref = trans_X-dot(trans_X,LA)*LA;
+                            Xref = -Xref/norm(Xref);
+                            Yref = sag_Y-dot(sag_Y,LA)*LA;
+                            Yref = Yref/norm(Yref);
+                            lie = atan2d(dot(LFA,Yref),dot(LFA,Xref));
+                    end
                 end
                 
                 rie = 666;
                 if relb > 30
-                    
-                    Zref = -(cor_Z-dot(cor_Z,RA)*RA);
-                    Zref = Zref/norm(Zref);
-                    Yref = sag_Y-dot(sag_Y,RA)*RA;
-                    Yref = -Yref/norm(Yref);
-                    rie = atan2d(dot(RFA,Yref),dot(RFA,Zref));
+                    PP = [dot(RA,trans_X),dot(RA,sag_Y),dot(RA,cor_Z)];
+                    AbsPP = abs(PP);
+                    [~,ind] = max(AbsPP);
+                    switch ind
+                        case 1
+                            Zref = -(cor_Z-dot(cor_Z,RA)*RA);
+                            Zref = Zref/norm(Zref);
+                            Yref = sag_Y-dot(sag_Y,RA)*RA;
+                            Yref = -Yref/norm(Yref);
+                            rie = atan2d(dot(RFA,Yref),dot(RFA,Zref));
+                        case 2
+                            Zref = -(cor_Z-dot(cor_Z,RA)*RA);
+                            Zref = Zref/norm(Zref);
+                            Xref = trans_X-dot(trans_X,RA)*RA;
+                            Xref = Xref/norm(Xref);
+                            rie = atan2d(dot(RFA,Xref),dot(RFA,Zref));
+                        case 3
+                            Xref = trans_X-dot(trans_X,RA)*RA;
+                            Xref = -Xref/norm(Xref);
+                            Yref = sag_Y-dot(sag_Y,RA)*RA;
+                            Yref = -Yref/norm(Yref);
+                            rie = atan2d(dot(RFA,Yref),dot(RFA,Xref));
+                    end
                     
                 end
                 

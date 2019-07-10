@@ -1,4 +1,5 @@
 clc;clear all;close all
+addpath('F:\github\wearable-jacket\matlab\IEEE_spmb\');
 cd(strcat('F:\github\wearable-jacket\matlab\IEEE_spmb\data\'));
 list1 = dir();
 t1 = zeros(200,1);
@@ -16,9 +17,9 @@ for i=1:length(IMUID)
     
     
     switch IMUID(i)
-        case 'D'
+        case 'B'
         figure(1)
-        sgtitle('IMU D angle testing');
+        sgtitle('IMU B angle testing');
         hold on
         sts = strcat('F:\github\wearable-jacket\matlab\IEEE_spmb\data\',IMUID(i));
         cd(sts);

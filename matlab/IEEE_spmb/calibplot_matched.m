@@ -8,7 +8,7 @@ fopen(ser);k=[];
 sts = 'C:\Users\ranst\OneDrive\Documents\GitHub\WISE\matlab\IEEE_spmb\data_matched\';
 cd(sts);
 ttotal = 0.5*60;
-prompt1 = 'Please enter the sensor ID attached on the moving arm (A,B,C,D): ';
+prompt1 = 'Please enter the sensor ID attached on the moving arm respond A,B,C,D: ';
 WISESENSORID = input(prompt1,'s');
 % WISESENSORID = 'A';
 if ~exist(num2str(WISESENSORID),'dir')
@@ -28,10 +28,8 @@ clearvars sts;
 prompt = 'Please enter the angle in degrees used for the experiment (0-180): ';
 ANGLE = input(prompt,'s');
 
-f = sprintf('%s_WISE+turntable_%s.txt',num2str(ANGLE),datestr(now,'mm-dd-yyyy HH-MM'));
-fwrite = fopen(f,'wt');
-
-%%
+f1 = sprintf('%s_WISE+turntable_%s.txt',num2str(ANGLE),datestr(now,'mm-dd-yyyy HH-MM'));
+fwrite = fopen(f1,'wt');
 
 q1 = [1,0,0,0];q2 = [1,0,0,0];q3 = [1,0,0,0];q4 = [1,0,0,0];q5 = [1,0,0,0];
 qI = [0,1,0,0];qJ = [0,0,1,0];qK = [0,0,0,1];qR = [1,0,0,0];
@@ -40,7 +38,7 @@ J1 = [0 1 0]; J2 = [0 1 0]; J3 = [0 1 0];J4 = [0 1 0]; J5 = [0 1 0];
 K1 = [0 0 1]; K2 = [0 0 1]; K3 = [0 0 1];K4 = [0 0 1]; K5 = [0 0 1];
 sp = 3;lw = 1.25;fs = 12;
 theta1 = 0;theta2 = 0;theta3 = 0;theta4 = 0;
-th = linspace( -pi, pi, 360);
+th = linspace( -pi, pi, 40);
 R = 5;  %or whatever radius you want
 Cx = R*cos(th);
 Cy = R*sin(th);
@@ -53,8 +51,8 @@ hold on
 
 subplot(2,1,1)
 hold on
-axis([-10 4 -2 2 -2 2]);
-view([35,24]);
+axis([-10 4 -1.5 1.5 -1.5 1.5]);
+view([11,29]);
 
 E1 = plot3([-3*sp,I1(1)-3*sp],[0,I1(2)],[0,I1(3)],'r','LineWidth',lw);  
 E2 = plot3([-3*sp,J1(1)-3*sp],[0,J1(2)],[0,J1(3)],'g','LineWidth',lw);
@@ -104,7 +102,12 @@ hold on
 % grid on
 axis equal
 axis([-8 8 -8 8])
-Cir1 = plot(Cx,Cy,'k.'); 
+plot(Cx,Cy,'k.'); 
+plot(0.25*Cx,0.25*Cy,'k.'); 
+plot(0.5*Cx,0.5*Cy,'k.'); 
+plot(0.75*Cx,0.75*Cy,'k.'); 
+plot([-5.5,5.5],[0,0],'k--');
+plot([0,0],[-5.5,5.5],'k--');
 Cl1 = plot([0,0.25*R*cos(0)],[0,0.25*R*sin(0)],'r','LineWidth',lw);
 Cl2 = plot([0.25*R*cos(0),0.5*R*cos(0)],[0.25*R*sin(0),0.5*R*sin(0)],'g','LineWidth',lw);
 Cl3 = plot([0.5*R*cos(0),0.75*R*cos(0)],[0.5*R*sin(0),0.75*R*sin(0)],'y','LineWidth',lw);
@@ -112,7 +115,7 @@ Cl4 = plot([0.75*R*cos(0),R*cos(0)],[0.75*R*sin(0),1*R*sin(0)],'b','LineWidth',l
 t16 = text(5.5,0,'0^o','FontSize',fs);
 t17 = text(-6.5,0,'180^o','FontSize',fs);
 t18 = text(0,+5.5,'90^o','FontSize',fs);
-t19 = text(0,-5.5,'270^o','FontSize',fs);
+t19 = text(0,-5.5,'-90^o','FontSize',fs);
 t20 = text(-7,7.5,strcat('A:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
 t21 = text(-3,7.5,strcat('B:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
 t22 = text(1,7.5,strcat('C:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
@@ -238,14 +241,14 @@ delete([t16,t17,t18,t19,t20,Cl1,Cl2,Cl3,Cl4,t21,t22,t23])
 axis equal
 axis([-8 8 -8 8])
 Cir1 = plot(Cx,Cy,'k.'); 
-Cl1 = plot([0,0.25*R*cos(0)],[0,0.25*R*sin(0)],'r','LineWidth',lw);
-Cl2 = plot([0.25*R*cos(0),0.5*R*cos(0)],[0.25*R*sin(0),0.5*R*sin(0)],'g','LineWidth',lw);
-Cl3 = plot([0.5*R*cos(0),0.75*R*cos(0)],[0.5*R*sin(0),0.75*R*sin(0)],'y','LineWidth',lw);
-Cl4 = plot([0.75*R*cos(0),R*cos(0)],[0.75*R*sin(0),1*R*sin(0)],'b','LineWidth',lw);
+Cl1 = plot([0,0.25*R*cos(theta1)],[0,0.25*R*sin(theta1)],'r','LineWidth',lw);
+Cl2 = plot([0.25*R*cos(theta2),0.5*R*cos(theta2)],[0.25*R*sin(theta2),0.5*R*sin(theta2)],'g','LineWidth',lw);
+Cl3 = plot([0.5*R*cos(theta3),0.75*R*cos(theta3)],[0.5*R*sin(theta3),0.75*R*sin(theta3)],'y','LineWidth',lw);
+Cl4 = plot([0.75*R*cos(theta4),R*cos(theta4)],[0.75*R*sin(theta4),1*R*sin(theta4)],'b','LineWidth',lw);
 t16 = text(5.5,0,'0^o','FontSize',fs);
 t17 = text(-6.5,0,'180^o','FontSize',fs);
 t18 = text(0,+5.5,'90^o','FontSize',fs);
-t19 = text(0,-5.5,'270^o','FontSize',fs);
+t19 = text(0,-5.5,'-90^o','FontSize',fs);
 t20 = text(-7,7.5,strcat('A:  ',num2str(theta1*180/pi),'^{o}'),'FontSize',fs);
 t21 = text(-3,7.5,strcat('B:  ',num2str(theta2*180/pi),'^{o}'),'FontSize',fs);
 t22 = text(1,7.5,strcat('C:  ',num2str(theta3*180/pi),'^{o}'),'FontSize',fs);
@@ -253,7 +256,7 @@ t23 = text(5,7.5,strcat('D:  ',num2str(theta4*180/pi),'^{o}'),'FontSize',fs);
 
 % suptitle(strcat('Turntable testing sensorID:   ',WISESENSORID, '   ',AX,' axis'));
 hold off
-fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',time,q1(1),q1(2),q1(3),q1(4),q2(1),q2(2),q2(3),q2(4),theta);
+fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',time,q1(1),q1(2),q1(3),q1(4),q2(1),q2(2),q2(3),q2(4),q3(1),q3(2),q3(3),q3(4),q4(1),q4(2),q4(3),q4(4),theta1,theta2,theta3,theta4);
 time = time+toc;
        if ~isempty(k)
            if strcmp(k,'q') 

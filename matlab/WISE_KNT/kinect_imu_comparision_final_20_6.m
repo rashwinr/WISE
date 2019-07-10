@@ -1,9 +1,13 @@
 %% Initialization section
 clear all; close all;clc;
-tp = 0.001;
-SUBJECTID = 2469;
+tp = 0.0001;
 
+<<<<<<< HEAD
 markers = ["lef","lbd","lelb","lelb1","lie","ref","rbd","relb","relb1","rie"];
+=======
+SUBJECTID = 2470;
+markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
+>>>>>>> b4e97f6a9e9573f7f26eddc4ab4a025fd7010be8
 
 %Kinect initialization script
 addpath('F:\github\wearable-jacket\matlab\KInectProject\Kin2');
@@ -48,10 +52,9 @@ fwrite = fopen(f,'wt');
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     
 %quaternion variables
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
-lshoangle = [0,0,0]';
-rshoangle = [0,0,0]';
-lwriangle = [0,0]';
-rwriangle = [0,0]';
+lshoangle = [0,0,0,0,0]';
+rshoangle = [0,0,0,0,0]';
+
 
 G = [0,0,-1];
 qI = [0,1,0,0];
@@ -203,10 +206,10 @@ end
 
 thl = thl_avg/count;
 
-lshoangle_x = [0,0,0]';
-rshoangle_x = [0,0,0]';
-lshoangle_avg = [0,0,0]';
-rshoangle_avg = [0,0,0]';
+lshoangle_x = [0,0,0,0,0]';
+rshoangle_x = [0,0,0,0,0]';
+lshoangle_avg = [0,0,0,0,0]';
+rshoangle_avg = [0,0,0,0,0]';
 
 kinoff = [0;0;0;0;0;0;0;0];
 kin_avg = [0;0;0;0;0;0;0;0];
@@ -218,8 +221,8 @@ while tl <=5
     if ser.BytesAvailable
 
            [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);       
-           lshoangle_x = get_Left_Arm(qE,qC);
-           rshoangle_x = get_Right_Arm(qE,qD);  
+           lshoangle_x = get_Left(qE,qC,qA);
+           rshoangle_x = get_Right(qE,qD,qB);  
 
     end
     
@@ -259,8 +262,8 @@ while count<=50
            if numBodies == 1
                pos2Dxxx = bodies(1).Position; 
                [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);       
-               lshoangle = get_Left_Arm(qE,qC);
-               rshoangle = get_Right_Arm(qE,qD);
+               lshoangle = get_Left(qE,qC,qA);
+               rshoangle = get_Right(qE,qD,qB);
                kinect_angles = get_Kinect(pos2Dxxx);
       
                figure(1)
@@ -336,8 +339,8 @@ close figure 2
 sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)
 
-lshoangle_x(3) = 0;
-rshoangle_x(3) = 0;
+lshoangle_x(3:5) = 0;
+rshoangle_x(3:5) = 0;
 kinoff(5:8) = 0;
 
 kinect_ang = zeros(8,1);
@@ -359,25 +362,21 @@ while (lc)
        pos2Dxxx = bodies(1).Position; 
        [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
 
-       lshoangle = get_Left_Arm(qE,qC);
+       lshoangle = get_Left(qE,qC,qA);
        lshoangle = lshoangle-lshoangle_x;
        limuef = lshoangle(1);
        limubd = lshoangle(2);
        limuie = lshoangle(3); 
+       limuelb = lshoangle(4);
+       limuelb1 = lshoangle(5);
        
-       rshoangle = get_Right_Arm(qE,qD);
+       rshoangle = get_Right(qE,qD,qB);
        rshoangle = rshoangle - rshoangle_x;
        rimuef = rshoangle(1);
        rimubd = rshoangle(2);
        rimuie = rshoangle(3);
-       
-       lwriangle = get_Left_Wrist(qC,qA);
-       limuelb = lwriangle(1);
-       limuelb1 = lwriangle(2);
-       
-       rwriangle = get_Right_Wrist(qD,qB);
-       rimuelb = rwriangle(1);
-       rimuelb1 = rwriangle(2);
+       rimuelb = rshoangle(4);
+       rimuelb1 = rshoangle(5);
 
            kinect_ang = get_Kinect(pos2Dxxx);
            kinect_ang = kinect_ang-kinoff;

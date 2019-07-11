@@ -4,7 +4,7 @@ markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","rel
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
 % <<<<<<< HEAD
 % <<<<<<< HEAD
-SID = 2469;
+SID = 2900;
 addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
 % addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
 cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
@@ -23,7 +23,7 @@ cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
 % cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
 % cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
 
-SID = 2469;
+SID = 2900;
 % addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
 % addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
 % cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
@@ -61,7 +61,7 @@ for i = 1:length(spike_files)
         if f2.length()>=5 && f2(3)== "testing"
             typ = f2(5);
         
-        data = importWISEKINECT(spike_files(i).name);
+        data = importWISEKINECT1(spike_files(i).name);
         len = size(data,1);
         textvars = data(1,:);
         Time = zeros(len-1,1);
@@ -81,12 +81,10 @@ for i = 1:length(spike_files)
         lbd(j-1,:) = [str2double(data(j,4)) str2double(data(j,5))];
         lie(j-1,:) = [str2double(data(j,6)) str2double(data(j,7))];
         lelbfe(j-1,:) = [str2double(data(j,8)) str2double(data(j,9))];
-        lfps(j-1) = str2double(data(j,10));
-        rfe(j-1,:) = [str2double(data(j,11)) str2double(data(j,12))];
-        rbd(j-1,:) = [str2double(data(j,13)) str2double(data(j,14))];
-        rie(j-1,:) = [str2double(data(j,15)) str2double(data(j,16))];
-        relbfe(j-1,:) = [str2double(data(j,17)) str2double(data(j,18))];
-        rfps(j-1) = str2double(data(j,19));
+        rfe(j-1,:) = [str2double(data(j,10)) str2double(data(j,11))];
+        rbd(j-1,:) = [str2double(data(j,12)) str2double(data(j,13))];
+        rie(j-1,:) = [str2double(data(j,14)) str2double(data(j,15))];
+        relbfe(j-1,:) = [str2double(data(j,16)) str2double(data(j,17))];
         end
 
         fopen(trfile,'a+');

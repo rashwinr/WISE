@@ -1,4 +1,4 @@
-function WISEKINECTtesting = importWISEKINECT(filename, dataLines)
+function WISEKINECTtesting = importWISEKINECT1(filename, dataLines)
 %IMPORTFILE1 Import data from a text file
 %  WISEKINECTTESTING061420192059LEF = IMPORTFILE1(FILENAME) reads data
 %  from text file FILENAME for the default selection.  Returns the data
@@ -32,7 +32,7 @@ opts.Delimiter = ",";
 
 % Specify column names and types
 opts.VariableNames = ["Timestamp", "Kinect_LeftShoulder_ExtFlex", "IMU_LeftShoulder_ExtFlex", "Kinect_LeftShoulder_AbdAdd", "IMU_LeftShoulder_AbdAdd", "Kinect_LeftShoulder_IntExt", "IMU_LeftShoulder_IntExt", "Kinect_LeftElbow_ExtFlex", "IMU_LeftElbow_ExtFlex", "Kinect_RightShoulder_ExtFlex", "IMU_RightShoulder_ExtFlex", "Kinect_RightShoulder_AbdAdd", "IMU_RightShoulder_AbdAdd", "Kinect_RightShoulder_IntExt", "IMU_RightShoulder_IntExt", "Kinect_RightElbow_ExtFlex", "IMU_RightElbow_ExtFlex"];
-opts.VariableTypes = ["string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string"];
+opts.VariableTypes = ["string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string"];
 opts = setvaropts(opts, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], "WhitespaceRule", "preserve");
 opts = setvaropts(opts, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], "EmptyFieldRule", "auto");
 opts.ExtraColumnsRule = "ignore";

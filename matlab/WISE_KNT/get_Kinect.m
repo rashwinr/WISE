@@ -60,6 +60,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     Zref = Zref/norm(Zref);
                     Yref = sag_Y-dot(sag_Y,LA)*LA;
                     Yref = Yref/norm(Yref);
+                    LFA = LFA-dot(LFA,LA)*LA;
                     lie = atan2d(dot(LFA,Yref),dot(LFA,Zref));
                         
                 end
@@ -71,6 +72,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     Zref = Zref/norm(Zref);
                     Yref = sag_Y-dot(sag_Y,RA)*RA;
                     Yref = -Yref/norm(Yref);
+                    RFA = RFA-dot(RFA,RA)*RA;
                     rie = atan2d(dot(RFA,Yref),dot(RFA,Zref));
                     
                 end

@@ -58,6 +58,7 @@ if left(4,1)>=30
     Zref = Zref/norm(Zref);
     Yref = Vyb-dot(Vyb,Vya)*Vya;
     Yref = Yref/norm(Yref);
+    Vyw = Vyw -dot(Vyw,Vya)*Vya;
     left(3,1) = atan2d(dot(Vyw,Yref),dot(Vyw,Zref));
 
 end

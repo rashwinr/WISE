@@ -1,6 +1,6 @@
 %% Initialization section
 clear all; close all;clc;
-tp = 0.01;
+tp = 0.0;
 prompt1 = 'Please enter the subject ID given for the user: ';
 SUBJECTID = input(prompt1);
 % SUBJECTID = 2900;
@@ -67,21 +67,21 @@ sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)
 hold on
 subplot(3,2,1)
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+xlabel('Sample number','FontWeight','bold','FontSize',font);
 ylabel('Mounting offset angle (degrees)','FontWeight','bold','FontSize',font);
 legend('Location','NorthWest','FontWeight','bold','FontSize',font);
 axes = gca;
 Moff_line = animatedline(axes,'Color','b','DisplayName','Back IMU mounting offset');
 
 subplot(3,2,2)
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+xlabel('Sample number','FontWeight','bold','FontSize',font);
 ylabel('Lumbar spine angle (degrees)','FontWeight','bold','FontSize',font);
 legend('Location','NorthWest','FontWeight','bold','FontSize',font);
 axes1 = gca;
 LumbSpine_line = animatedline(axes1,'Color','b','DisplayName','Lumbar spine inclination');
 
 subplot(3,2,3)
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+xlabel('Sample number','FontWeight','bold','FontSize',font);
 ylabel('Left flex-ext offset (degrees)','FontWeight','bold','FontSize',font);
 legend('Location','NorthWest','FontWeight','bold','FontSize',font);
 axes2 = gca;
@@ -90,7 +90,7 @@ L_knt_extflex_line = animatedline(axes2,'Color','r','DisplayName','KINECT left f
 
 
 subplot(3,2,4)
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+xlabel('Sample number','FontWeight','bold','FontSize',font);
 ylabel('Left flex-ext offset (degrees)','FontWeight','bold','FontSize',font);
 legend('Location','NorthWest','FontWeight','bold','FontSize',font);
 axes3 = gca;
@@ -98,7 +98,7 @@ R_imu_extflex_line = animatedline(axes3,'Color','b','DisplayName','WISE right fl
 R_knt_extflex_line = animatedline(axes3,'Color','r','DisplayName','KINECT right flex-ext offset');
 
 subplot(3,2,5)
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+xlabel('Sample number','FontWeight','bold','FontSize',font);
 ylabel('Left flex-ext offset (degrees)','FontWeight','bold','FontSize',font);
 legend('Location','NorthWest','FontWeight','bold','FontSize',font);
 axes4 = gca;
@@ -106,7 +106,7 @@ L_imu_abdadd_line = animatedline(axes4,'Color','b','DisplayName','WISE left abd-
 L_knt_abdadd_line = animatedline(axes4,'Color','r','DisplayName','KINECT left abd-add offset');
 
 subplot(3,2,6)
-xlabel('Time (seconds)','FontWeight','bold','FontSize',font);
+xlabel('Sample number','FontWeight','bold','FontSize',font);
 ylabel('Left flex-ext offset (degrees)','FontWeight','bold','FontSize',font);
 legend('Location','NorthWest','FontWeight','bold','FontSize',font);
 axes5 = gca;
@@ -499,5 +499,5 @@ close figure 1 figure 2
 fclose(ser);
 delete(ser);
 close all;clear all;
-delete(instrfind({'Port'},{'COM15'}))
+instrreset
 

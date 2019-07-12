@@ -1,0 +1,20 @@
+Mounting offset angle: -5 in degrees
+Lumbar spine angle: -7.5723 in degrees
+Kinect offset angles: 0.524755 in degrees
+Kinect offset angles: -0.166284 in degrees
+Kinect offset angles: 6.578279 in degrees
+Kinect offset angles: 7.853437 in degrees
+Kinect offset angles: 666.000000 in degrees
+Kinect offset angles: 666.000000 in degrees
+Kinect offset angles: 19.882371 in degrees
+Kinect offset angles: 19.476612 in degrees
+WISE left side offset angles: 202.440487 in degrees
+WISE left side offset angles: 186.886217 in degrees
+WISE left side offset angles: 33.015711 in degrees
+WISE left side offset angles: 164.344306 in degrees
+WISE left side offset angles: -127.452961 in degrees
+WISE right side offset angles: 21.707624 in degrees
+WISE right side offset angles: 4.332312 in degrees
+WISE right side offset angles: 666.000000 in degrees
+WISE right side offset angles: 15.444748 in degrees
+WISE right side offset angles: 24.030220 in degrees

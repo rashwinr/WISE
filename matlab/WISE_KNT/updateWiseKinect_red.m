@@ -57,16 +57,21 @@ switch char
 
     case {'lie'}
     
-        kiniestr = num2str(kin,'%.2f');    
+        kiniestr = num2str(kin,'%.2f');   
+        imuiestr = num2str(imu,'%.2f');
         if kin>=500
             kiniestr = strcat('NA');
             kin = 0;
         end
+        if imu>=500
+            imuiestr = strcat('NA');
+            imu = 0;
+        end
         text(ls+lw/5,7*s,stext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
         text(ls+lw/5,8*s,iestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         text(ls+(lw/lkinlocationdiv),7.5*s,kiniestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-        text(ls+(limulocationdiv*lw),7.5*s,num2str(imu,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-
+        text(ls+(limulocationdiv*lw),7.5*s,imuiestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
+  
     case 'ref'
         
         text(rs+rw/5,7*s,stext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
@@ -90,16 +95,20 @@ switch char
         
     case {'rie'}
         
-        kiniestr = num2str(kin,'%.2f');    
+        kiniestr = num2str(kin,'%.2f');   
+        imuiestr = num2str(imu,'%.2f');
         if kin>=500
             kiniestr = strcat('NA');
             kin = 0;
         end
+        if imu>=500
+            imuiestr = strcat('NA');
+            imu = 0;
+        end
         text(rs+rw/5,7*s,stext,'Color','white','FontSize',fs/fontdiv,'FontWeight','bold','HorizontalAlignment','center');
         text(rs+rw/5,8*s,iestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
         text(rs+(rw/rkinlocationdiv),7.5*s,kiniestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-        text(rs+(rimulocationdiv*rw),7.5*s,num2str(imu,'%.2f'),'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
-        
+        text(rs+(rimulocationdiv*rw),7.5*s,imuiestr,'Color','white','FontSize',fs/fontdiv,'FontWeight','normal','HorizontalAlignment','center');
 end
 
 addpoints(anline,time,kin); 

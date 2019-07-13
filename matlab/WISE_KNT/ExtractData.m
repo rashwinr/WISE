@@ -1,11 +1,11 @@
 clc;clear all;close all
-markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
+markers = ["lef","lbd","lelb","lelb1","lie","ref","rbd","relb","relb1","rie"];
 subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
-SID = 2469;
-addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
+SID = 5965;
+% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
+% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
 list = dir();
 spike_files=dir('*.txt');
 
@@ -30,7 +30,7 @@ for i = 1:length(spike_files)
         if f2.length()>=5 && f2(3)== "testing"
             typ = f2(5);
         
-        data = importWISEKINECT(spike_files(i).name);
+        data = importWISEKINECT1(spike_files(i).name);
         len = size(data,1);
         textvars = data(1,:);
         Time = zeros(len-1,1);
@@ -50,12 +50,10 @@ for i = 1:length(spike_files)
         lbd(j-1,:) = [str2double(data(j,4)) str2double(data(j,5))];
         lie(j-1,:) = [str2double(data(j,6)) str2double(data(j,7))];
         lelbfe(j-1,:) = [str2double(data(j,8)) str2double(data(j,9))];
-        lfps(j-1) = str2double(data(j,10));
-        rfe(j-1,:) = [str2double(data(j,11)) str2double(data(j,12))];
-        rbd(j-1,:) = [str2double(data(j,13)) str2double(data(j,14))];
-        rie(j-1,:) = [str2double(data(j,15)) str2double(data(j,16))];
-        relbfe(j-1,:) = [str2double(data(j,17)) str2double(data(j,18))];
-        rfps(j-1) = str2double(data(j,19));
+        rfe(j-1,:) = [str2double(data(j,10)) str2double(data(j,11))];
+        rbd(j-1,:) = [str2double(data(j,12)) str2double(data(j,13))];
+        rie(j-1,:) = [str2double(data(j,14)) str2double(data(j,15))];
+        relbfe(j-1,:) = [str2double(data(j,16)) str2double(data(j,17))];
         end
 
         fopen(trfile,'a+');
@@ -68,56 +66,48 @@ for i = 1:length(spike_files)
         switch(typ)
 
             case markers(1)
-                Lfe = lfe;
+                Lfe = [lfe,Time];
                 
             case markers(2)
-                Lbd = lbd;
+                Lbd = [lbd,Time];
                 
             case markers(3)
-                Lelbfe = lelbfe;
+                Lelbfe = [lelbfe,Time];
                 
             case markers(4)
-                Lelbfe1 = lelbfe;
-                
-            case markers(5)
+                Lelbfe1 = [lelbfe,Time];
 
-            case markers(6)
-                Radius = 30;
+            case markers(5)
                 
                 lie(lie==666) = NaN;
-                [Row] = find(isnan(lie(:,1)));
+                [Row,~] = find(isnan(lie));
                 lie(Row,:) = [];
+                T = Time;
+                T(Row) = [];
                 
-                Lie = lie;
+                Lie = [lie,T];
+
+            case markers(6)
+                Rfe = [rfe,Time];
                 
             case markers(7)
+                Rbd = [rbd,Time];
 
             case markers(8)
-                Rfe = rfe;
-                
+                Relbfe = [relbfe,Time];
+
             case markers(9)
-                Rbd = rbd;
-
-            case markers(10)
-                Relbfe = relbfe;
-
-            case markers(11)
-                Relbfe1 = relbfe;
-  
-            case markers(12)
+                Relbfe1 = [relbfe,Time];
      
-            case markers(13)
+            case markers(10)
                 
                 rie(rie==666) = NaN;
-                [Row] = find(isnan(rie(:,1)));
+                [Row,~] = find(isnan(rie));
                 rie(Row,:) = [];
-                Time(length(rie)+1:length(Time)) = [];
+                T = Time;
+                T(Row) = [];
                 
-                Rie = rie;
-     
-            case markers(14)
-          
-
+                Rie = [rie,T];
         end
        
     fclose(fid);
@@ -126,6 +116,14 @@ for i = 1:length(spike_files)
 
    end 
 end
-%%
-close all
-ThorPlot(1,Lfe,Lbd,Lelbfe,Lelbfe1,Lie,Rfe,Rbd,Relbfe,Relbfe1,Rie)
+
+%% smooth Subplots of exercises 
+SmoothSubPlot(SID,1,Lfe,Lbd,Lelbfe,Lelbfe1,Lie,Rfe,Rbd,Relbfe,Relbfe1,Rie)
+
+%% RMSE plot
+RMSEplot(SID,2,Lfe,Lbd,Lelbfe,Lelbfe1,Lie,Rfe,Rbd,Relbfe,Relbfe1,Rie)
+
+%% Thoroid plot
+% close all
+span = 10;
+ThorPlot(SID,3,span,Lfe,Lbd,Lelbfe,Lelbfe1,Lie,Rfe,Rbd,Relbfe,Relbfe1,Rie)

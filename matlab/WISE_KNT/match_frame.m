@@ -3,7 +3,7 @@ qK = [0,0,0,1];
     switch char
         case 'a'
             th1 = 0.0464;
-            qv1 = [0,  0.9492,-0.3146,0];
+            qv1 = [0,  0.9492,-0.3146,0]; % imu frame
             th2 = -0.0613;
         case 'b'
             th1 = 0.1264;
@@ -24,7 +24,7 @@ qK = [0,0,0,1];
     end
     
     [~,x,y,z] = parts(quaternion(quatmultiply(Q,quatmultiply(qv1,quatconj(Q)))));
-    qv1 = [cos(th1/2),x*sin(th1/2),y*sin(th1/2),z*sin(th1/2)];
+    qv1 = [cos(th1/2),x*sin(th1/2),y*sin(th1/2),z*sin(th1/2)]; %world frame
     Q = quatmultiply(qv1,Q);
 %     q = quatmultiply(qv1,Q);
     

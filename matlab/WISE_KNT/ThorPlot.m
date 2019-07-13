@@ -1,9 +1,19 @@
-function ThorPlot(figNum,lfe,lbd,lelbfe,lelbfe1,lie,rfe,rbd,relbfe,relbfe1,rie)
+function ThorPlot(SID,figNum,span,lfe,lbd,lelbfe,lelbfe1,lie,rfe,rbd,relbfe,relbfe1,rie)
+lfe = lfe(:,1:2);
+lbd = lbd(:,1:2);
+lelbfe = lelbfe(:,1:2);
+lelbfe1 = lelbfe1(:,1:2);
+lie = lie(:,1:2);
+rfe = rfe(:,1:2);
+rbd = rbd(:,1:2);
+relbfe = relbfe(:,1:2);
+relbfe1 = relbfe1(:,1:2);
+rie = rie(:,1:2);
+
 LW = 1;
 LWref = 0.5;
 font = 15;
 
-span = 5;
 scale = 0.1;
 
 cmax = 20;
@@ -24,7 +34,7 @@ txthshift = -17*pi/180;
 ThMean_Cmap = load('ThMean_Cmap.mat');
 
 figure(figNum);
-sgtitle(strcat('Kinect+WISE',' Mean errors vs angles'));
+sgtitle(strcat(num2str(SID),'Kinect+WISE',' Mean errors vs angles'));
 
 figure(figNum)
 SubP1 = subplot(1,2,1);

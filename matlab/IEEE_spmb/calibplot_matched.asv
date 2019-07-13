@@ -36,7 +36,7 @@ fwrite = fopen(f1,'wt');
 
 %%
 
-gam = 30*pi/180;
+th = 30*pi/180;
 
 q1 = [1,0,0,0];q2 = [1,0,0,0];q3 = [1,0,0,0];q4 = [1,0,0,0];q5 = [1,0,0,0];
 qI = [0,1,0,0];qJ = [0,0,1,0];qK = [0,0,0,1];qR = [1,0,0,0];
@@ -45,7 +45,7 @@ J1 = [0 1 0]; J2 = [0 1 0]; J3 = [0 1 0];J4 = [0 1 0]; J5 = [0 1 0];
 K1 = [0 0 1]; K2 = [0 0 1]; K3 = [0 0 1];K4 = [0 0 1]; K5 = [0 0 1];
 sp = 3;lw = 2;fs = 12;
 theta1 = 0;theta2 = 0;theta3 = 0;theta4 = 0;
-th = -pi:10*pi/180:pi;
+th = linspace( -pi, pi, 40);
 R = 5;  %or whatever radius you want
 Cx = R*cos(th);
 Cy = R*sin(th);
@@ -118,10 +118,10 @@ plot(0.5*Cx,0.5*Cy,'k.');
 plot(0.75*Cx,0.75*Cy,'k.'); 
 plot([-5.5,5.5],[0,0],'k--');
 plot([0,0],[-5.5,5.5],'k--');
-Cl1 = plot([0,0.25*R*cos(gam)],[0,0.25*R*sin(gam)],'r','DisplayName','A','LineWidth',lw);
-Cl2 = plot([0.25*R*cos(gam),0.5*R*cos(gam)],[0.25*R*sin(gam),0.5*R*sin(gam)],'g','DisplayName','B','LineWidth',lw);
-Cl3 = plot([0.5*R*cos(gam),0.75*R*cos(gam)],[0.5*R*sin(gam),0.75*R*sin(gam)],'y','DisplayName','C','LineWidth',lw);
-Cl4 = plot([0.75*R*cos(gam),R*cos(gam)],[0.75*R*sin(gam),R*sin(gam)],'b','DisplayName','D','LineWidth',lw);
+Cl1 = plot([0,0.25*R*cos(0)],[0,0.25*R*sin(0)],'r','DisplayName','A','LineWidth',lw);
+Cl2 = plot([0.25*R*cos(0),0.5*R*cos(0)],[0.25*R*sin(0),0.5*R*sin(0)],'g','DisplayName','B','LineWidth',lw);
+Cl3 = plot([0.5*R*cos(0),0.75*R*cos(0)],[0.5*R*sin(0),0.75*R*sin(0)],'y','DisplayName','C','LineWidth',lw);
+Cl4 = plot([0.75*R*cos(0),R*cos(0)],[0.75*R*sin(0),1*R*sin(0)],'b','DisplayName','D','LineWidth',lw);
 t16 = text(5.5,0,'0^o','FontSize',fs);
 t17 = text(-7,0,'180^o','FontSize',fs);
 t18 = text(0,+6,'90^o','FontSize',fs);

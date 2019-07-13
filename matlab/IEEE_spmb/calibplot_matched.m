@@ -123,7 +123,7 @@ t22 = text(1,7.5,strcat('C:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
 t23 = text(5,7.5,strcat('D:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
 hold off
 
-
+%%
 
 while time<=ttotal
 tic;

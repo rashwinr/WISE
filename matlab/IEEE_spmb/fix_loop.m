@@ -73,7 +73,7 @@ while true
                     A_sys = str2double(data(6));      
                     Cal_A = [A_mag A_acc A_gyr A_sys]
             end  
-        case 'e'
+        case 'd'
             q(1) = str2double(data(2))*m+p;
             q(2) = str2double(data(3))*m+p;
             q(3) = str2double(data(4))*m+p;
@@ -139,13 +139,13 @@ while true
                     A_sys = str2double(data(6));      
                     Cal_A = [A_mag A_acc A_gyr A_sys]
             end  
-        case 'e'
+        case 'd'
             q(1) = str2double(data(2))*m+p;
             q(2) = str2double(data(3))*m+p;
             q(3) = str2double(data(4))*m+p;
             q(4) = str2double(data(5))*m+p;
             q = quatnormalize(q);
-            q = match_frame('e',q);
+            q = match_frame(data(1),q);
             
                 
             [~,I1,I2,I3] = parts(quaternion(quatmultiply(q,quatmultiply(qI,quatconj(q)))));
@@ -204,13 +204,13 @@ while true
                     A_sys = str2double(data(6));      
                     Cal_A = [A_mag A_acc A_gyr A_sys]
             end  
-        case 'a'
+        case 'd'
             q(1) = str2double(data(2))*m+p;
             q(2) = str2double(data(3))*m+p;
             q(3) = str2double(data(4))*m+p;
             q(4) = str2double(data(5))*m+p;
             q = quatnormalize(q);
-            q = match_frame('a',q);
+            q = match_frame(data(1),q);
             
                 
             [~,I1,I2,I3] = parts(quaternion(quatmultiply(q,quatmultiply(qI,quatconj(q)))));

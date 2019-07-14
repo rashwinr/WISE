@@ -18,9 +18,9 @@ qK = [0,0,0,1];
             qv1 = [0,  0.7588,-0.6513,0];
             th2 = -0.0298;
         case 'e'
-            th1 = 0.1053;
-            qv1 = [0,  0.9921,0.1258,0];
-            th2 = -0.0227;
+            th1 = 0.1329;
+            qv1 = [0,0.9591,-0.2832,0];
+            th2 = -0.0343;
     end
     
     [~,x,y,z] = parts(quaternion(quatmultiply(Q,quatmultiply(qv1,quatconj(Q)))));

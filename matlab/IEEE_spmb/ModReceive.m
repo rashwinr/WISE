@@ -16,7 +16,7 @@ datamodified = ["0","0","0","0","0";
                 "0","0","0","0","0";
                 "0","0","0","0","0"];
 bytes = ser.Bytesavailable;
-while bytes<=100
+while bytes<=200
 bytes = ser.Bytesavailable;    
 end
 str = strsplit(convertCharsToStrings(char(fread(ser,bytes))),'\n');

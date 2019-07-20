@@ -37,7 +37,9 @@ fwrite = fopen(f1,'wt');
 %%
 
 gam = 30*pi/180;
-
+rp = ((randperm(9,4)*0.1)+(randperm(9,4)*0.01))*pi/180;
+gaq = size(rp);
+gaq = gam+rp;
 q1 = [1,0,0,0];q2 = [1,0,0,0];q3 = [1,0,0,0];q4 = [1,0,0,0];q5 = [1,0,0,0];
 qI = [0,1,0,0];qJ = [0,0,1,0];qK = [0,0,0,1];qR = [1,0,0,0];
 I1 = [1 0 0]; I2 = [1 0 0]; I3 = [1 0 0];I4 = [1 0 0]; I5 = [1 0 0];
@@ -50,6 +52,33 @@ R = 5;  %or whatever radius you want
 Cx = R*cos(th);
 Cy = R*sin(th);
 
+
+q1 = [cos(-pi/4),sin(-pi/4),0,0];
+
+q2 = [cos(gaq(1)/2),0,0,sin(gaq(1)/2)];
+q3 = [cos(gaq(2)/2),0,0,sin(gaq(2)/2)];
+q4 = [cos(gaq(3)/2),0,0,sin(gaq(3)/2)];
+q5 = [cos(gaq(4)/2),0,0,sin(gaq(4)/2)];
+q1 = [cos(-pi/4),sin(-pi/4),0,0];
+[~,I1(1),I1(2),I1(3)] = parts(quaternion(quatmultiply(q1,quatmultiply(qI,quatconj(q1)))));
+[~,J1(1),J1(2),J1(3)] = parts(quaternion(quatmultiply(q1,quatmultiply(qJ,quatconj(q1)))));
+[~,K1(1),K1(2),K1(3)] = parts(quaternion(quatmultiply(q1,quatmultiply(qK,quatconj(q1)))));
+
+[~,I2(1),I2(2),I2(3)] = parts(quaternion(quatmultiply(q2,quatmultiply(qI,quatconj(q2)))));
+[~,J2(1),J2(2),J2(3)] = parts(quaternion(quatmultiply(q2,quatmultiply(qJ,quatconj(q2)))));
+[~,K2(1),K2(2),K2(3)] = parts(quaternion(quatmultiply(q2,quatmultiply(qK,quatconj(q2)))));
+
+[~,I3(1),I3(2),I3(3)] = parts(quaternion(quatmultiply(q3,quatmultiply(qI,quatconj(q3)))));
+[~,J3(1),J3(2),J3(3)] = parts(quaternion(quatmultiply(q3,quatmultiply(qJ,quatconj(q3)))));
+[~,K3(1),K3(2),K3(3)] = parts(quaternion(quatmultiply(q3,quatmultiply(qK,quatconj(q3)))));
+
+[~,I4(1),I4(2),I4(3)] = parts(quaternion(quatmultiply(q4,quatmultiply(qI,quatconj(q4)))));
+[~,J4(1),J4(2),J4(3)] = parts(quaternion(quatmultiply(q4,quatmultiply(qJ,quatconj(q4)))));
+[~,K4(1),K4(2),K4(3)] = parts(quaternion(quatmultiply(q4,quatmultiply(qK,quatconj(q4)))));
+
+[~,I5(1),I5(2),I5(3)] = parts(quaternion(quatmultiply(q5,quatmultiply(qI,quatconj(q5)))));
+[~,J5(1),J5(2),J5(3)] = parts(quaternion(quatmultiply(q5,quatmultiply(qJ,quatconj(q5)))));
+[~,K5(1),K5(2),K5(3)] = parts(quaternion(quatmultiply(q5,quatmultiply(qK,quatconj(q5)))));
 time= 0;
 % sz2 = screensize(2);
 figure(1)
@@ -59,7 +88,7 @@ hold on
 subplot(2,1,1)
 hold on
 axis equal
-axis off
+% axis off
 axis([-10 4 -1.5 1.5 -1.5 1.5]);
 view([11,29]);
 
@@ -102,7 +131,12 @@ Dt1 = text(sp-0.50,0,-0.1,'D','FontSize',fs);
 Dt2 = text(sp+I5(1),I5(2),I5(3),'X','FontSize',fs);
 Dt3 = text(sp+J5(1),J5(2),J5(3),'Y','FontSize',fs);
 Dt4 = text(sp+K5(1),K5(2),K5(3),'Z','FontSize',fs);
-
+set(gca,'YTick',[]);
+set(gca,'XTick',[]);
+set(gca,'ZTick',[]);
+set(gca,'Yticklabel',[]); 
+set(gca,'Xticklabel',[]);
+set(gca,'Zticklabel',[]); 
 hold off
 
 SubP2 = subplot(2,1,2);
@@ -110,7 +144,7 @@ hold on
 
 % grid on
 axis equal
-axis off
+% axis off
 axis([-8 8 -8 8])
 plot(Cx,Cy,'k.'); 
 plot(0.25*Cx,0.25*Cy,'k.'); 
@@ -118,19 +152,24 @@ plot(0.5*Cx,0.5*Cy,'k.');
 plot(0.75*Cx,0.75*Cy,'k.'); 
 plot([-5.5,5.5],[0,0],'k--');
 plot([0,0],[-5.5,5.5],'k--');
-Cl1 = plot([0,0.25*R*cos(gam)],[0,0.25*R*sin(gam)],'r','DisplayName','A','LineWidth',lw);
-Cl2 = plot([0.25*R*cos(gam),0.5*R*cos(gam)],[0.25*R*sin(gam),0.5*R*sin(gam)],'g','DisplayName','B','LineWidth',lw);
-Cl3 = plot([0.5*R*cos(gam),0.75*R*cos(gam)],[0.5*R*sin(gam),0.75*R*sin(gam)],'y','DisplayName','C','LineWidth',lw);
-Cl4 = plot([0.75*R*cos(gam),R*cos(gam)],[0.75*R*sin(gam),R*sin(gam)],'b','DisplayName','D','LineWidth',lw);
-t16 = text(5.5,0,'0^o','FontSize',fs);
+Cl1 = plot([0,0.25*R*cos(gaq(1))],[0,0.25*R*sin(gaq(1))],'r','DisplayName','A','LineWidth',lw);
+Cl2 = plot([0.25*R*cos(gaq(2)),0.5*R*cos(gaq(2))],[0.25*R*sin(gaq(2)),0.5*R*sin(gaq(2))],'g','DisplayName','B','LineWidth',lw);
+Cl3 = plot([0.5*R*cos(gaq(3)),0.75*R*cos(gaq(3))],[0.5*R*sin(gaq(3)),0.75*R*sin(gaq(3))],'y','DisplayName','C','LineWidth',lw);
+Cl4 = plot([0.75*R*cos(gaq(4)),R*cos(gaq(4))],[0.75*R*sin(gaq(4)),R*sin(gaq(4))],'b','DisplayName','D','LineWidth',lw);
+t16 = text(5.5,0,'0^o     X_E','FontSize',fs);
 t17 = text(-7,0,'180^o','FontSize',fs);
-t18 = text(0,+6,'90^o','FontSize',fs);
+t18 = text(0,+6,'90^o     Z_E','FontSize',fs);
 t19 = text(0,-6,'-90^o','FontSize',fs);
-t20 = text(-7,7.5,strcat('A:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
-t21 = text(-3,7.5,strcat('B:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
-t22 = text(1,7.5,strcat('C:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
-t23 = text(5,7.5,strcat('D:   ',num2str(0*180/pi),'^{o}'),'FontSize',fs);
-
+t20 = text(-7,7.5,strcat('A:   ',num2str(gaq(1)*180/pi),'^{o}'),'FontSize',fs);
+t21 = text(-3,7.5,strcat('B:   ',num2str(gaq(2)*180/pi),'^{o}'),'FontSize',fs);
+t22 = text(1,7.5,strcat('C:   ',num2str(gaq(3)*180/pi),'^{o}'),'FontSize',fs);
+t23 = text(5,7.5,strcat('D:   ',num2str(gaq(4)*180/pi),'^{o}'),'FontSize',fs);
+set(gca,'YTick',[]);
+set(gca,'XTick',[]);
+set(gca,'ZTick',[]);
+set(gca,'Yticklabel',[]); 
+set(gca,'Xticklabel',[]);
+set(gca,'Zticklabel',[]); 
 lgnd = legend(SubP2,[Cl1,Cl2,Cl3,Cl4],'Location','none','FontSize',fs);
 set(lgnd, 'Position', [0.6524 0.2185 0.0410 0.1185])
 hold off

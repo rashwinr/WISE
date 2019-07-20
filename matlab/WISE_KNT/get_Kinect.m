@@ -1,21 +1,28 @@
 function [kinect_ang] = get_Kinect(pos2Dxxx)
 % lef,ref,lbd,rbd,lie,rie,lelb,relb
                 %Left Side Joints
-                leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);
+                leftShoulder = pos2Dxxx(:,5);leftElbow = pos2Dxxx(:,6);leftWrist = pos2Dxxx(:,7);leftHip = pos2Dxxx(:,13);
+            
                 %Right Side Joints
-                rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);
+                rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);rightHip = pos2Dxxx(:,17);
+            
                 %Spine Joints
                 spineShoulder = pos2Dxxx(:,21);
                 spinebase = pos2Dxxx(:,1);
+                
                 %BACK REFERENCE
                 TrunkVector = spinebase-spineShoulder;
-                RSLS = (rightShoulder-leftShoulder)/norm(leftShoulder-rightShoulder);
+                RSLS = (rightHip-leftHip)/norm(leftHip-rightHip);
+                
                 %normal to transversal plane
                 trans_X = (TrunkVector/norm(TrunkVector)); 
+                
                 %normal to saggital plane
                 sag_Y = ((RSLS-dot(RSLS,trans_X)*trans_X)/norm(RSLS-dot(RSLS,trans_X)*trans_X)); 
+                
                 %normal to coronal plane 
                 cor_Z = (cross(trans_X,sag_Y)/norm(cross(trans_X,sag_Y)));
+                
                 %Shoulder orientation computation
                 L_arm = leftElbow-leftShoulder;
                 L_arm = (L_arm/norm(L_arm));
@@ -24,6 +31,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 R_arm = rightElbow-rightShoulder;
                 R_arm = (R_arm/norm(R_arm));
                 R_arm = [dot(R_arm,trans_X) , dot(R_arm,sag_Y) , dot(R_arm,-cor_Z)];
+                
                 %Shoulder extension flexion
                 lef = atan2d(L_arm(3),L_arm(1));
                 if lef >= -180 && lef <= -150
@@ -33,6 +41,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 if ref >= -180 && ref <=-150
                     ref = 360+ref;
                 end
+                
                 %Shoulder abduction adduction
                 lbd = atan2d(L_arm(2),L_arm(1));
                 if lbd >= -180 && lbd<=-150
@@ -42,6 +51,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 if rbd >= -180 && rbd<=-150
                     rbd = 360+rbd;
                 end
+                
                 %Elbow joint angle calculation
                 LA=(leftElbow-leftShoulder)/norm(leftElbow-leftShoulder);
                 LFA=(leftWrist-leftElbow)/norm(leftWrist-leftElbow);
@@ -50,6 +60,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 RA=(rightElbow-rightShoulder)/norm(rightElbow-rightShoulder);
                 RFA=(rightWrist-rightElbow)/norm(rightWrist-rightElbow);
                 relb=acosd(dot(RA,RFA));
+                
                 %Shoulder internal external calculation
                 
                 % kinect paper algorithm reduced

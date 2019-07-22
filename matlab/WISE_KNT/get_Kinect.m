@@ -7,6 +7,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 rightShoulder = pos2Dxxx(:,9);rightElbow = pos2Dxxx(:,10);rightWrist = pos2Dxxx(:,11);rightHip = pos2Dxxx(:,17);
             
                 %Spine Joints
+                pos2Dxxx(3,1) = pos2Dxxx(3,21);
                 spineShoulder = pos2Dxxx(:,21);
                 spinebase = pos2Dxxx(:,1);
                 

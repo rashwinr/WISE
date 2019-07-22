@@ -13,7 +13,6 @@ Vzb_ = -Vzb;
 
 Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
-Vza = quatmultiply(arm,quatmultiply(Qk,quatconj(arm)));
 
 Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
 Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
@@ -54,7 +53,7 @@ left(3,1) = 666;
 
 if left(4,1)>=30
     
-    Zref = -(Vzb-dot(Vzb,Vya)*Vya);
+    Zref = Vzb_-dot(Vzb_,Vya)*Vya;
     Zref = Zref/norm(Zref);
     Yref = Vyb-dot(Vyb,Vya)*Vya;
     Yref = Yref/norm(Yref);

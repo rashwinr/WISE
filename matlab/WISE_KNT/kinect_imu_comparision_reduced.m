@@ -26,10 +26,11 @@ c.im = imshow(color, 'Parent', c.ax);
 set( figure(1) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 
 %COM Port details
-delete(instrfind({'Port'},{'COM15'}))
+instrreset
 ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
-fopen(ser);k=[];
+fopen(ser);
+k=[];
 
 
 %% find and fix the wearing offsets
@@ -113,8 +114,9 @@ axes5 = gca;
 R_imu_abdadd_line = animatedline(axes5,'Color','b','DisplayName','WISE right abd-add offset');
 R_knt_abdadd_line = animatedline(axes5,'Color','r','DisplayName','KINECT right abd-add offset');
 
-thtol = 1*pi/180;
-tol = 3;
+thtol = 2*pi/180;
+tol = 5;
+st = 1;
 
 thg_old = 0;
 thg_avg = 0;
@@ -124,7 +126,7 @@ while tl <=5
     tic
 if ser.BytesAvailable
         
-       [qA,qB,qC,qD,qEg] = DataReceive(ser,qA,qB,qC,qD,qEg,0,0);
+       [qA,qB,qC,qD,qEg] = DataReceive(ser,qA,qB,qC,qD,qEg,0,0,0);
        qX = quatmultiply(qEg,quatmultiply(qI,quatconj(qEg)));
        qY = quatmultiply(qEg,quatmultiply(qJ,quatconj(qEg)));
        thg_old = atan2(dot(G,qY(2:4)),dot(G,qX(2:4)));  
@@ -138,7 +140,7 @@ count = 0;
 while count<=50
     if ser.BytesAvailable
         
-       [qA,qB,qC,qD,qEg] = DataReceive(ser,qA,qB,qC,qD,qEg,0,0);
+       [qA,qB,qC,qD,qEg] = DataReceive(ser,qA,qB,qC,qD,qEg,0,0,0);
        qX = quatmultiply(qEg,quatmultiply(qI,quatconj(qEg)));
        qY = quatmultiply(qEg,quatmultiply(qJ,quatconj(qEg)));
        
@@ -168,7 +170,7 @@ while tl <=5
     tic
 if ser.BytesAvailable
         
-       [qA,qB,qC,qD,qEl] = DataReceive(ser,qA,qB,qC,qD,qEg,thg,0);
+       [qA,qB,qC,qD,qEl] = DataReceive(ser,qA,qB,qC,qD,qEl,thg,0,0);
        qX = quatmultiply(qEl,quatmultiply(qI,quatconj(qEl)));
        qZ = quatmultiply(qEl,quatmultiply(qK,quatconj(qEl)));
        thl_old = atan2(dot(G,qZ(2:4)),dot(G,qX(2:4)));   
@@ -183,7 +185,7 @@ count = 0;
 while count<=50
     if ser.BytesAvailable
         
-       [qA,qB,qC,qD,qEl] = DataReceive(ser,qA,qB,qC,qD,qEg,thg,0);
+       [qA,qB,qC,qD,qEl] = DataReceive(ser,qA,qB,qC,qD,qEl,thg,0,0);
        qX = quatmultiply(qEl,quatmultiply(qI,quatconj(qEl)));
        qZ = quatmultiply(qEl,quatmultiply(qK,quatconj(qEl)));
        
@@ -218,7 +220,7 @@ while tl <=5
     
     if ser.BytesAvailable
 
-           [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);       
+           [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl,st);       
            lshoangle_x = get_Left(qE,qC,qA);
            rshoangle_x = get_Right(qE,qD,qB);  
 
@@ -259,7 +261,7 @@ while count<=50
            numBodies = size(bodies,2);
            if numBodies == 1
                pos2Dxxx = bodies(1).Position; 
-               [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);       
+               [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl,st);       
                lshoangle = get_Left(qE,qC,qA);
                rshoangle = get_Right(qE,qD,qB);
                kinect_angles = get_Kinect(pos2Dxxx);
@@ -331,11 +333,32 @@ limuelb = 0;rimuelb = 0;lkinelb = 0;rkinelb = 0;
 limuelb1 = 0;rimuelb1 = 0;lkinelb1 = 0;rkinelb1 = 0;
 
 
-%%  Complete routine for updating data with 14 different angles
+%%  Complete routine for updating data with 10 different angles
+
+ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     
+qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
+lshoangle = [0,0,0,0,0]';
+rshoangle = [0,0,0,0,0]';
+thg = 0;
+thl = 0;
+st = 1;
+lshoangle_x(1:2) = 0;
+rshoangle_x(1:2) = 0;
+kinoff(1:4) = 0;
+G = [0,0,-1];
+qI = [0,1,0,0];
+qJ = [0,0,1,0];
+qK = [0,0,0,1];
+qEg = [1,0,0,0];
+qEl = [1,0,0,0];
+figure(2)
+
 
 close figure 2
 sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)
+
+
 
 lshoangle_x(3:5) = 0;
 rshoangle_x(3:5) = 0;
@@ -358,7 +381,7 @@ while (lc)
        if numBodies == 1
 
        pos2Dxxx = bodies(1).Position; 
-       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl);
+       [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE,thg,thl,st);
 
        lshoangle = get_Left(qE,qC,qA);
        lshoangle = lshoangle-lshoangle_x;

@@ -1,3 +1,4 @@
+git clone <LINK>
 git add --all
 git commit -am "<commit message>"
 git push

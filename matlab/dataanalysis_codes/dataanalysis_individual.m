@@ -1,11 +1,7 @@
 
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lie","ref","rbd","relb","relb1","rie"];
-subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
-SID = 312;
-
-
-
+SID = 2990;
 
 addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
 % addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
@@ -20,7 +16,7 @@ spike_files=dir('*.txt');
 smoovar = 2;
 figure(1)
 sgtitle(strcat(num2str(SID),' Kinect+WISE'));
-Nd = 30;
+Nd = 50;
 figure(2)
 sgtitle(strcat(num2str(SID),' Error signal'));
 
@@ -62,7 +58,7 @@ for i = 1:length(spike_files)
         rie(j-1,:) = [str2double(data(j,14)) str2double(data(j,15))];
         relbfe(j-1,:) = [str2double(data(j,16)) str2double(data(j,17))];
         end
-        delnumarr = find(round(Time)==7);
+        delnumarr = find(round(Time)==12);
         lie(1:delnumarr(1),:) = [];
         lfe(1:delnumarr(1),:) = [];
         lbd(1:delnumarr(1),:) = [];
@@ -113,7 +109,7 @@ for i = 1:length(spike_files)
                 hold on
                 plot(Time,lfe(:,2),'b');
                 hold off
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -163,7 +159,7 @@ for i = 1:length(spike_files)
                 plot(Time,lbd(:,1),'r');
                 hold on
                 plot(Time,lbd(:,2),'b');
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -180,6 +176,9 @@ for i = 1:length(spike_files)
                 end
                 
             case markers(3)
+                lelbfe(lelbfe>=200) = NaN;
+                [Row] = find(isnan(lelbfe(:,2)));
+                lelbfe(Row,:) = [];
                 diff = zeros(length(lelbfe));
                 diff = lelbfe(:,1)-lelbfe(:,2);
                 N = find(abs(diff)>=Nd);
@@ -213,7 +212,7 @@ for i = 1:length(spike_files)
                 [pkinect,kloc] = findpeaks(lelbfe(:,1),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 [pwise,wloc] = findpeaks(lelbfe(:,2),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -230,6 +229,9 @@ for i = 1:length(spike_files)
                 end
                
             case markers(4)
+                lelbfe(lelbfe>=200) = NaN;
+                [Row] = find(isnan(lelbfe(:,2)));
+                lelbfe(Row,:) = [];
                 diff = zeros(length(lelbfe));
                 diff = lelbfe(:,1)-lelbfe(:,2);
                 N = find(abs(diff)>=Nd);
@@ -265,7 +267,7 @@ for i = 1:length(spike_files)
                 plot(Time,lelbfe(:,2),'b');
 
                 hold off        
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -287,8 +289,14 @@ for i = 1:length(spike_files)
                 lie(lie>=500) = NaN;
                 [Row] = find(isnan(lie(:,1)));
                 lie(Row,:) = [];
-                diff = zeros(length(lie));
-                diff = lie(:,1)-lie(:,2);
+                [Row1] = find(isnan(lie(:,2)));
+                lie(Row1,:) = [];
+                Zerokinectpos = find(round(lie(:,1)/10)==0);
+                min1kinectpos = find(round(lie(:,1)/10)==-1);
+                pls1kinectpos = find(round(lie(:,1)/10)==+1);
+                ZeroIMUval = mean(lie([Zerokinectpos;min1kinectpos;pls1kinectpos],2));
+                lie(:,2) = lie(:,2)-ZeroIMUval;
+                diff = zeros(length(lie));diff = lie(:,1)-lie(:,2);
                 N = find(abs(diff)>=Nd);
                 lie(N,:) = [];
                 Time(length(lie)+1:length(Time)) = [];
@@ -319,7 +327,7 @@ for i = 1:length(spike_files)
                 [pkinect,kloc] = findpeaks(lie(:,1),Time,'MinPeakHeight',20,'NPeaks',7,'MinPeakProminence',20);
                 [pwise,wloc] = findpeaks(lie(:,2),Time,'MinPeakHeight',20,'NPeaks',7,'MinPeakProminence',20);
                 var = min(length(pwise),length(pkinect));
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                    signal_RMSE(pkinect(1:var),pwise(1:var));
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -371,7 +379,7 @@ for i = 1:length(spike_files)
                 [pkinect,kloc] = findpeaks(rfe(:,1),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 [pwise,wloc] = findpeaks(rfe(:,2),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 var = min(length(pwise),length(pkinect));
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     rmse2 = signal_RMSE(pkinect(1:var),pwise(1:var));
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -421,7 +429,7 @@ for i = 1:length(spike_files)
                 [pkinect,kloc] = findpeaks(rbd(:,1),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 [pwise,wloc] = findpeaks(rbd(:,2),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
 %                     signal_RMSE(pkinect(1:7),pwise(1:7));
 %                         for j=1:7
 %                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -438,6 +446,9 @@ for i = 1:length(spike_files)
                 end
                 
             case markers(8)
+                relbfe(relbfe>=200) = NaN;
+                [Row] = find(isnan(relbfe(:,2)));
+                relbfe(Row,:) = [];
                 diff = zeros(length(relbfe));
                 diff = relbfe(:,1)-relbfe(:,2);
                 N = find(abs(diff)>=Nd);
@@ -471,7 +482,7 @@ for i = 1:length(spike_files)
                 [pkinect,kloc] = findpeaks(relbfe(:,1),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 [pwise,wloc] = findpeaks(relbfe(:,2),Time,'MinPeakHeight',80,'MinPeakProminence',50,'NPeaks',7);
                 
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                         rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -488,6 +499,9 @@ for i = 1:length(spike_files)
                 end
                 
             case markers(9)
+                relbfe(relbfe>=200) = NaN;
+                [Row] = find(isnan(relbfe(:,2)));
+                relbfe(Row,:) = [];
                 diff = zeros(length(relbfe));
                 diff = relbfe(:,1)-relbfe(:,2);
                 N = find(abs(diff)>=Nd);
@@ -521,7 +535,7 @@ for i = 1:length(spike_files)
                 plot(Time,relbfe(:,1),'r');
                 hold on
                 plot(Time,relbfe(:,2),'b');
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     rmse2 = signal_RMSE(pkinect(1:7),pwise(1:7));
                         for j=1:7
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,string(j),string(pkinect(j)),string(pwise(j)),string(rmse1));
@@ -543,6 +557,13 @@ for i = 1:length(spike_files)
                 rie(rie>=500) = NaN;
                 [Row] = find(isnan(rie(:,1)));
                 rie(Row,:) = [];
+                [Row1] = find(isnan(rie(:,2)));
+                rie(Row1,:) = [];
+                Zerokinectpos = find(round(rie(:,1)/10)==0);
+                min1kinectpos = find(round(rie(:,1)/10)==-1);
+                pls1kinectpos = find(round(rie(:,1)/10)==+1);
+                ZeroIMUval = mean(rie([Zerokinectpos;min1kinectpos;pls1kinectpos],2));
+                rie(:,2) = rie(:,2)-ZeroIMUval;
                 diff = zeros(length(rie));
                 diff = rie(:,1)-rie(:,2);
                 N = find(abs(diff)>=Nd);
@@ -576,7 +597,7 @@ for i = 1:length(spike_files)
                 [pkinect,kloc] = findpeaks(rie(:,1),Time,'MinPeakHeight',20,'NPeaks',7,'MinPeakProminence',20);
                 [pwise,wloc] = findpeaks(rie(:,2),Time,'MinPeakHeight',20,'NPeaks',7,'MinPeakProminence',20);
                 var = min(length(pwise),length(pkinect));
-                if size(pwise,1)>=2 && size(pkinect,1)>=2
+                if size(pwise,1)>=7 && size(pwise,1)>=7
                     
                         rmse2 = signal_RMSE(pkinect(1:var),pwise(1:var));
                         for j=1:var

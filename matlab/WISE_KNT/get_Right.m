@@ -40,7 +40,7 @@ end
 
 % elbow extension flexion
 YW = Vyw(2:4) - dot(Vyw(2:4),Vxa(2:4))*Vxa(2:4);
-right(4,1) = acosd(dot(Vya(2:4),YW)/norm(YW));
+right(4,1) = real(acosd(dot(Vya(2:4),YW)/norm(YW)));
 
 % elbow pronation supination
 Ref = cross(Vxa(2:4),Vyw(2:4));

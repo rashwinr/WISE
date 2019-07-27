@@ -58,8 +58,12 @@ if right(4,1)>=30
     Zref = Zref/norm(Zref);
     Yref = cross(Zref,Vya(2:4));
 %     disp(strcat('rightIMU',num2str(dot(Zref,Yref))));
-    Vyw1 = Vyw(2:4) -dot(Vyw(2:4),Vya(2:4))*Vya(2:4);
-    right(3,1) = atan2d(dot(Vyw1,Yref),dot(Vyw1,Zref));
+%     Vyw1 = Vyw(2:4) -dot(Vyw(2:4),Vya(2:4))*Vya(2:4);
+%     right(3,1) = atan2d(dot(Vyw1,Yref),dot(Vyw1,Zref));
+    Na = cross(Vya(2:4),Vyw(2:4));
+    Na = Na/norm(Na);
+    Va = cross(Na,Vya(2:4));
+    right(3,1) = atan2d(dot(Va,Yref),dot(Va,Zref));
         
 end
 

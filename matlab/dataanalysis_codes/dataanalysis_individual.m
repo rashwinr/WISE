@@ -75,6 +75,7 @@ for i = 1:length(spike_files)
         switch(typ)
             
             case markers(1)
+                
                 diff = zeros(length(lfe));
                 diff = lfe(:,1)-lfe(:,2);
                 N = find(abs(diff)>=Nd);

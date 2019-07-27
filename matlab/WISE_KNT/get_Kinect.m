@@ -68,10 +68,12 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 lie = 666;
                 if lelb > 30
                     
-                    Zref = -(cor_Z-dot(cor_Z,LA)*LA);
+%                     Zref = -(cor_Z-dot(cor_Z,LA)*LA);
+%                     Zref = Zref/norm(Zref);
+                    Zref = cross(sag_Y,LA);
                     Zref = Zref/norm(Zref);
-                    Yref = sag_Y-dot(sag_Y,LA)*LA;
-                    Yref = Yref/norm(Yref);
+                    Yref = cross(LA,Zref);
+%                     disp(strcat('leftKIN',num2str(dot(Zref,Yref))));
                     LFA = LFA-dot(LFA,LA)*LA;
                     lie = atan2d(dot(LFA,Yref),dot(LFA,Zref));
                         
@@ -80,10 +82,12 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 rie = 666;
                 if relb > 30
                     
-                    Zref = -(cor_Z-dot(cor_Z,RA)*RA);
+%                     Zref = -(cor_Z-dot(cor_Z,RA)*RA);
+%                     Zref = Zref/norm(Zref);
+                    Zref = cross(sag_Y,RA);
                     Zref = Zref/norm(Zref);
-                    Yref = sag_Y-dot(sag_Y,RA)*RA;
-                    Yref = -Yref/norm(Yref);
+                    Yref = cross(Zref,RA);
+%                     disp(strcat('rightKIN',num2str(dot(Zref,Yref))));
                     RFA = RFA-dot(RFA,RA)*RA;
                     rie = atan2d(dot(RFA,Yref),dot(RFA,Zref));
                     

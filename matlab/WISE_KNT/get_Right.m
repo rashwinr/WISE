@@ -9,7 +9,6 @@ Vyb = quatmultiply(back,quatmultiply(Qj,quatconj(back)));
 Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
 
 Vzb_ = -Vzb;
-Vyb_ = -Vyb;
 
 Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
@@ -53,12 +52,14 @@ right(3,1) = 666;
 
 if right(4,1)>=30
     
-    Zref = Vzb_-dot(Vzb_,Vya)*Vya;
+%     Zref = Vzb_(2:4)-dot(Vzb_(2:4),Vya(2:4))*Vya(2:4);
+%     Zref = Zref/norm(Zref);
+    Zref = cross(Vyb(2:4),Vya(2:4));
     Zref = Zref/norm(Zref);
-    Yref = Vyb_-dot(Vyb_,Vya)*Vya;
-    Yref = Yref/norm(Yref);
-    Vyw = Vyw -dot(Vyw,Vya)*Vya;
-    right(3,1) = atan2d(dot(Vyw,Yref),dot(Vyw,Zref));
+    Yref = cross(Zref,Vya(2:4));
+%     disp(strcat('rightIMU',num2str(dot(Zref,Yref))));
+    Vyw1 = Vyw(2:4) -dot(Vyw(2:4),Vya(2:4))*Vya(2:4);
+    right(3,1) = atan2d(dot(Vyw1,Yref),dot(Vyw1,Zref));
         
 end
 

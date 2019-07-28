@@ -50,6 +50,42 @@ right(5,1) = atan2d(-Ref(3),Ref(1));
 
 right(3,1) = 666;
 
+% New JCS algorithm 
+if right(4,1)>=30
+    Z = [cos(pi/4),Vzb_(2)*sin(pi/4),Vzb_(3)*sin(pi/4),Vzb_(4)*sin(pi/4)];
+    back = quatmultiply(Z,back);
+
+    R = quat2rotm(back);
+    R(:,1) = -R(:,1);
+    R(:,2) = -R(:,2);
+    qRef = rotm2quat(R);
+
+    Y = Vya(2:4);
+    X = cross(Vyw(2:4),Vya(2,4));
+    X = X/norm(X);
+    Z = cross(X,Y);
+    R(:,1) = -X;
+    R(:,2) = -Y;
+    R(:,3) = Z;
+    q = rotm2quat(R);
+
+    qRel = quatmultiply(quatconj(qRef),q);
+    R = quat2rotm(qRel);
+    bd = atan2(-R(1,2),R(2,2));
+    qZ = [cos(bd/2),0,0,sin(bd/2)];
+    q2 = quatmultiply(quatconj(qZ),qRel);
+    R = quat2rotm(q2);
+
+    ef = atan2(R(3,2),R(2,2));
+    qX = [cos(ef/2),sin(ef/2),0,0];
+    q2 = quatmultiply(quatconj(qX),q2);
+    R = quat2rotm(q2);
+
+    right(3,1) = atan2(R(1,3),R(3,3));
+end
+
+% plane algorithm
+%{
 if right(4,1)>=30
 
     Zref = cross(Vyb(2:4),Vya(2:4));
@@ -61,5 +97,6 @@ if right(4,1)>=30
     right(3,1) = atan2d(dot(Va,Yref),dot(Va,Zref));
         
 end
+%}
 
 end

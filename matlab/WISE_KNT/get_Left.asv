@@ -11,12 +11,12 @@ Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
 Vyb_ = -Vyb;
 Vzb_ = -Vzb;
 
-% Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
 
-% Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
-% Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
-% Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
+Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
+Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
+Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
 
 Ja = Vya(2:4);
 
@@ -66,12 +66,10 @@ left(4,1) = real(acosd(dot(Vya(2:4),YW)/norm(YW)));
 %}
 
 % elbow pronation supination
-    %Old algorithm old record
-%{
+%Old algorithm old record
 Ref = cross(Vxa(2:4),Vyw(2:4));
 Ref = [dot(Ref,Vxw(2:4)),dot(Ref,Vyw(2:4)),dot(Ref,Vzw(2:4))];
 left(5,1) = atan2d(-Ref(3),-Ref(1));
-%}
 
 % shoulder internal external rotation 
 

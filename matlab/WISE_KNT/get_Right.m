@@ -10,12 +10,12 @@ Vzb = quatmultiply(back,quatmultiply(Qk,quatconj(back)));
 
 Vzb_ = -Vzb;
 
-Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
+% Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
 
-Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
-Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
-Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
+% Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
+% Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
+% Vzw = quatmultiply(wrist,quatmultiply(Qk,quatconj(wrist)));
 
 JC = Vya(2:4);
 
@@ -38,13 +38,39 @@ if -180<=right(2,1) && right(2,1)<-90
 end
 
 % elbow extension flexion
+
+    %JCS mode
+Y = [cos(pi/4),Vya(2)*sin(pi/4),Vya(3)*sin(pi/4),Vya(4)*sin(pi/4)];
+qRef = quatmultiply(Y,arm);
+
+R = quat2rotm(qRef);
+R(:,1) = -R(:,1);
+R(:,2) = -R(:,2);
+qRef = rotm2quat(R);
+
+R = quat2rotm(wrist);
+R(:,1) = -R(:,1);
+R(:,2) = -R(:,2);
+q = rotm2quat(R);
+
+qRel = quatmultiply(quatconj(qRef),q);
+R = quat2rotm(qRel);
+right(4,1) = atan2(-R(1,2),R(2,2));
+
+
+    %Normal mode
+%{
 YW = Vyw(2:4) - dot(Vyw(2:4),Vxa(2:4))*Vxa(2:4);
 right(4,1) = real(acosd(dot(Vya(2:4),YW)/norm(YW)));
+%}
 
 % elbow pronation supination
+    %Old algorithm old record
+%{
 Ref = cross(Vxa(2:4),Vyw(2:4));
 Ref = [dot(Ref,Vxw(2:4)),dot(Ref,Vyw(2:4)),dot(Ref,Vzw(2:4))];
 right(5,1) = atan2d(-Ref(3),Ref(1));
+%}
 
 % shoulder internal external rotation 
 
@@ -52,6 +78,37 @@ right(3,1) = 666;
 
 % New JCS algorithm 
 if right(4,1)>=30
+    
+        %Version 2
+    Z = [cos(pi/4),Vzb_(2)*sin(pi/4),Vzb_(3)*sin(pi/4),Vzb_(4)*sin(pi/4)];
+    qRef = quatmultiply(Z,back);
+
+    R = quat2rotm(qRef);
+    R(:,1) = -R(:,1);
+    R(:,2) = -R(:,2);
+    qRef = rotm2quat(R);
+
+    R = quat2rotm(arm);
+    R(:,1) = -R(:,1);
+    R(:,2) = -R(:,2);
+    q = rotm2quat(R);
+
+    qRel = quatmultiply(quatconj(qRef),q);
+    R = quat2rotm(qRel);
+    bd = atan2(-R(1,2),R(2,2));
+    qZ = [cos(bd/2),0,0,sin(bd/2)];
+    q2 = quatmultiply(quatconj(qZ),qRel);
+    R = quat2rotm(q2);
+
+    ef = atan2(R(3,2),R(2,2));
+    qX = [cos(ef/2),sin(ef/2),0,0];
+    q2 = quatmultiply(quatconj(qX),q2);
+    R = quat2rotm(q2);
+
+    right(3,1) = atan2(R(1,3),R(3,3));
+        
+        %Version 1
+    %{
     Z = [cos(pi/4),Vzb_(2)*sin(pi/4),Vzb_(3)*sin(pi/4),Vzb_(4)*sin(pi/4)];
     back = quatmultiply(Z,back);
 
@@ -82,6 +139,8 @@ if right(4,1)>=30
     R = quat2rotm(q2);
 
     right(3,1) = atan2d(R(1,3),R(3,3));
+    %}
+
 end
 
 % plane algorithm

@@ -36,7 +36,7 @@ limuef = 0;rimuef = 0;lkinef = 0;rkinef = 0;
 limubd = 0;rimubd = 0;lkinbd = 0;rkinbd = 0;
 limuie = 0;rimuie = 10;lkinie = 0;rkinie = 0;
 limuelb = 0;rimuelb = 0;lkinelb = 0;rkinelb = 0;
-limuelb1 = 0;rimuelb1 = 0;lkinelb1 = 0;rkinelb1 = 0;
+% limuelb1 = 0;rimuelb1 = 0;lkinelb1 = 0;rkinelb1 = 0;
 ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;     
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 lshoangle = [0,0,0,0,0]';
@@ -74,14 +74,14 @@ while (lc)
        limubd = lshoangle(2);
        limuie = lshoangle(3); 
        limuelb = lshoangle(4);
-       limuelb1 = lshoangle(5);
+%        limuelb1 = lshoangle(5);
        
        rshoangle = get_Right(qE,qD,qB);
        rimuef = rshoangle(1);
        rimubd = rshoangle(2);
        rimuie = rshoangle(3);
        rimuelb = rshoangle(4);
-       rimuelb1 = rshoangle(5);
+%        rimuelb1 = rshoangle(5);
 
        kinect_ang = get_Kinect(pos2Dxxx);
        lkinef = kinect_ang(1);
@@ -103,43 +103,43 @@ while (lc)
                 case 'lef'
                     kin = lkinef; imu = limuef;
                     lim = kin;
-                    tlow = 10; thigh=120;
+%                     tlow = 10; thigh=120;
                 case 'lbd'
                     kin = lkinbd; imu = limubd;
                     lim = kin;
-                    tlow = 30; thigh=100;
+%                     tlow = 30; thigh=100;
                 case 'lelb'
                     kin = lkinelb; imu = limuelb;
                     lim = kin;
-                    tlow = 30; thigh=100;
+%                     tlow = 30; thigh=100;
                 case 'lelb1'
                     kin = lkinelb; imu = limuelb;
                     lim = kin;
-                    tlow = 30; thigh=100;
+%                     tlow = 30; thigh=100;
                 case 'lie'
                     kin = lkinie; imu = limuie;
                     lim = imu;
-                    tlow = -40; thigh=40;
+%                     tlow = -40; thigh=40;
                 case 'ref'
                     kin = rkinef; imu = rimuef;
                     lim = kin;
-                    tlow = 10; thigh=120;
+%                     tlow = 10; thigh=120;
                 case 'rbd'
                     kin = rkinbd; imu = rimubd;
                     lim = kin;
-                    tlow = 30; thigh=100;
+%                     tlow = 30; thigh=100;
                 case 'relb'
                     kin = rkinelb; imu = rimuelb;
                     lim = kin;
-                    tlow = 30; thigh=100;
+%                     tlow = 30; thigh=100;
                 case 'relb1'
                     kin = rkinelb; imu = rimuelb;
                     lim = kin;
-                    tlow = 30; thigh=100;
+%                     tlow = 30; thigh=100;
                 case 'rie'
                     kin = rkinie; imu = rimuie;
                     lim = imu;
-                    tlow = -40; thigh=40;
+%                     tlow = -40; thigh=40;
            end
            updateWiseKinect_red(arg,kin,imu,telapsed,anline,anline1)
            %'Timestamp','Kinect_LeftShoulder_Ext.-Flex.','IMU_LeftShoulder_Ext.-Flex.','Kinect_LeftShoulder_Abd.-Add.','IMU_
@@ -159,9 +159,18 @@ while (lc)
            text((1920/2) - 250,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
        end      
        if numBodies > 1
-           figure(1)
-           s1 = strcat('Too many people in view');
-           text(1920/2,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
+           while numBodies > 1
+           validData = k2.updateData;
+            if validData
+               depth = k2.getDepth;color = k2.getColor;face = k2.getFaces;
+               depth8u = uint8(depth*(255/outOfRange));depth8uc3 = repmat(depth8u,[1 1 3]);
+               [bodies, fcp, timeStamp] = k2.getBodies('Quat');
+               numBodies = size(bodies,2);
+               figure(1)
+               s1 = strcat('Too many people in view');
+               text(1920/2,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
+            end
+           end
        end      
        if ~isempty(k)
            if strcmp(k,'q') 

@@ -67,7 +67,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 % New JCS algorithm 
                 lie = 666;
                 if lelb > 30
-                    R = [trans_X',sag_Y',cor_Z'];
+                    R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
                     back = rotm2quat(R);
                     Z = [cos(pi/4),cor_Z(1)*sin(pi/4),cor_Z(2)*sin(pi/4),cor_Z(3)*sin(pi/4)];
                     back = quatmultiply(Z,back);
@@ -98,12 +98,12 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     q2 = quatmultiply(quatconj(qX),q2);
                     R = quat2rotm(q2);
                     
-                    lie = atan2(R(1,3),R(3,3));
+                    lie = atan2d(R(1,3),R(3,3));
                 end
                 
                 rie = 666;
                 if relb > 30
-                    R = [trans_X',sag_Y',cor_Z'];
+                    R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
                     back = rotm2quat(R);
                     Z = [cos(pi/4),cor_Z(1)*sin(pi/4),cor_Z(2)*sin(pi/4),cor_Z(3)*sin(pi/4)];
                     back = quatmultiply(Z,back);
@@ -134,7 +134,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     q2 = quatmultiply(quatconj(qX),q2);
                     R = quat2rotm(q2);
 
-                    rie = atan2(R(1,3),R(3,3));
+                    rie = atan2d(R(1,3),R(3,3));
                 end
                 
                 % kinect paper algorithm reduced

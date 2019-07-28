@@ -61,7 +61,7 @@ if right(4,1)>=30
     qRef = rotm2quat(R);
 
     Y = Vya(2:4);
-    X = cross(Vyw(2:4),Vya(2,4));
+    X = cross(Vyw(2:4),Vya(2:4));
     X = X/norm(X);
     Z = cross(X,Y);
     R(:,1) = -X;
@@ -81,7 +81,7 @@ if right(4,1)>=30
     q2 = quatmultiply(quatconj(qX),q2);
     R = quat2rotm(q2);
 
-    right(3,1) = atan2(R(1,3),R(3,3));
+    right(3,1) = atan2d(R(1,3),R(3,3));
 end
 
 % plane algorithm

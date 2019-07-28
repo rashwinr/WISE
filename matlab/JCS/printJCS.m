@@ -3,7 +3,7 @@
 clear all, close all, clc
 
 instrreset
-ser = serial('COM11','BaudRate',115200);
+ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);
 

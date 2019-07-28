@@ -51,15 +51,10 @@ right(5,1) = atan2d(-Ref(3),Ref(1));
 right(3,1) = 666;
 
 if right(4,1)>=30
-    
-%     Zref = Vzb_(2:4)-dot(Vzb_(2:4),Vya(2:4))*Vya(2:4);
-%     Zref = Zref/norm(Zref);
+
     Zref = cross(Vyb(2:4),Vya(2:4));
     Zref = Zref/norm(Zref);
     Yref = cross(Zref,Vya(2:4));
-%     disp(strcat('rightIMU',num2str(dot(Zref,Yref))));
-%     Vyw1 = Vyw(2:4) -dot(Vyw(2:4),Vya(2:4))*Vya(2:4);
-%     right(3,1) = atan2d(dot(Vyw1,Yref),dot(Vyw1,Zref));
     Na = cross(Vya(2:4),Vyw(2:4));
     Na = Na/norm(Na);
     Va = cross(Na,Vya(2:4));

@@ -42,7 +42,7 @@ end
 
     %JCS mode
 Y = [cos(pi/4),Vya(2)*sin(pi/4),Vya(3)*sin(pi/4),Vya(4)*sin(pi/4)];
-qRef = quatmultiply(Y,back);
+qRef = quatmultiply(Y,arm);
 
 R = quat2rotm(qRef);
 R(:,1) = -R(:,1);
@@ -56,7 +56,7 @@ q = rotm2quat(R);
 
 qRel = quatmultiply(quatconj(qRef),q);
 R = quat2rotm(qRel);
-left(4,1) = atan2(-R(1,2),R(2,2));
+left(4,1) = atan2d(-R(1,2),R(2,2));
 
 
     %Normal mode
@@ -106,7 +106,7 @@ if left(4,1)>=30
     q2 = quatmultiply(quatconj(qX),q2);
     R = quat2rotm(q2);
 
-    left(3,1) = atan2(R(1,3),R(3,3));
+    left(3,1) = atan2d(R(1,3),R(3,3));
     
         %Version 1
     %{

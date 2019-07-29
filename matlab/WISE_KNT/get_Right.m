@@ -12,6 +12,7 @@ Vzb_ = -Vzb;
 
 % Vxa = quatmultiply(arm,quatmultiply(Qi,quatconj(arm)));
 Vya = quatmultiply(arm,quatmultiply(Qj,quatconj(arm)));
+Vya_ = -Vya;
 
 % Vxw = quatmultiply(wrist,quatmultiply(Qi,quatconj(wrist)));
 % Vyw = quatmultiply(wrist,quatmultiply(Qj,quatconj(wrist)));
@@ -40,7 +41,7 @@ end
 % elbow extension flexion
 
     %JCS mode
-Y = [cos(pi/4),Vya(2)*sin(pi/4),Vya(3)*sin(pi/4),Vya(4)*sin(pi/4)];
+Y = [cos(pi/4),Vya_(2)*sin(pi/4),Vya_(3)*sin(pi/4),Vya_(4)*sin(pi/4)];
 qRef = quatmultiply(Y,arm);
 
 R = quat2rotm(qRef);
@@ -55,7 +56,7 @@ q = rotm2quat(R);
 
 qRel = quatmultiply(quatconj(qRef),q);
 R = quat2rotm(qRel);
-right(4,1) = atan2(-R(1,2),R(2,2));
+right(4,1) = atan2d(-R(1,2),R(2,2));
 
 
     %Normal mode
@@ -105,7 +106,7 @@ if right(4,1)>=30
     q2 = quatmultiply(quatconj(qX),q2);
     R = quat2rotm(q2);
 
-    right(3,1) = atan2(R(1,3),R(3,3));
+    right(3,1) = atan2d(R(1,3),R(3,3));
         
         %Version 1
     %{

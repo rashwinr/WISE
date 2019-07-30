@@ -1,22 +1,22 @@
 
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lie","ref","rbd","relb","relb1","rie"];
-SID = 6525;
+SID = 654321;
 
-% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-% addpath('F:\github\wearable-jacket\matlab\dataanalysis_codes')
-addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
+addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
+cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+addpath('F:\github\wearable-jacket\matlab\dataanalysis_codes')
+% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
+cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
 
 list = dir();
 spike_files=dir('*.txt');
 smoovar = 2;
 figure(1)
 sgtitle(strcat(num2str(SID),' Kinect+WISE'));
-Nd = 100;
+Nd = 30;
 figure(2)
 sgtitle(strcat(num2str(SID),' Error signal'));
 

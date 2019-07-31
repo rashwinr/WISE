@@ -42,8 +42,75 @@ qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 lshoangle = [0,0,0,0,0]';
 rshoangle = [0,0,0,0,0]';
 
+%% adjust the mounting
+Lmo = 0;
+Rmo = 0;
+Lie = 0;
+Rie = 0;
+
+sz3 = screensize(3);
+figure('units', 'pixels', 'outerposition', sz3);
+set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
+
+subplot(2,2,1)
+title('Left Mounting offset')
+anLmo = animatedline(Time,Lmo,'Color','r');
+
+subplot(2,2,2)
+title('Right Mounting offset')
+anRmo = animatedline(Time,Rmo,'Color','r');
+
+subplot(2,2,3)
+title('Left Internal External rotation')
+anLie = animatedline(Time,Lie,'Color','b');
+
+subplot(2,2,3)
+title('Right Internal External rotation')
+anRie = animatedline(Time,Rie,'Color','b');
+
+tel = 0;
+while true
+if ser.BytesAvailable
+    tic
+    [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
+    
+    LA = JCS_isb('LA',qE,qC);
+    Lie = (LA(1)+LA(3))*180/pi;
+    
+    RA = JCS_isb('RA',qE,qD);
+    Rie = (RA(1)+RA(3))*180/pi;
+    
+    LF = JCS_isb('LF',qC,qA);
+    Lmo = LF(2)*180/pi;
+        
+    RF = JCS_isb('RF',qD,qB);
+    Rmo = RF(2)*180/pi;
+    
+    tel = tel + toc;
+    
+    addpoints(anLie,tel,Lie)
+    drawnow
+    addpoints(anRie,tel,Rie)
+    drawnow
+    addpoints(anLmo,tel,Lmo)
+    drawnow
+    addpoints(anRmo,tel,Rmo)
+    drawnow 
+end
+
+if ~isempty(k)
+   if strcmp(k,'q') 
+   k=[];
+   break; 
+   end
+end
+
+pause(0.01)
+end
+
 
 %%  Complete routine for updating data with 10 different angles
+close(figure(3))
 
 sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)

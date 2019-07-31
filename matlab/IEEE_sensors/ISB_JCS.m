@@ -13,7 +13,7 @@ figure(1)
 
 while time<=ttotal
    tic;
-   [qLF,qRF,qLA,qRA,qB] = DataReceive_matched(ser,qLF,qRF,qLA,qRA,qB);
+   [qLF,qRF,qLA,qRA,qB] = DataReceive(ser,qLF,qRF,qLA,qRA,qB);
    Zb = quatmultiply(qB,quatmultiply(qK,quatconj(qB)));
    qZb = [cos(pi/4),-Zb(2)*sin(pi/4),-Zb(3)*sin(pi/4),-Zb(4)*sin(pi/4)];
    qB = quatmultiply(qZb,qB);

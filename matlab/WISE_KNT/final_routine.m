@@ -48,27 +48,28 @@ Rmo = 0;
 Lie = 0;
 Rie = 0;
 
+tel = 0;
+
 sz3 = screensize(3);
 figure('units', 'pixels', 'outerposition', sz3);
 set( gcf, 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
 
 subplot(2,2,1)
 title('Left Mounting offset')
-anLmo = animatedline(Time,Lmo,'Color','r');
+anLmo = animatedline(tel,Lmo,'Color','r');
 
 subplot(2,2,2)
 title('Right Mounting offset')
-anRmo = animatedline(Time,Rmo,'Color','r');
+anRmo = animatedline(tel,Rmo,'Color','r');
 
 subplot(2,2,3)
 title('Left Internal External rotation')
-anLie = animatedline(Time,Lie,'Color','b');
+anLie = animatedline(tel,Lie,'Color','b');
 
-subplot(2,2,3)
+subplot(2,2,4)
 title('Right Internal External rotation')
-anRie = animatedline(Time,Rie,'Color','b');
+anRie = animatedline(tel,Rie,'Color','b');
 
-tel = 0;
 while true
 if ser.BytesAvailable
     tic
@@ -101,8 +102,10 @@ end
 if ~isempty(k)
    if strcmp(k,'q') 
    k=[];
+   close(figure(3))
    break; 
    end
+
 end
 
 pause(0.01)
@@ -110,7 +113,7 @@ end
 
 
 %%  Complete routine for updating data with 10 different angles
-close(figure(3))
+
 
 sz2 = screensize(2);
 figure('units', 'pixels', 'outerposition', sz2)

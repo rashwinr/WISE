@@ -72,7 +72,7 @@ txLie = text(sbLie,tel,Lie,'');
 sbRie = subplot(2,2,4);
 title('Right Internal External rotation')
 anRie = animatedline(tel,Rie,'Color','b');
-txRie = text(sbRie,tel,Rie,'');
+txRie = text(sbLmo,tel,Lmo,'');
 
 while true
 if ser.BytesAvailable
@@ -93,23 +93,12 @@ if ser.BytesAvailable
     
     tel = tel + toc;
     
-    delete(txLie)
-    txLie = text(sbLie,tel,Lie+10,num2str(Lie));
     addpoints(anLie,tel,Lie)
     drawnow
-    
-    delete(txRie)
-    txRie = text(sbRie,tel,Rie+10,num2str(Rie));
     addpoints(anRie,tel,Rie)
     drawnow
-    
-    delete(txLmo)
-    txLmo = text(sbLmo,tel,Lmo+10,num2str(Lmo));
     addpoints(anLmo,tel,Lmo)
     drawnow
-    
-    delete(txRmo)
-    txRmo = text(sbRmo,tel,Rmo+10,num2str(Rmo));
     addpoints(anRmo,tel,Rmo)
     drawnow 
 end

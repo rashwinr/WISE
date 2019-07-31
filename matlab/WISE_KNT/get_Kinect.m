@@ -64,7 +64,55 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 
                 %Shoulder internal external calculation
                 
+                % JCS_isb algorithm
+                lie = 666;
+                if lelb > 30
+                    R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
+                    back = rotm2quat(R);
+                    Z = [cos(pi/4),-cor_Z(1)*sin(pi/4),-cor_Z(2)*sin(pi/4),-cor_Z(3)*sin(pi/4)];
+                    back = quatmultiply(Z,back);
+
+                    R = quat2rotm(back);
+                    R = [-R(:,1),R(:,2),-R(:,3)];
+                    qRef = rotm2quat(R);
+
+                    Y = LA;
+                    X = cross(LFA,LA);
+                    X = X/norm(X);
+                    Z = cross(X,Y);
+                    R = [-X,Y,-Z];
+                    q = rotm2quat(R);
+
+                    qRel = quatmultiply(quatconj(qRef),q);
+                    [r1,~,r3] = quat2angle(qRel,'YZY');
+                    lie = (r1+r3)*180/pi;
+                end
+                
+                rie = 666;
+                if relb > 30
+                    R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
+                    back = rotm2quat(R);
+                    Z = [cos(pi/4),-cor_Z(1)*sin(pi/4),-cor_Z(2)*sin(pi/4),-cor_Z(3)*sin(pi/4)];
+                    qRef = quatmultiply(Z,back);
+
+                    R = quat2rotm(qRef);
+                    R = [-R(:,1),-R(:,2),R(:,3)];
+                    qRef = rotm2quat(R);
+
+                    Y = RA;
+                    X = cross(RFA,RA);
+                    X = X/norm(X);
+                    Z = cross(X,Y);
+                    R = [-X,-Y,Z];
+                    q = rotm2quat(R);
+
+                    qRel = quatmultiply(quatconj(qRef),q);
+                    [r1,~,r3] = quat2angle(qRel,'YZY');
+                    rie = (r1+r3)*180/pi;
+                end
+                
                 % New JCS algorithm 
+                %{
                 lie = 666;
                 if lelb > 30
                     R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
@@ -136,6 +184,7 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
 
                     rie = atan2d(R(1,3),R(3,3));
                 end
+                %}
                 
                 % kinect paper algorithm reduced
                 %{

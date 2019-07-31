@@ -40,7 +40,25 @@ end
 
 % elbow extension flexion
 
+    %JCS_isb mode
+Y = [cos(pi/4),Vya(2)*sin(pi/4),Vya(3)*sin(pi/4),Vya(4)*sin(pi/4)];
+qRef = quatmultiply(Y,arm);
+
+R = quat2rotm(qRef);
+R(:,1) = -R(:,1);
+R(:,3) = -R(:,3);
+qRef = rotm2quat(R);
+
+R = quat2rotm(wrist);
+R(:,1) = -R(:,1);
+R(:,3) = -R(:,3);
+q = rotm2quat(R);
+
+qRel = quatmultiply(quatconj(qRef),q);
+[r1,~,~] = quat2angle(qRel,'ZXY');
+left(4,1) = r1*180/pi;
     %JCS mode
+%{
 Y = [cos(pi/4),Vya(2)*sin(pi/4),Vya(3)*sin(pi/4),Vya(4)*sin(pi/4)];
 qRef = quatmultiply(Y,arm);
 
@@ -57,7 +75,7 @@ q = rotm2quat(R);
 qRel = quatmultiply(quatconj(qRef),q);
 R = quat2rotm(qRel);
 left(4,1) = atan2d(-R(1,2),R(2,2));
-
+%}
 
     %Normal mode
 %{
@@ -80,7 +98,24 @@ left(3,1) = 666;
 % new JCS algorithm
 if left(4,1)>=30
     
+        %Version 3
+    Z = [cos(pi/4),Vzb_(2)*sin(pi/4),Vzb_(3)*sin(pi/4),Vzb_(4)*sin(pi/4)];
+    qRef = quatmultiply(Z,back);
+
+    R = quat2rotm(qRef);
+    R = [-R(:,1),R(:,2),-R(:,3)];
+    qRef = rotm2quat(R);
+
+    R = quat2rotm(arm);
+    R = [-R(:,1),R(:,2),-R(:,3)];
+    q = rotm2quat(R);
+
+    qRel = quatmultiply(quatconj(qRef),q);
+    [r1,~,r3] = quat2angle(qRel,'YZY');
+    left(3,1) = (r1+r3)*180/pi;
+    
         %Version 2
+%{
     Z = [cos(pi/4),Vzb_(2)*sin(pi/4),Vzb_(3)*sin(pi/4),Vzb_(4)*sin(pi/4)];
     qRef = quatmultiply(Z,back);
 
@@ -107,7 +142,7 @@ if left(4,1)>=30
     R = quat2rotm(q2);
 
     left(3,1) = atan2d(R(1,3),R(3,3));
-    
+%}
         %Version 1
     %{
     Z = [cos(pi/4),Vzb_(2)*sin(pi/4),Vzb_(3)*sin(pi/4),Vzb_(4)*sin(pi/4)];

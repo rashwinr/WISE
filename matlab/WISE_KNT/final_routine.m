@@ -94,22 +94,22 @@ if ser.BytesAvailable
     tel = tel + toc;
     
     delete(txLie)
-    txLie = text(sbLie,tel,Lie+10,num2str(Lie));
+    txLie = text(sbLie,tel,Lie+1,num2str(Lie));
     addpoints(anLie,tel,Lie)
     drawnow
     
     delete(txRie)
-    txRie = text(sbRie,tel,Rie+10,num2str(Rie));
+    txRie = text(sbRie,tel,Rie+1,num2str(Rie));
     addpoints(anRie,tel,Rie)
     drawnow
     
     delete(txLmo)
-    txLmo = text(sbLmo,tel,Lmo+10,num2str(Lmo));
+    txLmo = text(sbLmo,tel,Lmo+1,num2str(Lmo));
     addpoints(anLmo,tel,Lmo)
     drawnow
     
     delete(txRmo)
-    txRmo = text(sbRmo,tel,Rmo+10,num2str(Rmo));
+    txRmo = text(sbRmo,tel,Rmo+1,num2str(Rmo));
     addpoints(anRmo,tel,Rmo)
     drawnow 
 end
@@ -117,7 +117,7 @@ end
 if ~isempty(k)
    if strcmp(k,'q') 
    k=[];
-   close(figure(3))
+   close(figure(2))
    break; 
    end
 

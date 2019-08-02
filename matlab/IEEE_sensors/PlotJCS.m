@@ -132,26 +132,32 @@ while true
         subplot(3,2,1)
         LApl = text(telapsed+2,LA(1)+2,num2str(LA(1)));
         addpoints(alplane,telapsed,LA(1));
+        drawnow;
         
         subplot(3,2,3)
         LAel = text(telapsed+2,LA(2)+2,num2str(LA(2)));
         addpoints(alelev,telapsed,LA(2));
+        drawnow;
         
         subplot(3,2,5)
         LAie = text(telapsed+2,LA(3)+2,num2str(LA(3)));
         addpoints(alie,telapsed,LA(3));
+        drawnow;
         
         subplot(3,2,2)
-        LFmo = text(telapsed+2,LF(2)+2,num2str(LF(1)));
+        LFmo = text(telapsed+2,LF(2)+2,num2str(LF(2)));
         addpoints(almo,telapsed,LF(2));
+        drawnow;
         
         subplot(3,2,4)
-        LFef = text(telapsed+2,LF(1)+2,num2str(LF(2)));
+        LFef = text(telapsed+2,LF(1)+2,num2str(LF(1)));
         addpoints(alef,telapsed,LF(1));
+        drawnow;
         
         subplot(3,2,6)
         LFps = text(telapsed+2,LF(3)+2,num2str(LF(3)));
         addpoints(alps,telapsed,LF(3));
+        drawnow;
         
         figure(2)
         
@@ -160,26 +166,32 @@ while true
         subplot(3,2,1)
         RApl = text(telapsed+2,RA(1)+2,num2str(RA(1)));
         addpoints(arplane,telapsed,RA(1));
+        drawnow;
         
         subplot(3,2,3)
         RAel = text(telapsed+2,RA(2)+2,num2str(RA(2)));
         addpoints(arelev,telapsed,RA(2));
+        drawnow;
 
         subplot(3,2,5)
         RAie = text(telapsed+2,RA(3)+2,num2str(RA(3)));
         addpoints(arie,telapsed,RA(3));
+        drawnow;
         
         subplot(3,2,2)
-        RFmo = text(telapsed+2,RF(2)+2,num2str(RF(1)));
+        RFmo = text(telapsed+2,RF(2)+2,num2str(RF(2)));
         addpoints(armo,telapsed,RF(2));
+        drawnow;
         
         subplot(3,2,4)
-        RFef = text(telapsed+2,RF(1)+2,num2str(RF(2)));
+        RFef = text(telapsed+2,RF(1)+2,num2str(RF(1)));
         addpoints(aref,telapsed,RF(1));
+        drawnow;
         
         subplot(3,2,6)
         RFps = text(telapsed+2,RF(3)+2,num2str(RF(3)));
         addpoints(arps,telapsed,RF(3));
+        drawnow;
     
        if ~isempty(k)
            if strcmp(k,'q') 

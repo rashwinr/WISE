@@ -1,4 +1,6 @@
 function RMSE = signal_RMSE(knt,imu)
+RMSE = 0;
+if length(knt)>=2 && length(imu)>=2
 [R1] = find(isnan(knt));
 knt(R1) = [];
 imu(R1) = [];
@@ -17,4 +19,6 @@ end
 % RMSE = RMSE/(length(knt)-1);
 RMSE = RMSE/(length(knt));
 RMSE = sqrt(RMSE);
+end
+
 end

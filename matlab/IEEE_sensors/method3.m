@@ -51,9 +51,21 @@ R3 = plot3([0,0],[0,0],[0,0],'c');
 
 fopen(s);
 
-WISEmod = 'c';
+WISEmod = 'RF';
 
-%% catch tranf 
+switch WISEmod
+    case 'LF'
+        WISEmod = 'a';
+    case 'RF'
+        WISEmod = 'b';
+    case 'LA'
+        WISEmod = 'c';
+    case 'RA'
+        WISEmod = 'd';
+    case 'B'
+        WISEmod = 'e';
+end
+%% catch transf 
 
 while true
     q = ModReceive(s,WISEmod,q);
@@ -65,6 +77,7 @@ while true
     [~,K1,K2,K3] = parts(quaternion(quatmultiply(q,quatmultiply(qK,quatconj(q)))));
     K = [K1,K2,K3];
 
+    disp(dot(I,X))
     disp(quatconj(q))
 
     figure(1)
@@ -90,8 +103,9 @@ while true
     J = [J1,J2,J3];
     [~,K1,K2,K3] = parts(quaternion(quatmultiply(q,quatmultiply(qK,quatconj(q)))));
     K = [K1,K2,K3];
-
-
+    
+    disp(dot(K,Z))
+    
     figure(1)
     hold on
     delete([E1,E2,E3])
@@ -117,6 +131,7 @@ while true
     K = [K1,K2,K3];
     
     disp(real(acosd(dot(I,Z))))
+    disp(dot(K,X))
 
     figure(1)
     hold on
@@ -127,6 +142,34 @@ while true
     TXT = text(Z(1),Z(2),Z(3)+0.5,num2str(real(acosd(dot(I,X)))));
  
 end 
+
+%% New Test
+
+    %% Part one
+    tel = 0;
+    while tel<7 % grab q1
+        tic
+        q = ModReceive(s,WISEmod,q);
+        q1 = box_transf(WISEmod,q);
+        disp(q1)
+        tel = tel + toc;
+    end
+
+    %% Part two
+    
+     tel = 0;
+    while tel<7
+        tic
+        q = ModReceive(s,WISEmod,q);
+        q2 = box_transf(WISEmod,q);
+        disp(q2)
+        tel = tel + toc;
+    end
+
+qRel = quatmultiply(quatconj(q1),q2);
+AxAng = quat2axang(qRel);
+disp(AxAng(4)*180/pi)
+disp(dot(AxAng(1:3),X))
 
 %% test X
 
@@ -198,6 +241,7 @@ while true
     end
  
 end 
+
 
 %% test Y
 

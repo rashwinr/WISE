@@ -1,4 +1,4 @@
-function [qA,qB,qC,qD,qE] = TransfDataReceive(ser,qa,qb,qc,qd,qe)
+function [qA,qB,qC,qD,qE] = MatchDataReceive(ser,qa,qb,qc,qd,qe)
 
 qA = qa;
 qB = qb;
@@ -14,21 +14,13 @@ datamodified = ["0","0","0","0","0";
                 "0","0","0","0","0";
                 "0","0","0","0","0"];
 bytes = ser.Bytesavailable;
-
-% tic
-% while bytes<250
-%     pause((250-bytes)*0.001)
-%     bytes = ser.Bytesavailable;
+% while bytes<=250
+% bytes = ser.Bytesavailable;    
 % end
-% toc
-
-% tic
 if bytes < 250
     pause((250-bytes)*0.001)
     bytes = ser.Bytesavailable;
 end
-% toc
-
 str = strsplit(convertCharsToStrings(char(fread(ser,bytes))),'\n');
 str = fliplr(str(2:length(str)-1));
 % length(str)
@@ -41,27 +33,27 @@ while i<=length(str)
                flg = flg +1;
                
                qA = qconvert(datamodified(1,:));
-               qA = box_transf('a',qA);
+               qA = match_frame('a',qA);
                
 
            case 'b'
                datamodified(2,:) = data;
                flg = flg +1;
                qB = qconvert(datamodified(2,:));
-               qB = box_transf('b',qB);
+               qB = match_frame('b',qB);
                     
            case 'c'
                datamodified(3,:) = data;
                flg = flg +1;
                qC = qconvert(datamodified(3,:));
-               qC = box_transf('c',qC);
+               qC = match_frame('c',qC);
                     
 
            case 'd'
                datamodified(4,:) = data;
                flg = flg +1;
                qD = qconvert(datamodified(4,:));
-               qD = box_transf('d',qD);
+               qD = match_frame('d',qD);
             
 
            case 'e'
@@ -69,7 +61,7 @@ while i<=length(str)
                flg = flg +1;
                
                qE = qconvert(datamodified(5,:));
-               qE = box_transf('e',qE);
+               qE = match_frame('e',qE);
                
        end
     end

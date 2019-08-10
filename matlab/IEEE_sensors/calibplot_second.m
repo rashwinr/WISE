@@ -1,13 +1,13 @@
 clear all, clc
 clf(figure(1),'reset')
 %%
-addpath('F:\github\wearable-jacket\matlab\IEEE_spmb\');
+addpath('F:\github\wearable-jacket\matlab\IEEE_sensors\');
 delete(instrfind({'Port'},{'COM15'}))
 ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);k=[];
 pause(2);
-sts = 'F:\github\wearable-jacket\matlab\IEEE_spmb\data_matched\';
+sts = 'F:\github\wearable-jacket\matlab\IEEE_sensors\data_matched\';
 cd(sts);
 ttotal = 1*60;
 prompt1 = 'Please enter the sensor ID attached on the moving arm respond A,B,C,D: ';
@@ -30,9 +30,6 @@ clearvars sts;
 
 prompt = 'Please enter the angle in degrees used for the experiment (0-180): ';
 ANGLE = input(prompt,'s');
-
-f1 = sprintf('%s_WISE+turntable_%s.txt',num2str(ANGLE),datestr(now,'mm-dd-yyyy HH-MM'));
-fwrite = fopen(f1,'wt');
 
 %%
 
@@ -79,7 +76,6 @@ q1 = [cos(-pi/4),sin(-pi/4),0,0];
 [~,I5(1),I5(2),I5(3)] = parts(quaternion(quatmultiply(q5,quatmultiply(qI,quatconj(q5)))));
 [~,J5(1),J5(2),J5(3)] = parts(quaternion(quatmultiply(q5,quatmultiply(qJ,quatconj(q5)))));
 [~,K5(1),K5(2),K5(3)] = parts(quaternion(quatmultiply(q5,quatmultiply(qK,quatconj(q5)))));
-time= 0;
 % sz2 = screensize(2);
 figure(1)
 set(figure (1),'keypress','k=get(gcf,''currentchar'');' );
@@ -182,6 +178,10 @@ hold off
 
 
 %%
+
+f1 = sprintf('%s_WISE+turntable_%s.txt',num2str(ANGLE),datestr(now,'mm-dd-yyyy HH-MM'));
+fwrite = fopen(f1,'wt');
+time = 0;
 while time<=ttotal
 tic;
     switch (WISESENSORID)
@@ -212,7 +212,7 @@ tic;
 
 
 theta1 = Simple_JCS(AX,q1,q2);
-theta2 = Simple_JCS(AX,q1,q3);n 
+theta2 = Simple_JCS(AX,q1,q3);
 theta3 = Simple_JCS(AX,q1,q4);
 theta4 = Simple_JCS(AX,q1,q5);
 
@@ -249,8 +249,7 @@ Bt3 = text(-1*sp+J3(1),J3(2),J3(3),'Y','FontSize',fs);
 Bt4 = text(-1*sp+K3(1),K3(2),K3(3),'Z','FontSize',fs);
 
 C1 = plot3([0,I4(1)],[0,I4(2)],[0,I4(3)],'r','LineWidth',lw);  
-C2 = plot3([0,J4(1)],[0,J4(2)],[0,J4(3)],'g','LineWidth',lw);
-C3 = plot3([0,K4(1)],[0,K4(2)],[0,K4(3)],'b','LineWidth',lw);
+C2 = plot3([0,J4(1)],[0,J4(2)],[0,J4(3)],'g','LineWidth',lw);C3 = plot3([0,K4(1)],[0,K4(2)],[0,K4(3)],'b','LineWidth',lw);
 Ct1 = text(-0.50,0,-0.1,'C','FontSize',fs);
 Ct2 = text(I4(1),I4(2),I4(3),'X','FontSize',fs);
 Ct3 = text(J4(1),J4(2),J4(3),'Y','FontSize',fs);
@@ -272,18 +271,18 @@ delete([t16,t17,t18,t19,t20,Cl1,Cl2,Cl3,Cl4,t21,t22,t23])
 % grid on
 axis equal
 axis([-8 8 -8 8])
-Cl1 = plot([0,0.25*R*cos(theta1)],[0,0.25*R*sin(theta1)],'r','LineWidth',lw);
-Cl2 = plot([0.25*R*cos(theta2),0.5*R*cos(theta2)],[0.25*R*sin(theta2),0.5*R*sin(theta2)],'g','LineWidth',lw);
-Cl3 = plot([0.5*R*cos(theta3),0.75*R*cos(theta3)],[0.5*R*sin(theta3),0.75*R*sin(theta3)],'y','LineWidth',lw);
-Cl4 = plot([0.75*R*cos(theta4),R*cos(theta4)],[0.75*R*sin(theta4),1*R*sin(theta4)],'b','LineWidth',lw);
+Cl1 = plot([0,0.25*R*cosd(theta1)],[0,0.25*R*sind(theta1)],'r','LineWidth',lw);
+Cl2 = plot([0.25*R*cosd(theta2),0.5*R*cosd(theta2)],[0.25*R*sind(theta2),0.5*R*sind(theta2)],'g','LineWidth',lw);
+Cl3 = plot([0.5*R*cosd(theta3),0.75*R*cosd(theta3)],[0.5*R*sind(theta3),0.75*R*sind(theta3)],'y','LineWidth',lw);
+Cl4 = plot([0.75*R*cosd(theta4),R*cosd(theta4)],[0.75*R*sind(theta4),1*R*sind(theta4)],'b','LineWidth',lw);
 t16 = text(5.5,0,'0^o','FontSize',fs);
 t17 = text(-6.5,0,'180^o','FontSize',fs);
 t18 = text(0,+5.5,'90^o','FontSize',fs);
 t19 = text(0,-5.5,'-90^o','FontSize',fs);
-t20 = text(-7,7.5,strcat('A:  ',num2str(theta1*180/pi),'^{o}'),'FontSize',fs);
-t21 = text(-3,7.5,strcat('B:  ',num2str(theta2*180/pi),'^{o}'),'FontSize',fs);
-t22 = text(1,7.5,strcat('C:  ',num2str(theta3*180/pi),'^{o}'),'FontSize',fs);
-t23 = text(5,7.5,strcat('D:  ',num2str(theta4*180/pi),'^{o}'),'FontSize',fs);
+t20 = text(-7,7.5,strcat('A:  ',num2str(theta1),'^{o}'),'FontSize',fs);
+t21 = text(-3,7.5,strcat('B:  ',num2str(theta2),'^{o}'),'FontSize',fs);
+t22 = text(1,7.5,strcat('C:  ',num2str(theta3),'^{o}'),'FontSize',fs);
+t23 = text(5,7.5,strcat('D:  ',num2str(theta4),'^{o}'),'FontSize',fs);
 
 % suptitle(strcat('Turntable testing sensorID:   ',WISESENSORID, '   ',AX,' axis'));
 hold off
@@ -296,5 +295,6 @@ time = time+toc;
            break; 
            end
        end      
+       pause(0.01)
 end
 fclose(fwrite);

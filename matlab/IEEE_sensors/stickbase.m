@@ -69,7 +69,7 @@ B3 = plot3([RB(1),RB(1)+KB(1)],[RB(2),RB(2)+KB(2)],[RB(3),RB(3)+KB(3)],'b');
 
 while true
     if ser.BytesAvailable
-        [qA,qB,qC,qD,qE] = DataReceive(ser,qA,qB,qC,qD,qE);
+        [qA,qB,qC,qD,qE] = TransfDataReceive(ser,qA,qB,qC,qD,qE);
         
         [~,IA(1),IA(2),IA(3)] = parts(quaternion(quatmultiply(qA,quatmultiply(qI,quatconj(qA)))));
         [~,JA(1),JA(2),JA(3)] = parts(quaternion(quatmultiply(qA,quatmultiply(qJ,quatconj(qA)))));

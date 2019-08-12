@@ -18,8 +18,9 @@ datamodified = ["0","0","0","0","0";
                 "0","0","0","0","0";
                 "0","0","0","0","0"];
 bytes = ser.Bytesavailable;
-while bytes<=250
-bytes = ser.Bytesavailable;    
+if bytes < 250
+    pause((250-bytes)*0.001)
+    bytes = ser.Bytesavailable;
 end
 str = strsplit(convertCharsToStrings(char(fread(ser,bytes))),'\n');
 str = fliplr(str(2:length(str)-1));

@@ -6,7 +6,18 @@ instrreset
 ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);
-
+addpath('F:\github\wearable-jacket\matlab\IEEE_sensors\JCS_data\');
+sts = 'F:\github\wearable-jacket\matlab\IEEE_sensors\JCS_data\';
+Prompt1 = 'Please enter the gender of the person: ';
+WID = input(Prompt1,'s');
+cd(sts);
+if ~exist(WID,'dir')
+mkdir(WID);
+end
+cd(strcat(sts,WID,'\'));
+f = sprintf('%s_WISE+JCS_%s.txt',WID,datestr(now,'mm-dd-yyyy HH-MM'));
+fwrite = fopen(f,'wt');
+ttotal = 1*60;
 telapsed = 0;
 LF = [0,0,0];
 LA = [0,0,0];
@@ -46,7 +57,7 @@ alie = animatedline(telapsed,LA(3),'Color','r');
 
 subplot(3,2,2)
 hold on
-title('LA Mounting offset')
+title('Carrying angle')
 % text(0,2,'mounting offset = ')
 LFmo = text(telapsed,LF(1),'0');
 almo = animatedline(telapsed,LF(1),'Color','r');
@@ -59,7 +70,7 @@ alef = animatedline(telapsed,LF(2),'Color','r');
 
 subplot(3,2,6)
 hold on
-title('Elbow Pro.-sup.');
+title('Forearm Pro.-sup.');
 LFps = text(telapsed,LF(3),'0');
 alps = animatedline(telapsed,LF(3),'Color','r');
 
@@ -90,7 +101,7 @@ arie = animatedline(telapsed,RA(3),'Color','b');
 
 subplot(3,2,2)
 hold on
-title('RA Mounting offset')
+title('Carrying angle')
 % text(0,2,'mounting offset = ')
 RFmo = text(telapsed,RF(1),'0');
 armo = animatedline(telapsed,RF(1),'Color','b');
@@ -103,7 +114,7 @@ aref = animatedline(telapsed,RF(2),'Color','b');
 
 subplot(3,2,6)
 hold on
-title('Elbow Pro.-sup.');
+title('Forearm Pro.-sup.');
 RFps = text(telapsed,RF(3),'0');
 arps = animatedline(telapsed,RF(3),'Color','b');
 k=[];
@@ -111,7 +122,7 @@ k=[];
 
 %%
 
-while true
+while telapsed<=ttotal
     tic;
     if ser.BytesAvailable
         [qLF,qRF,qLA,qRA,qB] = DataReceive(ser,qLF,qRF,qLA,qRA,qB);
@@ -192,13 +203,17 @@ while true
         RFps = text(telapsed+2,RF(3)+2,num2str(RF(3)));
         addpoints(arps,telapsed,RF(3));
         drawnow;
-    
+    fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',telapsed,LA(1),LA(2),LA(3),LF(1),LF(2),LF(3),RA(1),RA(2),RA(3),RF(1),RF(2),RF(3));    
        if ~isempty(k)
            if strcmp(k,'q') 
                k=[];
+               fclose(fwrite);
                break; 
            end
        end
+
     telapsed = toc+telapsed;
-    pause(0.2);
+    pause(0.1);
 end
+
+fclose(fwrite);

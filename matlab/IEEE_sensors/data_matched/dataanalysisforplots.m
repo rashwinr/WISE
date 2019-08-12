@@ -354,13 +354,13 @@ Dfit = [D(:,1), coeffDX(2)*D(:,1)+coeffDX(1), coeffDY(2)*D(:,1)+coeffDY(1), coef
 fs = 15;
 
 figure(1)
-subplot(2,2,1)
+subplot(4,1,1)
 hold on
 axis([-90 90 -90 90])
 plot(A(:,1),A(:,2),'o','Color',[0.8 0 0],'DisplayName','X axis','MarkerSize',8,'LineWidth',1.25)
 plot(Afit(:,1),Afit(:,2),'--','Color',[0.8 0 0],'DisplayName','X axis (fitted)')
 xlabel('Applied angle on the goniometer moving arm (degrees)','FontSize',fs)
-ylabel('WISE A module (degrees)','FontSize',fs)
+ylabel('WIS module LF (degrees)','FontSize',fs)
 plot(A(:,1),A(:,3),'*','Color',[0 0.8 0],'DisplayName','Y axis','MarkerSize',8,'LineWidth',1.25)
 plot(Afit(:,1),Afit(:,3),'--','Color',[0 0.8 0],'DisplayName','Y axis (fitted)')
 plot(A(:,1),A(:,4),'+','Color',[0 0 0.8],'DisplayName','Z axis','MarkerSize',8,'LineWidth',1.25)
@@ -368,6 +368,7 @@ plot(Afit(:,1),Afit(:,4),'--','Color',[0 0 0.8],'DisplayName','Z axis (fitted)')
 lg = legend;
 lg.Position = [0.4586    0.4924    0.1130    0.0568];
 lg.FontSize = fs;
+lg.Orientation = 'horizontal';
 text(-80,80,strcat('RMSE_{X}: ',num2str(lm_AX.RMSE),'^{o}'),'FontSize',fs)
 text(-80,60,strcat('RMSE_{Y}: ',num2str(lm_AY.RMSE),'^{o}'),'FontSize',fs)
 text(-80,40,strcat('RMSE_{Z}: ',num2str(lm_AZ.RMSE),'^{o}'),'FontSize',fs)
@@ -375,13 +376,14 @@ text(50,-40,strcat('R^{2}_{X}: ',num2str(lm_AX.Rsquared.Adjusted)),'FontSize',fs
 text(50,-60,strcat('R^{2}_{Y}: ',num2str(lm_AY.Rsquared.Adjusted)),'FontSize',fs)
 text(50,-80,strcat('R^{2}_{Z}: ',num2str(lm_AZ.Rsquared.Adjusted)),'FontSize',fs)
 hold off
-subplot(2,2,2)
+
+subplot(4,1,2)
 hold on
 axis([-90 90 -90 90])
 plot(B(:,1),B(:,2),'o','Color',[0.8 0 0],'DisplayName','X axis','MarkerSize',8,'LineWidth',1.25)
 plot(Bfit(:,1),Bfit(:,2),'--','Color',[0.8 0 0],'DisplayName','X axis (fitted)')
 xlabel('Applied angle on the goniometer moving arm (degrees)','FontSize',fs)
-ylabel('WISE B module(degrees)','FontSize',fs)
+ylabel('WISE module RF (degrees)','FontSize',fs)
 plot(B(:,1),B(:,3),'g*','DisplayName','Y axis','MarkerSize',8,'LineWidth',1.25)
 plot(Bfit(:,1),Bfit(:,3),'g--','DisplayName','Y axis (fitted)')
 plot(B(:,1),B(:,4),'+','Color',[0 0 0.8],'DisplayName','Z axis','MarkerSize',8,'LineWidth',1.25)
@@ -392,13 +394,14 @@ text(-80,40,strcat('RMSE_{Z}: ',num2str(lm_BZ.RMSE),'^{o}'),'FontSize',fs)
 text(50,-40,strcat('R^{2}_{X}: ',num2str(lm_BX.Rsquared.Adjusted)),'FontSize',fs)
 text(50,-60,strcat('R^{2}_{Y}: ',num2str(lm_BY.Rsquared.Adjusted)),'FontSize',fs)
 text(50,-80,strcat('R^{2}_{Z}: ',num2str(lm_BZ.Rsquared.Adjusted)),'FontSize',fs)
-subplot(2,2,3)
+
+subplot(4,1,3)
 hold on
 axis([-90 90 -90 90])
 plot(C(:,1),C(:,2),'o','Color',[0.8 0 0],'DisplayName','X axis','MarkerSize',8,'LineWidth',1.25)
 plot(Cfit(:,1),Cfit(:,2),'--','Color',[0.8 0 0],'DisplayName','X axis (fitted)')
 xlabel('Applied angle on the goniometer moving arm (degrees)','FontSize',fs)
-ylabel('WISE C module (degrees)','FontSize',fs)
+ylabel('WISE module LA (degrees)','FontSize',fs)
 plot(C(:,1),C(:,3),'*','Color',[0 0.8 0],'DisplayName','Y axis','MarkerSize',8,'LineWidth',1.25)
 plot(Cfit(:,1),Cfit(:,3),'--','Color',[0 0.8 0],'DisplayName','Y axis (fitted)')
 plot(C(:,1),C(:,4),'+','Color',[0 0 0.8],'DisplayName','Z axis','MarkerSize',8,'LineWidth',1.25)
@@ -409,13 +412,14 @@ text(-80,40,strcat('RMSE_{Z}: ',num2str(lm_CZ.RMSE),'^{o}'),'FontSize',fs)
 text(50,-40,strcat('R^{2}_{X}: ',num2str(lm_CX.Rsquared.Adjusted)),'FontSize',fs)
 text(50,-60,strcat('R^{2}_{Y}: ',num2str(lm_CY.Rsquared.Adjusted)),'FontSize',fs)
 text(50,-80,strcat('R^{2}_{Z}: ',num2str(lm_CZ.Rsquared.Adjusted)),'FontSize',fs)
-subplot(2,2,4)
+
+subplot(4,1,4)
 hold on
 axis([-90 90 -90 90])
 plot(D(:,1),D(:,2),'o','Color',[0.8 0 0],'DisplayName','X axis','MarkerSize',8,'LineWidth',1.25)
 plot(Dfit(:,1),Dfit(:,2),'--','Color',[0.8 0 0],'DisplayName','X axis (fitted)')
 xlabel('Applied angle on the goniometer moving arm (degrees)','FontSize',fs)
-ylabel('WISE D module (degrees)','FontSize',fs)
+ylabel('WISE module RA (degrees)','FontSize',fs)
 plot(D(:,1),D(:,3),'*','Color',[0 0.8 0],'DisplayName','Y axis','MarkerSize',8,'LineWidth',1.25)
 plot(Dfit(:,1),Dfit(:,3),'--','Color',[0 0.8 0],'DisplayName','Y axis (fitted)')
 plot(D(:,1),D(:,4),'+','Color',[0 0 0.8],'DisplayName','Z axis','MarkerSize',8,'LineWidth',1.25)

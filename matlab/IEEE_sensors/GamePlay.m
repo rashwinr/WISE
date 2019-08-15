@@ -18,15 +18,22 @@ qRF = [1 0 0 0];
 qB = [1 0 0 0];
 res = 1;
 ex = 'abd';
+side = 'Right';
 dtRef = 0.2;
 oldel = 0;
 dt = 0;
-L = [1 1 1 1 1];
+L = [1 1 1 1 0]; % PL IE FE PS
+cost = 0;
+telapsed = 0;
+figure(1)
+costL = animatedline(telapsed,cost,'Color','r');
 %%
+tic
 while true
      if ser.BytesAvailable
         [qLF,qRF,qLA,qRA,qB] = DataReceive(ser,qLF,qRF,qLA,qRA,qB);
-        toc
+        dt = toc;
+        telapsed = telapsed + dt;
         tic
         LA = JCS_isb('LA',qB,qLA);
         LA(3) = LA(1)+LA(3);
@@ -44,7 +51,8 @@ while true
             case 'Right'
                 ja = [RA,RF];
         end
-        GetCost(res,ex,oldel,ja,dt,dtRef,L)
+        cost = GetCost(res,ex,oldel,ja,dt,dtRef,L);
+        addpoints(costL,telapsed,cost);
      end
 end
 

@@ -1,43 +1,19 @@
 
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lps","lie","lie1","ref","rbd","relb","relb1","rps","rie","rie1"];
-subjectID = ["1330","1390","1490","1430","1950","1660","1160","1970","1580","1440","1110","1770","1250","1240","1610","1840","1130","1490","1940","1390","1410","1710","1380","1630"];
-% <<<<<<< HEAD
-% <<<<<<< HEAD
+
 SID = 7612;
 addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
-% =======
-% SID = 2420;
-addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
-% >>>>>>> fed6afbc25dd13a3a47d39ffea08fa6a4cebd172
-% =======
-% SID = 2420;
-% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
-% addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
-% addpath('C:\Users\fabio\github\wearable-jacket\matlab\WISE_KNT') % fabio address
-% cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
-% cd(strcat('C:\Users\fabio\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID))); % fabio address
 
-% >>>>>>> 93a0a0813f533ed1abbbe5ab9be9612391c4420b
+cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+
+addpath('F:\github\wearable-jacket\matlab\WISE_KNT')
+
+cd(strcat('F:\github\wearable-jacket\matlab\kinect+imudata\',num2str(SID)));
+
 list = dir();
 spike_files=dir('*.txt');
 
-%
-%fprintf( fid, '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n','Timestamp','Kinect left shoulder flex.-ext.',...
-% 'WISE left shoulder flex.-ext.','Kinect left shoulder abd.-add.','WISE left shoulder abd.-add.','Kinect left shoulder int.- ext.',...
-% 'WISE left shoulder int.- ext.','Kinect left elbow flex.-ext.','WISE left elbow flex.-ext.','WISE left forearm pro.- sup.',...
-% 'Kinect right shoulder flex.-ext.','WISE right shoulder flex.-ext.','Kinect right shoulder Abd.-Add.','WISE right shoulder abd.-add.',...
-% 'Kinect right shoulder int.-ext.','WISE right shoulder int.-ext.','Kinect right elbow flex.-ext.','WISE right elbow flex.-ext.',...
-% 'WISE right forearm pro.-sup.');
 figure(1)
 sgtitle(strcat(num2str(SID),' Kinect+WISE'));
 
@@ -86,13 +62,6 @@ for i = 1:length(spike_files)
         end
 
         fopen(trfile,'a+');
-%         rmse1 = NaN;
-%         rmse2 = NaN;
-%         PWise = NaN(7,1);
-%         PKinect = NaN(7,1);
-%         WLoc = NaN(7,1);
-%         KLoc = NaN(7,1);
-        
         switch(typ)
             
             case markers(1)

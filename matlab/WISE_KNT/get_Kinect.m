@@ -62,54 +62,94 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 RFA=(rightWrist-rightElbow)/norm(rightWrist-rightElbow);
                 relb=acosd(dot(RA,RFA));
                 
-                %Shoulder internal external calculation
+
                 
-                % JCS_isb algorithm
+                % kinect paper algorithm reduced
+
                 lie = 666;
                 if lelb > 30
-                    R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
-                    back = rotm2quat(R);
-                    Z = [cos(pi/4),-cor_Z(1)*sin(pi/4),-cor_Z(2)*sin(pi/4),-cor_Z(3)*sin(pi/4)];
-                    back = quatmultiply(Z,back);
-
-                    R = quat2rotm(back);
-                    R = [-R(:,1),R(:,2),-R(:,3)];
-                    qRef = rotm2quat(R);
-
-                    Y = LA;
-                    X = cross(LFA,LA);
-                    X = X/norm(X);
-                    Z = cross(X,Y);
-                    R = [-X,Y,-Z];
-                    q = rotm2quat(R);
-
-                    qRel = quatmultiply(quatconj(qRef),q);
-                    [r1,~,r3] = quat2angle(qRel,'YZY');
-                    lie = (r1+r3)*180/pi;
+                    
+                    Zref = cross(sag_Y,LA);
+                    Zref = Zref/norm(Zref);
+                    Yref = cross(LA,Zref);
+                    Na = cross(LFA,LA);
+                    Na = Na/norm(Na);
+                    Va = cross(LA,Na);
+                    lie = atan2d(dot(Va,Yref),dot(Va,Zref));
+                        
                 end
                 
                 rie = 666;
                 if relb > 30
-                    R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
-                    back = rotm2quat(R);
-                    Z = [cos(pi/4),-cor_Z(1)*sin(pi/4),-cor_Z(2)*sin(pi/4),-cor_Z(3)*sin(pi/4)];
-                    qRef = quatmultiply(Z,back);
 
-                    R = quat2rotm(qRef);
-                    R = [-R(:,1),-R(:,2),R(:,3)];
-                    qRef = rotm2quat(R);
-
-                    Y = RA;
-                    X = cross(RFA,RA);
-                    X = X/norm(X);
-                    Z = cross(X,Y);
-                    R = [-X,-Y,Z];
-                    q = rotm2quat(R);
-
-                    qRel = quatmultiply(quatconj(qRef),q);
-                    [r1,~,r3] = quat2angle(qRel,'YZY');
-                    rie = (r1+r3)*180/pi;
+                    Zref = cross(sag_Y,RA);
+                    Zref = Zref/norm(Zref);
+                    Yref = cross(Zref,RA);
+                    Na = cross(RA,RFA);
+                    Na = Na/norm(Na);
+                    Va = cross(Na,RA);
+                    rie = atan2d(dot(Va,Yref),dot(Va,Zref));
+                    
                 end
+
+                
+                
+                kinect_ang = [lef;ref;lbd;rbd;lie;rie;lelb;relb];
+                
+                
+end
+
+%%
+
+
+                %Shoulder internal external calculation
+                
+                % JCS_isb algorithm
+%                 lie = 666;
+%                 if lelb > 30
+%                     R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
+%                     back = rotm2quat(R);
+%                     Z = [cos(pi/4),-cor_Z(1)*sin(pi/4),-cor_Z(2)*sin(pi/4),-cor_Z(3)*sin(pi/4)];
+%                     back = quatmultiply(Z,back);
+% 
+%                     R = quat2rotm(back);
+%                     R = [-R(:,1),R(:,2),-R(:,3)];
+%                     qRef = rotm2quat(R);
+% 
+%                     Y = LA;
+%                     X = cross(LFA,LA);
+%                     X = X/norm(X);
+%                     Z = cross(X,Y);
+%                     R = [-X,Y,-Z];
+%                     q = rotm2quat(R);
+% 
+%                     qRel = quatmultiply(quatconj(qRef),q);
+%                     [r1,~,r3] = quat2angle(qRel,'YZY');
+%                     lie = (r1+r3)*180/pi;
+%                 end
+%                 
+%                 rie = 666;
+%                 if relb > 30
+%                     R = [trans_X(1),sag_Y(1),cor_Z(1);trans_X(2),sag_Y(2),cor_Z(2);trans_X(3),sag_Y(3),cor_Z(3)];
+%                     back = rotm2quat(R);
+%                     Z = [cos(pi/4),-cor_Z(1)*sin(pi/4),-cor_Z(2)*sin(pi/4),-cor_Z(3)*sin(pi/4)];
+%                     qRef = quatmultiply(Z,back);
+% 
+%                     R = quat2rotm(qRef);
+%                     R = [-R(:,1),-R(:,2),R(:,3)];
+%                     qRef = rotm2quat(R);
+% 
+%                     Y = RA;
+%                     X = cross(RFA,RA);
+%                     X = X/norm(X);
+%                     Z = cross(X,Y);
+%                     R = [-X,-Y,Z];
+%                     q = rotm2quat(R);
+% 
+%                     qRel = quatmultiply(quatconj(qRef),q);
+%                     [r1,~,r3] = quat2angle(qRel,'YZY');
+%                     rie = (r1+r3)*180/pi;
+%                 end
                 
                 % New JCS algorithm 
                 %{
@@ -186,34 +226,8 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                 end
                 %}
                 
-                % kinect paper algorithm reduced
-                %{
-                lie = 666;
-                if lelb > 30
-                    
-                    Zref = cross(sag_Y,LA);
-                    Zref = Zref/norm(Zref);
-                    Yref = cross(LA,Zref);
-                    Na = cross(LFA,LA);
-                    Na = Na/norm(Na);
-                    Va = cross(LA,Na);
-                    lie = atan2d(dot(Va,Yref),dot(Va,Zref));
-                        
-                end
                 
-                rie = 666;
-                if relb > 30
-
-                    Zref = cross(sag_Y,RA);
-                    Zref = Zref/norm(Zref);
-                    Yref = cross(Zref,RA);
-                    Na = cross(RA,RFA);
-                    Na = Na/norm(Na);
-                    Va = cross(Na,RA);
-                    rie = atan2d(dot(Va,Yref),dot(Va,Zref));
-                    
-                end
-                %}
+                
                 
                 %JCS algorithm
                 %{
@@ -364,10 +378,3 @@ function [kinect_ang] = get_Kinect(pos2Dxxx)
                     end
                 end
                 %}
-                
-                
-                kinect_ang = [lef;ref;lbd;rbd;lie;rie;lelb;relb];
-                
-                
-end
-

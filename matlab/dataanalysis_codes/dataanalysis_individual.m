@@ -2,8 +2,10 @@
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lie","ref","rbd","relb","relb1","rie"];
 addpath('F:\github\wearable-jacket\matlab\dataanalysis_codes')
-Ndef = 20;Ndbd = 20;Ndelb = 40;Ndie = 15;Ndelb1 = 20;smoovar = 2;
-subjectID = [312,2064,2463,2990,3154,3162,3380,3409,3689,5837,6219,6339,6525,7612,9053,9717];
+% Ndef = 30;Ndbd = 30;Ndelb = 40;Ndie = 25;Ndelb1 = 30;
+smoovar = 2;
+% subjectID = [312,2064,2463,2990,3154,3162,3380,3409,3581,3689,5837,6219,6339,6525,7612,9053,9717];
+subjectID = 3581;
 for fu=1:length(subjectID)
 
 SID = subjectID(fu);
@@ -27,7 +29,7 @@ sgtitle(strcat(num2str(SID),' Error signal'));
 figure(3)
 sgtitle(strcat(num2str(SID),' Peaks'));
 
-tf = strcat(num2str(SID));
+tf = strcat(num2str(SID),'_true');
 trfile = strcat(tf,'.txt');
 fid = fopen(trfile,'wt');
         
@@ -73,18 +75,21 @@ for i = 1:length(spike_files)
         relbfe(1:delnumarr(1),:) = [];
         Time(length(lie)+1:length(Time))=[];
         smoovar = ceil(length(Time)/Time(length(Time)));
-        fopen(trfile,'a+');
+        fid = fopen(trfile,'a+');
 
         
         switch(typ)
             
             case markers(1)
                 
-                diff = zeros(length(lfe));
-                diff = lfe(:,1)-lfe(:,2);
-                N = find(abs(diff)>=Ndef);
-                lfe(N,:) = [];
-                Time(length(lfe)+1:length(Time)) = [];
+%                 diff = zeros(length(lfe));
+%                 diff = abs(lfe(:,1)-lfe(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(abs(diff)>=variable);
+%                 lfe(N,:) = [];
+%                 Time(length(lfe)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,1)
                 plot(Time,lfe(:,1),'r');
@@ -118,9 +123,9 @@ for i = 1:length(spike_files)
                 hold on
                 plot(Time,lfe(:,2),'b');
                 hold off
-                        for j=1:var
-                            fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
-                        end
+                for j=1:var
+                    fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
+                end
                         figure(3)
                         subplot(5,2,1)
                         hold on
@@ -142,14 +147,17 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(2)
-                diff = zeros(length(lbd));
-                diff = lbd(:,1)-lbd(:,2);
-                N = find(abs(diff)>=Ndbd);
-                lbd(N,:) = [];
-                Time(length(lbd)+1:length(Time)) = [];
+%                 diff = zeros(length(lbd));
+%                 diff = abs(lbd(:,1)-lbd(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(abs(diff)>=variable);
+%                 lbd(N,:) = [];
+%                 Time(length(lbd)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,3)
                 plot(Time,lbd(:,1),'r');
@@ -204,16 +212,19 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(3)
                 lelbfe(lelbfe>=200) = NaN;
                 [Row] = find(isnan(lelbfe(:,2)));
                 lelbfe(Row,:) = [];
-                diff = zeros(length(lelbfe));
-                diff = lelbfe(:,1)-lelbfe(:,2);
-                N = find(abs(diff)>=Ndelb);
-                lelbfe(N,:) = [];
+%                 diff = zeros(length(lelbfe));
+%                 diff = abs(lelbfe(:,1)-lelbfe(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 lelbfe(N,:) = [];
                 Time(length(lelbfe)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,5)
@@ -269,16 +280,19 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(4)
                 lelbfe(lelbfe>=200) = NaN;
                 [Row] = find(isnan(lelbfe(:,2)));
                 lelbfe(Row,2) = lelbfe(Row,1);
-                diff = zeros(length(lelbfe));
-                diff = lelbfe(:,1)-lelbfe(:,2);
-                N = find(abs(diff)>=Ndelb1);
-                lelbfe(N,:) = [];
+%                 diff = zeros(length(lelbfe));
+%                 diff = abs(lelbfe(:,1)-lelbfe(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 lelbfe(N,:) = [];
                 Time(length(lelbfe)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,7)
@@ -335,7 +349,7 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(5)
                 
@@ -349,9 +363,13 @@ for i = 1:length(spike_files)
                 pls1kinectpos = find(round(lie(:,1)/10)==+1);
                 ZeroIMUval = mean(lie([Zerokinectpos;min1kinectpos;pls1kinectpos],2));
                 lie(:,2) = lie(:,2)-ZeroIMUval;
-                diff = zeros(length(lie));diff = lie(:,1)-lie(:,2);
-                N = find(abs(diff)>=Ndie);
-                lie(N,:) = [];
+%                 diff = zeros(length(lie));
+%                 diff = abs(lie(:,1)-lie(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 lie(N,:) = [];
                 Time(length(lie)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,9)
@@ -408,14 +426,17 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(6)
-                diff = zeros(length(rfe));
-                diff = rfe(:,1)-rfe(:,2);
-                N = find(abs(diff)>=Ndef);
-                rfe(N,:) = [];
-                Time(length(rfe)+1:length(Time)) = [];
+%                 diff = zeros(length(rfe));
+%                 diff = abs(rfe(:,1)-rfe(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 rfe(N,:) = [];
+%                 Time(length(rfe)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,2)
                 plot(Time,rfe(:,1),'r');
@@ -462,6 +483,21 @@ for i = 1:length(spike_files)
                         hold off
                 rmse_trial = zeros(length(l)+2,1);
                 rmse_trial(1) = signal_RMSE(rfe(1:l(1),1),rfe(1:l(1),2));
+                figure(4)
+                subplot(5,1,1)
+                hold on
+%                 title('Right arm shoulder flexion-extension','FontSize',15)
+                xlim([0,50])
+%                 xlabel('Time [s]','FontSize',15)
+                ylabel('Angle [deg^o]','FontSize',15)
+                A = plot(Time,rfe(:,1),'r','DisplayName','Kinect');
+                B = plot(Time,rfe(:,2),'b','DisplayName','WISE');
+                C = scatter(kloc,pkinect,'r*','DisplayName','Kinect peaks')
+                D = scatter(wloc,pwise,'b*','DisplayName','WISE peaks')
+                E = scatter(k,-p,'k*','DisplayName','Slice points')
+                lgd = legend([A,B,C,D,E],'FontSize',12);
+                lgd1.Orientation = 'vertical';
+                hold off
                 for j=1:length(l)-1
                    rmse_trial(j+1) =  signal_RMSE(rfe(l(j):l(j+1),1),rfe(l(j):l(j+1),2));
                 end
@@ -470,14 +506,17 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(7)
-                diff = zeros(length(rbd));
-                diff = rbd(:,1)-rbd(:,2);
-                N = find(abs(diff)>=Ndbd);
-                rbd(N,:) = [];
-                Time(length(rbd)+1:length(Time)) = [];
+%                 diff = zeros(length(rbd));
+%                 diff = abs(rbd(:,1)-rbd(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 rbd(N,:) = [];
+%                 Time(length(rbd)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,4)
                 plot(Time,rbd(:,1),'r');
@@ -509,6 +548,19 @@ for i = 1:length(spike_files)
                 [p1,l] = findpeaks(-rbd(:,1),'MinPeakHeight',-40,'MinPeakProminence',50,'NPeaks',8);
                 var = (min(min(length(pwise),length(pkinect)),length(p)));
                 rmse2 = signal_RMSE(pkinect(1:var),pwise(1:var));
+                figure(4)
+                subplot(5,1,2)
+                hold on
+%                 title('Right arm shoulder flexion-extension','FontSize',15)
+                xlim([0,50]);
+%                 xlabel('Time [s]','FontSize',15);
+                ylabel('Angle [deg^o]','FontSize',15);
+                A = plot(Time,rbd(:,1),'r');
+                B = plot(Time,rbd(:,2),'b');
+                scatter(kloc,pkinect,'r*')
+                scatter(wloc,pwise,'b*')
+                scatter(k,-p,'k*')
+                hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
                         end
@@ -521,6 +573,7 @@ for i = 1:length(spike_files)
                         scatter(k,-p,'k*')
                         ylabel('Joint angle (degrees)')
                         xlabel('Time (seconds)')
+                        
                         hold off
                 rmse_trial = zeros(length(l)+2,1);
                 rmse_trial(1) = signal_RMSE(rbd(1:l(1),1),rbd(1:l(1),2));
@@ -532,17 +585,20 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(8)
                 relbfe(relbfe>=200) = NaN;
                 [Row] = find(isnan(relbfe(:,2)));
                 relbfe(Row,:) = [];
-                diff = zeros(length(relbfe));
-                diff = relbfe(:,1)-relbfe(:,2);
-                N = find(abs(diff)>=Ndelb);
-                relbfe(N,:) = [];
-                Time(length(relbfe)+1:length(Time)) = [];
+%                 diff = zeros(length(relbfe));
+%                 diff = abs(relbfe(:,1)-relbfe(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 relbfe(N,:) = [];
+%                 Time(length(relbfe)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,6)
                 plot(Time,relbfe(:,1),'r');
@@ -574,6 +630,19 @@ for i = 1:length(spike_files)
                 [p1,l] = findpeaks(-relbfe(:,1),'MinPeakHeight',-40,'MinPeakProminence',50,'NPeaks',8);
                 var = (min(min(length(pwise),length(pkinect)),length(p)));
                 rmse2 = signal_RMSE(pkinect(1:var),pwise(1:var));
+                figure(4)
+                subplot(5,1,3)
+                hold on
+%                 title('Right arm shoulder flexion-extension','FontSize',15)
+                xlim([0,50]);
+%                 xlabel('Time [s]','FontSize',15);
+                ylabel('Angle [deg^o]','FontSize',15);
+                A = plot(Time,relbfe(:,1),'r');
+                B = plot(Time,relbfe(:,2),'b');
+                scatter(kloc,pkinect,'r*')
+                scatter(wloc,pwise,'b*')
+                scatter(k,-p,'k*')
+                hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
                         end
@@ -593,22 +662,25 @@ for i = 1:length(spike_files)
                 for j=1:length(l)-1
                    rmse_trial(j+1) =  signal_RMSE(relbfe(l(j):l(j+1),1),relbfe(l(j):l(j+1),2));
                 end
-                rmse_trial(j+2) = signal_RMSE(relbfe(l(j+1):length(relbfe),1),lelbfe(l(j+1):length(relbfe),2));
+                rmse_trial(j+2) = signal_RMSE(relbfe(l(j+1):length(relbfe),1),relbfe(l(j+1):length(relbfe),2));
                 for j=1:length(rmse_trial)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                                 
             case markers(9)
                 relbfe(relbfe>=200) = NaN;
                 [Row] = find(isnan(relbfe(:,2)));
                 relbfe(Row,2) = relbfe(Row,1);
-                diff = zeros(length(relbfe));
-                diff = relbfe(:,1)-relbfe(:,2);
-                N = find(abs(diff)>=Ndelb1);
-                relbfe(N,:) = [];
-                Time(length(relbfe)+1:length(Time)) = [];
+%                 diff = zeros(length(relbfe));
+%                 diff = abs(relbfe(:,1)-relbfe(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 relbfe(N,:) = [];
+%                 Time(length(relbfe)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,8)
                 plot(Time,relbfe(:,1),'r');
@@ -640,6 +712,19 @@ for i = 1:length(spike_files)
                 plot(Time,relbfe(:,2),'b');
                 var = (min(min(length(pwise),length(pkinect)),length(p)));
                 rmse2 = signal_RMSE(pkinect(1:var),pwise(1:var));
+                figure(4)
+                subplot(5,1,4)
+                hold on
+%                 title('Right arm shoulder flexion-extension','FontSize',15)
+                xlim([0,50]);
+%                 xlabel('Time [s]','FontSize',15);
+                ylabel('Angle [deg^o]','FontSize',15);
+                A = plot(Time,relbfe(:,1),'r');
+                B = plot(Time,relbfe(:,2),'b');
+                scatter(kloc,pkinect,'r*')
+                scatter(wloc,pwise,'b*')
+                scatter(k,-p,'k*')
+                hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
                         end
@@ -663,7 +748,7 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
                 
             case markers(10)
                 
@@ -677,10 +762,13 @@ for i = 1:length(spike_files)
                 pls1kinectpos = find(round(rie(:,1)/10)==+1);
                 ZeroIMUval = mean(rie([Zerokinectpos;min1kinectpos;pls1kinectpos],2));
                 rie(:,2) = rie(:,2)-ZeroIMUval;
-                diff = zeros(length(rie));
-                diff = rie(:,1)-rie(:,2);
-                N = find(abs(diff)>=Ndie);
-                rie(N,:) = [];
+%                 diff = zeros(length(rie));
+%                 diff = abs(rie(:,1)-rie(:,2));
+%                 mn = mean(diff);
+%                 sd = std(diff);
+%                 variable = mn+(3*sd);
+%                 N = find(diff>=variable);
+%                 rie(N,:) = [];
                 Time(length(rie)+1:length(Time)) = [];
                 figure(1)
                 subplot(5,2,10)
@@ -713,6 +801,19 @@ for i = 1:length(spike_files)
                 [p1,l] = findpeaks(-rie(:,1),'MinPeakHeight',0,'MinPeakProminence',20,'NPeaks',8);
                 var = (min(min(length(pwise),length(pkinect)),length(p)));
                 rmse2 = signal_RMSE(pkinect(1:var),pwise(1:var));
+                figure(4)
+                subplot(5,1,5)
+                hold on
+%               title('Right arm shoulder flexion-extension','FontSize',15)
+                xlim([0,50]);
+                xlabel('Time [s]','FontSize',15);
+                ylabel('Angle [deg^o]','FontSize',15);
+                A = plot(Time,rie(:,1),'r');
+                B = plot(Time,rie(:,2),'b');
+                scatter(kloc,pkinect,'r*')
+                scatter(wloc,pwise,'b*')
+                scatter(k,-p,'k*')
+                hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
                         end
@@ -736,7 +837,7 @@ for i = 1:length(spike_files)
                     fprintf(fid,"%s,%s,%s\n",typ,strcat('R',string(j)),string(rmse_trial(j)));
                 end
                 fprintf(fid,"%s,%s,%s,%s,%s\n",typ,'RMSE signal: ',num2str(rmse1),'RMSE peaks: ',num2str(rmse2));
-                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var
+                clearvars pwise pkinect kloc wloc p k p1 l  rmse_trial rmse1 rmse2 var diff
         end
     fclose(fid);
     end
@@ -745,3 +846,10 @@ for i = 1:length(spike_files)
    end 
 end
 end
+
+
+
+%%
+
+
+

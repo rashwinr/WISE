@@ -3,14 +3,14 @@ addpath('F:\github\wearable-jacket\matlab\IEEE_sensors\');
 cd(strcat('F:\github\wearable-jacket\matlab\IEEE_sensors\JCS_data\Male\'));
 list = dir();
 
-Data = importJCS('Male_WISE+JCS_08-23-2019 06-13.txt');
+Data = importJCS('good_left_image_5_43.txt');
 
 %% plot all
 % Row = Data(:,10)>=200;
 % Data(Row,:) =[]; 
-Lstart = find(round(Data(:,1))<=3);
+Lstart = find(round(Data(:,1))<=5);
 Lstart = max(Lstart);
-Lend = find(Data(:,1)<=60);
+Lend = find(Data(:,1)<=43);
 Lend = max(Lend);
 Rstart = find(Data(:,1)<=3);
 Rstart = max(Rstart);
@@ -33,17 +33,24 @@ hold on
 % subplot(2,1,1)
 % hold on
 xlim([LTime(1),LTime(end)])
+ylim([-90,150])
 % xTick('FontSize',15)
 % yTick('FontSize',15)
 Pl = plot(LTime,LData(:,1),'Color','r','LineWidth',LW,'DisplayName','Left Shoulder plane');
 El = plot(LTime,LData(:,2),'Color','g','LineWidth',LW,'DisplayName','Left Shoulder elevation');
-% Il =plot(LTime,LData(:,3),'Color','b','LineWidth',LW,'DisplayName','Left Shoulder Int.-Ext. rotation');
-Pr = plot(RTime,RData(:,1),'Color','r','LineWidth',LW,'LineStyle',':','DisplayName','Right Shoulder plane');
-Er = plot(RTime,RData(:,2),'Color','g','LineWidth',LW,'LineStyle',':','DisplayName','Right Shoulder elevation');
+Il =plot(LTime,LData(:,3),'Color','b','LineWidth',LW,'DisplayName','Left Shoulder Int.-Ext. rotation');
+len = -180:1:180;
+xlen = ones(size(len));
+plot(6.4216*xlen,len,'k--')
+plot(16.5768*xlen,len,'k--')
+plot(21.1762*xlen,len,'k--')
+plot(28.8675*xlen,len,'k--')
+% Pr = plot(RTime,RData(:,1),'Color','r','LineWidth',LW,'LineStyle',':','DisplayName','Right Shoulder plane');
+% Er = plot(RTime,RData(:,2),'Color','g','LineWidth',LW,'LineStyle',':','DisplayName','Right Shoulder elevation');
 % Ir = plot(RTime,RData(:,3),'Color','b','LineWidth',LW,'LineStyle',':','DisplayName','Right Shoulder Int.-Ext. rotation');
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-lgd = legend([Pl,El,Pr,Er],'FontSize',12)
+lgd = legend([Pl,El,Il],'FontSize',20)
 lgd.Orientation = 'vertical'
 % 
 figure(2)
@@ -51,13 +58,18 @@ figure(2)
 % subplot(2,1,2)
 hold on
 xlim([LTime(1),LTime(end)])
-Fl = plot(LTime,LData(:,4),'Color','m','LineWidth',LW,'DisplayName','Left Elbow flex.-Ext.');
+ylim([-91,125])
+Fl = plot(LTime,LData(:,4),'Color','m','LineWidth',LW,'DisplayName','Left Elbow Flex.-Ext.');
 Sl = plot(LTime,LData(:,6),'Color','k','LineWidth',LW,'DisplayName','Left Forearm Pro.-Sup.');
-Fr = plot(RTime,RData(:,4),'Color','m','LineStyle',':','LineWidth',LW,'DisplayName','Right Elbow flex.-Ext.');
-Sr = plot(RTime,RData(:,6),'Color','k','LineStyle',':','LineWidth',LW,'DisplayName','Right Forearm Pro.-Sup.');
+plot(6.4216*xlen,len,'k--')
+plot(16.5768*xlen,len,'k--')
+plot(21.1762*xlen,len,'k--')
+plot(28.8675*xlen,len,'k--')
+% Fr = plot(RTime,RData(:,4),'Color','m','LineStyle',':','LineWidth',LW,'DisplayName','Right Elbow flex.-Ext.');
+% Sr = plot(RTime,RData(:,6),'Color','k','LineStyle',':','LineWidth',LW,'DisplayName','Right Forearm Pro.-Sup.');
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-lgd1 = legend([Fl,Sl,Fr,Sr],'FontSize',12)
+lgd1 = legend([Fl,Sl],'FontSize',20)
 lgd1.Orientation = 'vertical'
 
 

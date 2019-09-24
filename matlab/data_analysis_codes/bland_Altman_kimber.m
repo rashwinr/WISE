@@ -260,74 +260,84 @@ end
 % hold on
 % plot(rbdglobal(:,2))
 % 
-mult = 3;
+mult = 1.5;
 
 err = lfeglobal(:,1)-lfeglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Dellfe = [find(err<=mu(1));find(err>=mu(2))];
 lfep = length(Dellfe)*100/length(lfeglobal);
 lfeglobal(Dellfe,:) = [];
 
 err = rfeglobal(:,1)-rfeglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Delrfe = [find(err<=mu(1));find(err>=mu(2))];
 rfep = length(Delrfe)*100/length(rfeglobal);
 rfeglobal(Delrfe,:) = [];
 
 err = lbdglobal(:,1)-lbdglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Dellbd = [find(err<=mu(1));find(err>=mu(2))];
 lbdp = length(Dellbd)*100/length(lbdglobal);
 lbdglobal(Dellbd,:) = [];
 
 err = rbdglobal(:,1)-rbdglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Delrbd = [find(err<=mu(1));find(err>=mu(2))];
 rbdp = length(Delrbd)*100/length(rbdglobal);
 rbdglobal(Delrbd,:) = [];
 
 err = lieglobal(:,1)-lieglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Dellie = [find(err<=mu(1));find(err>=mu(2))];
 liep = length(Dellie)*100/length(lieglobal);
 lieglobal(Dellie,:) = [];
 
 err = rieglobal(:,1)-rieglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Delrie = [find(err<=mu(1));find(err>=mu(2))];
 riep = length(Delrie)*100/length(rieglobal);
 rieglobal(Delrie,:) = [];
 
 err = lelbfeglobal(:,1)-lelbfeglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Dellelbfe = [find(err<=mu(1));find(err>=mu(2))];
 lelbfep = length(Dellelbfe)*100/length(lelbfeglobal);
 lelbfeglobal(Dellelbfe,:) = [];
 
 err = relbfeglobal(:,1)-relbfeglobal(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Delrelbfe = [find(err<=mu(1));find(err>=mu(2))];
 relbfep = length(Delrelbfe)*100/length(relbfeglobal);
 relbfeglobal(Delrelbfe,:) = [];
 
 err = lelbfe1global(:,1)-lelbfe1global(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Dellelbfe1 = [find(err<=mu(1));find(err>=mu(2))];
 lelbfe1p = length(Dellelbfe1)*100/length(lelbfe1global);
 lelbfe1global(Dellelbfe1,:) = [];
 
 err = relbfe1global(:,1)-relbfe1global(:,2);
 mu = prctile(err,[25 75]);
-mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
+med = median(err);
+mu = [mu(1)-mult*(-mu(1)+med),mu(2)+mult*(mu(2)-med)];
 Delrelbfe1 = [find(err<=mu(1));find(err>=mu(2))];
 relbfe1p = length(Delrelbfe1)*100/length(relbfe1global);
 relbfe1global(Delrelbfe1,:) = [];
@@ -347,13 +357,13 @@ disp(relbfe1p);
 close all
 
 
-[a1 b1 c1] = BlandAltman(lfeglobal(:,1),lfeglobal(:,2));
-[a2 b2 c2] = BlandAltman(lbdglobal(:,1),lbdglobal(:,2));
-[a3 b3 c3] = BlandAltman(lieglobal(:,1),lieglobal(:,2));
-[a4 b4 c4] = BlandAltman(lelbfeglobal(:,1),lelbfeglobal(:,2));
-[a5 b5 c5] = BlandAltman(lelbfe1global(:,1),lelbfe1global(:,2));
-[a6 b6 c6] = BlandAltman(rfeglobal(:,1),rfeglobal(:,2));
-[a7 b7 c7] = BlandAltman(rbdglobal(:,1),rbdglobal(:,2));
-[a8 b8 c8 ]= BlandAltman(rieglobal(:,1),rieglobal(:,2));
-[a9 b9 c9] = BlandAltman(relbfeglobal(:,1),relbfeglobal(:,2));
-[a10 b10 c10] = BlandAltman(relbfe1global(:,1),relbfe1global(:,2));
+[a1 b1 c1] = BlandAltman(lfeglobal(:,1),lfeglobal(:,2))
+[a2 b2 c2] = BlandAltman(lbdglobal(:,1),lbdglobal(:,2))
+[a3 b3 c3] = BlandAltman(lieglobal(:,1),lieglobal(:,2))
+[a4 b4 c4] = BlandAltman(lelbfeglobal(:,1),lelbfeglobal(:,2))
+[a5 b5 c5] = BlandAltman(lelbfe1global(:,1),lelbfe1global(:,2))
+[a6 b6 c6] = BlandAltman(rfeglobal(:,1),rfeglobal(:,2))
+[a7 b7 c7] = BlandAltman(rbdglobal(:,1),rbdglobal(:,2))
+[a8 b8 c8 ]= BlandAltman(rieglobal(:,1),rieglobal(:,2))
+[a9 b9 c9] = BlandAltman(relbfeglobal(:,1),relbfeglobal(:,2))
+[a10 b10 c10] = BlandAltman(relbfe1global(:,1),relbfe1global(:,2))

@@ -30,8 +30,8 @@ LW = 2;
 figure(1)
 hold on
 
-% subplot(2,1,1)
-% hold on
+subplot(2,1,1)
+hold on
 xlim([LTime(1),LTime(end)])
 ylim([-90,150])
 % xTick('FontSize',15)
@@ -53,9 +53,9 @@ ylabel('Angle [deg^o]','FontSize',15)
 lgd = legend([Pl,El,Il],'FontSize',20)
 lgd.Orientation = 'vertical'
 % 
-figure(2)
-% hold on
-% subplot(2,1,2)
+% figure(2)
+hold on
+subplot(2,1,2)
 hold on
 xlim([LTime(1),LTime(end)])
 ylim([-91,125])

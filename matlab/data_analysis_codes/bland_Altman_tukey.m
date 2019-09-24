@@ -260,7 +260,7 @@ end
 % hold on
 % plot(rbdglobal(:,2))
 % 
-mult = 3;
+mult = 1.5;
 
 err = lfeglobal(:,1)-lfeglobal(:,2);
 mu = prctile(err,[25 75]);

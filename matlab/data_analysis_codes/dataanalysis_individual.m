@@ -1,11 +1,11 @@
 
 clc;clear all;close all
 markers = ["lef","lbd","lelb","lelb1","lie","ref","rbd","relb","relb1","rie"];
-addpath('F:\github\wearable-jacket\matlab\dataanalysis_codes')
+addpath('F:\github\wearable-jacket\matlab\data_analysis_codes')
 % Ndef = 30;Ndbd = 30;Ndelb = 40;Ndie = 25;Ndelb1 = 30;
 smoovar = 2;
 % subjectID = [312,2064,2463,2990,3154,3162,3380,3409,3581,3689,5837,6219,6339,6525,7612,9053,9717];
-subjectID = 3581;
+subjectID = 312;
 for fu=1:length(subjectID)
 
 SID = subjectID(fu);
@@ -490,11 +490,11 @@ for i = 1:length(spike_files)
                 xlim([0,50])
 %                 xlabel('Time [s]','FontSize',15)
                 ylabel('Angle [deg^o]','FontSize',15)
-                A = plot(Time,rfe(:,1),'r','DisplayName','Kinect');
-                B = plot(Time,rfe(:,2),'b','DisplayName','WISE');
-                C = scatter(kloc,pkinect,'r*','DisplayName','Kinect peaks')
-                D = scatter(wloc,pwise,'b*','DisplayName','WISE peaks')
-                E = scatter(k,-p,'k*','DisplayName','Slice points')
+                A = plot(Time,rfe(:,1),'r','DisplayName','Kinect','LineWidth',2);
+                B = plot(Time,rfe(:,2),'b','DisplayName','WISE','LineWidth',2);
+                C = scatter(kloc,pkinect,'r*','DisplayName','Kinect peaks','LineWidth',2)
+                D = scatter(wloc,pwise,'b*','DisplayName','WISE peaks','LineWidth',2)
+                E = scatter(k,-p,'k*','DisplayName','Slice points','LineWidth',2)
                 lgd = legend([A,B,C,D,E],'FontSize',12);
                 lgd1.Orientation = 'vertical';
                 hold off
@@ -555,11 +555,11 @@ for i = 1:length(spike_files)
                 xlim([0,50]);
 %                 xlabel('Time [s]','FontSize',15);
                 ylabel('Angle [deg^o]','FontSize',15);
-                A = plot(Time,rbd(:,1),'r');
-                B = plot(Time,rbd(:,2),'b');
-                scatter(kloc,pkinect,'r*')
-                scatter(wloc,pwise,'b*')
-                scatter(k,-p,'k*')
+                A = plot(Time,rbd(:,1),'r','LineWidth',2);
+                B = plot(Time,rbd(:,2),'b','LineWidth',2);
+                scatter(kloc,pkinect,'r*','LineWidth',2)
+                scatter(wloc,pwise,'b*','LineWidth',2)
+                scatter(k(1:7),-p(1:7),'k*','LineWidth',2)
                 hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
@@ -637,11 +637,11 @@ for i = 1:length(spike_files)
                 xlim([0,50]);
 %                 xlabel('Time [s]','FontSize',15);
                 ylabel('Angle [deg^o]','FontSize',15);
-                A = plot(Time,relbfe(:,1),'r');
-                B = plot(Time,relbfe(:,2),'b');
-                scatter(kloc,pkinect,'r*')
-                scatter(wloc,pwise,'b*')
-                scatter(k,-p,'k*')
+                A = plot(Time,relbfe(:,1),'r','LineWidth',2);
+                B = plot(Time,relbfe(:,2),'b','LineWidth',2);
+                scatter(kloc,pkinect,'r*','LineWidth',2)
+                scatter(wloc,pwise,'b*','LineWidth',2)
+                scatter(k(1:7),-p(1:7),'k*','LineWidth',2)
                 hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
@@ -719,11 +719,11 @@ for i = 1:length(spike_files)
                 xlim([0,50]);
 %                 xlabel('Time [s]','FontSize',15);
                 ylabel('Angle [deg^o]','FontSize',15);
-                A = plot(Time,relbfe(:,1),'r');
-                B = plot(Time,relbfe(:,2),'b');
-                scatter(kloc,pkinect,'r*')
-                scatter(wloc,pwise,'b*')
-                scatter(k,-p,'k*')
+                A = plot(Time,relbfe(:,1),'r','LineWidth',2);
+                B = plot(Time,relbfe(:,2),'b','LineWidth',2);
+                scatter(kloc,pkinect,'r*','LineWidth',2)
+                scatter(wloc,pwise,'b*','LineWidth',2)
+                scatter(k(1:7),-p(1:7),'k*','LineWidth',2)
                 hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));
@@ -808,11 +808,11 @@ for i = 1:length(spike_files)
                 xlim([0,50]);
                 xlabel('Time [s]','FontSize',15);
                 ylabel('Angle [deg^o]','FontSize',15);
-                A = plot(Time,rie(:,1),'r');
-                B = plot(Time,rie(:,2),'b');
-                scatter(kloc,pkinect,'r*')
-                scatter(wloc,pwise,'b*')
-                scatter(k,-p,'k*')
+                A = plot(Time,rie(:,1),'r','LineWidth',2);
+                B = plot(Time,rie(:,2),'b','LineWidth',2);
+                scatter(kloc,pkinect,'r*','LineWidth',2)
+                scatter(wloc,pwise,'b*','LineWidth',2)
+                scatter(k(1:7),-p(1:7),'k*','LineWidth',2)
                 hold off
                         for j=1:var
                             fprintf(fid,"%s,%s,%s,%s,%s\n",typ,strcat('P',string(j)),string(pkinect(j)),string(pwise(j)),string(p(j)));

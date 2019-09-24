@@ -260,73 +260,73 @@ end
 % hold on
 % plot(rbdglobal(:,2))
 % 
-mult = 3;
+mult = 0;
 
 err = lfeglobal(:,1)-lfeglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Dellfe = [find(err<=mu(1));find(err>=mu(2))];
 lfep = length(Dellfe)*100/length(lfeglobal);
 lfeglobal(Dellfe,:) = [];
 
 err = rfeglobal(:,1)-rfeglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Delrfe = [find(err<=mu(1));find(err>=mu(2))];
 rfep = length(Delrfe)*100/length(rfeglobal);
 rfeglobal(Delrfe,:) = [];
 
 err = lbdglobal(:,1)-lbdglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Dellbd = [find(err<=mu(1));find(err>=mu(2))];
 lbdp = length(Dellbd)*100/length(lbdglobal);
 lbdglobal(Dellbd,:) = [];
 
 err = rbdglobal(:,1)-rbdglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Delrbd = [find(err<=mu(1));find(err>=mu(2))];
 rbdp = length(Delrbd)*100/length(rbdglobal);
 rbdglobal(Delrbd,:) = [];
 
 err = lieglobal(:,1)-lieglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Dellie = [find(err<=mu(1));find(err>=mu(2))];
 liep = length(Dellie)*100/length(lieglobal);
 lieglobal(Dellie,:) = [];
 
 err = rieglobal(:,1)-rieglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Delrie = [find(err<=mu(1));find(err>=mu(2))];
 riep = length(Delrie)*100/length(rieglobal);
 rieglobal(Delrie,:) = [];
 
 err = lelbfeglobal(:,1)-lelbfeglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Dellelbfe = [find(err<=mu(1));find(err>=mu(2))];
 lelbfep = length(Dellelbfe)*100/length(lelbfeglobal);
 lelbfeglobal(Dellelbfe,:) = [];
 
 err = relbfeglobal(:,1)-relbfeglobal(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Delrelbfe = [find(err<=mu(1));find(err>=mu(2))];
 relbfep = length(Delrelbfe)*100/length(relbfeglobal);
 relbfeglobal(Delrelbfe,:) = [];
 
 err = lelbfe1global(:,1)-lelbfe1global(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Dellelbfe1 = [find(err<=mu(1));find(err>=mu(2))];
 lelbfe1p = length(Dellelbfe1)*100/length(lelbfe1global);
 lelbfe1global(Dellelbfe1,:) = [];
 
 err = relbfe1global(:,1)-relbfe1global(:,2);
-mu = prctile(err,[25 75]);
+mu = prctile(err,[7.5 92.5]);
 mu = [mu(1)-mult*iqr(err),mu(2)+mult*iqr(err)]
 Delrelbfe1 = [find(err<=mu(1));find(err>=mu(2))];
 relbfe1p = length(Delrelbfe1)*100/length(relbfe1global);

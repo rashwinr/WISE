@@ -356,7 +356,166 @@ disp(relbfe1p);
 %%
 close all
 
+figure(1)
+hold on
+subplot(5,2,1)
+hold on
+scatter((lfeglobal(:,1)+lfeglobal(:,2))/2,(-lfeglobal(:,1)+lfeglobal(:,2)),5)
+axis([-40 190 -20 25])
+lx = (-40:1:190);
+ly1 = median(-lfeglobal(:,1)+lfeglobal(:,2))*ones(length(lx));
+ly2 = (median(-lfeglobal(:,1)+lfeglobal(:,2))+1.45*iqr(-lfeglobal(:,1)+lfeglobal(:,2)))*ones(length(lx));
+ly3 = (median(-lfeglobal(:,1)+lfeglobal(:,2))-1.45*iqr(-lfeglobal(:,1)+lfeglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(195,median(-lfeglobal(:,1)+lfeglobal(:,2))+1,strcat('M= ',num2str(round(median(-lfeglobal(:,1)+lfeglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(75,median(-lfeglobal(:,1)+lfeglobal(:,2))+1.45*iqr(-lfeglobal(:,1)+lfeglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-lfeglobal(:,1)+lfeglobal(:,2))+1.45*iqr(-lfeglobal(:,1)+lfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(75,median(-lfeglobal(:,1)+lfeglobal(:,2))-1.45*iqr(-lfeglobal(:,1)+lfeglobal(:,2))-3,strcat('M-1.45IQR= ',num2str(round((median(-lfeglobal(:,1)+lfeglobal(:,2))-1.45*iqr(-lfeglobal(:,1)+lfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Shoulder flexion-extension','Color','k','FontSize',16) 
+subplot(5,2,3)
+hold on
+scatter((lbdglobal(:,1)+lbdglobal(:,2))/2,(-lbdglobal(:,1)+lbdglobal(:,2)),5)
+axis([-10 190 -16 15])
+lx = (-10:1:190);
+ly1 = median(-lbdglobal(:,1)+lbdglobal(:,2))*ones(length(lx));
+ly2 = (median(-lbdglobal(:,1)+lbdglobal(:,2))+1.45*iqr(-lbdglobal(:,1)+lbdglobal(:,2)))*ones(length(lx));
+ly3 = (median(-lbdglobal(:,1)+lbdglobal(:,2))-1.45*iqr(-lbdglobal(:,1)+lbdglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(195,median(-lbdglobal(:,1)+lbdglobal(:,2))+1,strcat('M= ',num2str(round(median(-lbdglobal(:,1)+lbdglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(95,median(-lbdglobal(:,1)+lbdglobal(:,2))+1.45*iqr(-lbdglobal(:,1)+lbdglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-lbdglobal(:,1)+lbdglobal(:,2))+1.45*iqr(-lbdglobal(:,1)+lbdglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(95,median(-lbdglobal(:,1)+lbdglobal(:,2))-1.45*iqr(-lbdglobal(:,1)+lbdglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-lbdglobal(:,1)+lbdglobal(:,2))-1.45*iqr(-lbdglobal(:,1)+lbdglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Shoulder abduction-adduction','Color','k','FontSize',16)
+subplot(5,2,5)
+hold on
+scatter((lieglobal(:,1)+lieglobal(:,2))/2,(-lieglobal(:,1)+lieglobal(:,2)),5)
+axis([-90 80 -16 15])
+lx = (-90:1:90);
+ly1 = median(-lieglobal(:,1)+lieglobal(:,2))*ones(length(lx));
+ly2 = (median(-lieglobal(:,1)+lieglobal(:,2))+1.45*iqr(-lieglobal(:,1)+lieglobal(:,2)))*ones(length(lx));
+ly3 = (median(-lieglobal(:,1)+lieglobal(:,2))-1.45*iqr(-lieglobal(:,1)+lieglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(85,median(-lieglobal(:,1)+lieglobal(:,2))+1,strcat('M= ',num2str(round(median(-lieglobal(:,1)+lieglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(0,median(-lieglobal(:,1)+lieglobal(:,2))+1.45*iqr(-lieglobal(:,1)+lieglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-lieglobal(:,1)+lieglobal(:,2))+1.45*iqr(-lieglobal(:,1)+lieglobal(:,2))),0),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(0,median(-lieglobal(:,1)+lieglobal(:,2))-1.45*iqr(-lieglobal(:,1)+lieglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-lieglobal(:,1)+lieglobal(:,2))-1.45*iqr(-lieglobal(:,1)+lieglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Shoulder internal-external rotation','Color','k','FontSize',16)
+subplot(5,2,7)
+hold on
+scatter((lelbfeglobal(:,1)+lelbfeglobal(:,2))/2,(-lelbfeglobal(:,1)+lelbfeglobal(:,2)),5)
+axis([-10 160 -20 15])
+lx = (-10:1:180);
+ly1 = median(-relbfeglobal(:,1)+relbfeglobal(:,2))*ones(length(lx));
+ly2 = (median(-relbfeglobal(:,1)+relbfeglobal(:,2))+1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2)))*ones(length(lx));
+ly3 = (median(-relbfeglobal(:,1)+relbfeglobal(:,2))-1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(165,median(-lelbfeglobal(:,1)+lelbfeglobal(:,2))+1,strcat('M= ',num2str(round(median(-lelbfeglobal(:,1)+lelbfeglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(65,median(-lelbfeglobal(:,1)+lelbfeglobal(:,2))+1.45*iqr(-lelbfeglobal(:,1)+lelbfeglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-lelbfeglobal(:,1)+lelbfeglobal(:,2))+1.45*iqr(-lelbfeglobal(:,1)+lelbfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(65,median(-lelbfeglobal(:,1)+lelbfeglobal(:,2))-1.45*iqr(-lelbfeglobal(:,1)+lelbfeglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-lelbfeglobal(:,1)+lelbfeglobal(:,2))-1.45*iqr(-lelbfeglobal(:,1)+lelbfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Elbow flexion-extension from neutral pose','Color','k','FontSize',16)
+subplot(5,2,9)
+hold on
+scatter((lelbfe1global(:,1)+lelbfe1global(:,2))/2,(-lelbfe1global(:,1)+lelbfe1global(:,2)),5)
+axis([-10 160 -15 15])
+lx = (-10:1:160);
+ly1 = median(-lelbfe1global(:,1)+lelbfe1global(:,2))*ones(length(lx));
+ly2 = (median(-lelbfe1global(:,1)+lelbfe1global(:,2))+1.45*iqr(-lelbfe1global(:,1)+lelbfe1global(:,2)))*ones(length(lx));
+ly3 = (median(-lelbfe1global(:,1)+lelbfe1global(:,2))-1.45*iqr(-lelbfe1global(:,1)+lelbfe1global(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(165,median(-lelbfe1global(:,1)+lelbfe1global(:,2))+1,strcat('M= ',num2str(round(median(-lelbfe1global(:,1)+lelbfe1global(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(85,median(-lelbfe1global(:,1)+lelbfe1global(:,2))+1.45*iqr(-lelbfe1global(:,1)+lelbfe1global(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-lelbfe1global(:,1)+lelbfe1global(:,2))+1.45*iqr(-lelbfe1global(:,1)+lelbfe1global(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(85,median(-lelbfe1global(:,1)+lelbfe1global(:,2))-1.45*iqr(-lelbfe1global(:,1)+lelbfe1global(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-lelbfe1global(:,1)+lelbfe1global(:,2))-1.45*iqr(-lelbfe1global(:,1)+lelbfe1global(:,2))),0),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Elbow flexion-extension after 90^{o} abduction','Color','k','FontSize',16)
+subplot(5,2,2)
+hold on
+scatter((rfeglobal(:,1)+rfeglobal(:,2))/2,(-rfeglobal(:,1)+rfeglobal(:,2)),5)
+axis([-10 190 -20 20])
+lx = (-10:1:190);
+ly1 = median(-rfeglobal(:,1)+rfeglobal(:,2))*ones(length(lx));
+ly2 = (median(-rfeglobal(:,1)+rfeglobal(:,2))+1.45*iqr(-rfeglobal(:,1)+rfeglobal(:,2)))*ones(length(lx));
+ly3 = (median(-rfeglobal(:,1)+rfeglobal(:,2))-1.45*iqr(-rfeglobal(:,1)+rfeglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(195,median(-rfeglobal(:,1)+rfeglobal(:,2))+1,strcat('M= ',num2str(round(median(-rfeglobal(:,1)+rfeglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(95,median(-rfeglobal(:,1)+rfeglobal(:,2))+1.45*iqr(-rfeglobal(:,1)+rfeglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-rfeglobal(:,1)+rfeglobal(:,2))+1.45*iqr(-rfeglobal(:,1)+rfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(95,median(-rfeglobal(:,1)+rfeglobal(:,2))-1.45*iqr(-rfeglobal(:,1)+rfeglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-rfeglobal(:,1)+rfeglobal(:,2))-1.45*iqr(-rfeglobal(:,1)+rfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Shoulder flexion-extension','Color','k','FontSize',16) 
+subplot(5,2,4)
+hold on
+scatter((rbdglobal(:,1)+rbdglobal(:,2))/2,(-rbdglobal(:,1)+rbdglobal(:,2)),5)
+axis([-10 190 -15 15])
+lx = (-10:1:190);
+ly1 = median(-rbdglobal(:,1)+rbdglobal(:,2))*ones(length(lx));
+ly2 = (median(-rbdglobal(:,1)+rbdglobal(:,2))+1.45*iqr(-rbdglobal(:,1)+rbdglobal(:,2)))*ones(length(lx));
+ly3 = (median(-rbdglobal(:,1)+rbdglobal(:,2))-1.45*iqr(-rbdglobal(:,1)+rbdglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(195,median(-rbdglobal(:,1)+rbdglobal(:,2))+1,strcat('M= ',num2str(round(median(-rbdglobal(:,1)+rbdglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(95,median(-rbdglobal(:,1)+rbdglobal(:,2))+1.45*iqr(-rbdglobal(:,1)+rbdglobal(:,2))+3,strcat('M+1.45IQR= ',num2str(round((median(-rbdglobal(:,1)+rbdglobal(:,2))+1.45*iqr(-rbdglobal(:,1)+rbdglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(95,median(-rbdglobal(:,1)+rbdglobal(:,2))-1.45*iqr(-rbdglobal(:,1)+rbdglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-rbdglobal(:,1)+rbdglobal(:,2))-1.45*iqr(-rbdglobal(:,1)+rbdglobal(:,2))),0),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Shoulder abduction-adduction','Color','k','FontSize',16)
+subplot(5,2,6)
+hold on
+scatter((rieglobal(:,1)+rieglobal(:,2))/2,(-rieglobal(:,1)+rieglobal(:,2)),5)
+axis([-90 80 -15 15])
+lx = (-90:1:90);
+ly1 = median(-rieglobal(:,1)+rieglobal(:,2))*ones(length(lx));
+ly2 = (median(-rieglobal(:,1)+rieglobal(:,2))+1.45*iqr(-rieglobal(:,1)+rieglobal(:,2)))*ones(length(lx));
+ly3 = (median(-rieglobal(:,1)+rieglobal(:,2))-1.45*iqr(-rieglobal(:,1)+rieglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(85,median(-rieglobal(:,1)+rieglobal(:,2))+1,strcat('M= ',num2str(round(median(-rieglobal(:,1)+rieglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(0,median(-rieglobal(:,1)+rieglobal(:,2))+1.45*iqr(-rieglobal(:,1)+rieglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-rieglobal(:,1)+rieglobal(:,2))+1.45*iqr(-rieglobal(:,1)+rieglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(0,median(-rieglobal(:,1)+rieglobal(:,2))-1.45*iqr(-rieglobal(:,1)+rieglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-rieglobal(:,1)+rieglobal(:,2))-1.45*iqr(-rieglobal(:,1)+rieglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Shoulder internal-external rotation','Color','k','FontSize',16)
+subplot(5,2,8)
+hold on
+scatter((relbfeglobal(:,1)+relbfeglobal(:,2))/2,(-relbfeglobal(:,1)+relbfeglobal(:,2)),5)
+axis([-10 160 -18 10])
+lx = (-10:1:160);
+ly1 = median(-relbfeglobal(:,1)+relbfeglobal(:,2))*ones(length(lx));
+ly2 = (median(-relbfeglobal(:,1)+relbfeglobal(:,2))+1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2)))*ones(length(lx));
+ly3 = (median(-relbfeglobal(:,1)+relbfeglobal(:,2))-1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(165,median(-relbfeglobal(:,1)+relbfeglobal(:,2))+1,strcat('M= ',num2str(round(median(-relbfeglobal(:,1)+relbfeglobal(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(65,median(-relbfeglobal(:,1)+relbfeglobal(:,2))+1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-relbfeglobal(:,1)+relbfeglobal(:,2))+1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(65,median(-relbfeglobal(:,1)+relbfeglobal(:,2))-1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-relbfeglobal(:,1)+relbfeglobal(:,2))-1.45*iqr(-relbfeglobal(:,1)+relbfeglobal(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Elbow flexion-extension from neutral pose','Color','k','FontSize',16)
+subplot(5,2,10)
+hold on
+scatter((relbfe1global(:,1)+relbfe1global(:,2))/2,(-relbfe1global(:,1)+relbfe1global(:,2)),5)
+axis([-10 160 -15 10])
+lx = (-10:1:160);
+ly1 = median(-relbfe1global(:,1)+relbfe1global(:,2))*ones(length(lx));
+ly2 = (median(-relbfe1global(:,1)+relbfe1global(:,2))+1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2)))*ones(length(lx));
+ly3 = (median(-relbfe1global(:,1)+relbfe1global(:,2))-1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2)))*ones(length(lx));
+plot(lx,ly1,'k-.')
+plot(lx,ly2,'k-.')
+plot(lx,ly3,'k-.')
+text(165,median(-relbfe1global(:,1)+relbfe1global(:,2))+1,strcat('M= ',num2str(round(median(-relbfe1global(:,1)+relbfe1global(:,2)),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(65,median(-relbfe1global(:,1)+relbfe1global(:,2))+1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-relbfe1global(:,1)+relbfe1global(:,2))+1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
+text(65,median(-relbfe1global(:,1)+relbfe1global(:,2))-1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-relbfe1global(:,1)+relbfe1global(:,2))-1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))),0),'%0.1f'),char(176)),'Color','k','FontSize',16);
+title('Elbow flexion-extension after 90^{o} abduction','Color','k','FontSize',16)
+% [ax,h1]=suplabel('X axis: Mean of Kinect and WISE signals');
+% [ax,h2]=suplabel('Y axis: Difference between Kinect and WISE signals','y');
+% [ax,h3]=suplabel('Bland-Altman plots' ,'t');
+% set(h1,'FontSize',20)
+% set(h2,'FontSize',20)
+% set(h3,'FontSize',30)
 
+%%
 [a1 b1 c1] = BlandAltman(lfeglobal(:,1),lfeglobal(:,2))
 [a2 b2 c2] = BlandAltman(lbdglobal(:,1),lbdglobal(:,2))
 [a3 b3 c3] = BlandAltman(lieglobal(:,1),lieglobal(:,2))

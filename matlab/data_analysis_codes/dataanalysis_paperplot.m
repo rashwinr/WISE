@@ -278,7 +278,7 @@ for i = 1:length(spike_files)
                 B = plot(Time,rfe(:,2),'b','DisplayName','WISE','LineWidth',2);
                 C = scatter(kloc,pkinect,40,'d','MarkerEdgeColor','red','MarkerFaceColor','red','DisplayName','Kinect peaks','LineWidth',2);
                 D = scatter(wloc,pwise,40,'s','MarkerEdgeColor','blue','MarkerFaceColor','blue','DisplayName','WISE peaks','LineWidth',2);
-                E = scatter(k,-p,100,'x','MarkerEdgeColor','black','MarkerFaceColor','black','DisplayName','Slice points','LineWidth',2);
+                E = scatter(k,-p,100,'h','MarkerEdgeColor','black','MarkerFaceColor','black','DisplayName','Slice points','LineWidth',2);
                 lgd = legend([A,B,C,D,E],'FontSize',12);
                 lgd.Orientation = 'horizontal';
                 hold off
@@ -312,7 +312,7 @@ for i = 1:length(spike_files)
                 B = plot(Time,rbd(:,2),'b','LineWidth',2);
                 scatter(kloc,pkinect,40,'d','MarkerEdgeColor','red','MarkerFaceColor','red','LineWidth',2)
                 scatter(wloc,pwise,40,'s','MarkerEdgeColor','blue','MarkerFaceColor','blue','LineWidth',2)
-                scatter(k(1:7),-p(1:7),100,'x','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
+                scatter(k(1:7),-p(1:7),100,'h','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
                 hold off
                 figure(3)
                 subplot(5,2,4)
@@ -358,7 +358,7 @@ for i = 1:length(spike_files)
                 B = plot(Time,relbfe(:,2),'b','LineWidth',2);
                 scatter(kloc,pkinect,40,'d','MarkerEdgeColor','red','MarkerFaceColor','red','LineWidth',2)
                 scatter(wloc,pwise,40,'s','MarkerEdgeColor','blue','MarkerFaceColor','blue','LineWidth',2)
-                scatter(k(1:7),-p(1:7),100,'x','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
+                scatter(k(1:7),-p(1:7),100,'h','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
                 hold off
                 figure(3)
                 subplot(5,2,6)
@@ -404,7 +404,7 @@ for i = 1:length(spike_files)
                 B = plot(Time,relbfe(:,2),'b','LineWidth',2);
                 scatter(kloc,pkinect,40,'d','MarkerEdgeColor','red','MarkerFaceColor','red','LineWidth',2)
                 scatter(wloc,pwise,40,'s','MarkerEdgeColor','blue','MarkerFaceColor','blue','LineWidth',2)
-                scatter(k(1:7),-p(1:7),100,'x','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
+                scatter(k(1:7),-p(1:7),100,'h','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
                 hold off
                 figure(3)
                 subplot(5,2,8)
@@ -459,7 +459,7 @@ for i = 1:length(spike_files)
                 B = plot(Time,rie(:,2),'b','LineWidth',2);
                 scatter(kloc,pkinect,40,'d','MarkerEdgeColor','red','MarkerFaceColor','red','LineWidth',2)
                 scatter(wloc,pwise,40,'s','MarkerEdgeColor','blue','MarkerFaceColor','blue','LineWidth',2)
-                scatter(k(1:7),-p(1:7),100,'x','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
+                scatter(k(1:7),-p(1:7),100,'h','MarkerEdgeColor','black','MarkerFaceColor','black','LineWidth',2)
                 hold off
                 figure(3)
                 subplot(5,2,10)
@@ -486,7 +486,7 @@ end
 end
 figure(4)
 [ax,h1]=suplabel('Time (seconds)');
-[ax,h2]=suplabel('Angle in degrees','y');
+[ax,h2]=suplabel('Angle (degrees^{o})','y');
 % [ax,h3]=suplabel('Bland-Altman plots' ,'t');
 set(h1,'FontSize',20)
 set(h2,'FontSize',20)

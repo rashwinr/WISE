@@ -508,11 +508,11 @@ text(165,median(-relbfe1global(:,1)+relbfe1global(:,2))+1,strcat('M= ',num2str(r
 text(65,median(-relbfe1global(:,1)+relbfe1global(:,2))+1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))+2,strcat('M+1.45IQR= ',num2str(round((median(-relbfe1global(:,1)+relbfe1global(:,2))+1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))),1),'%0.1f'),char(176)),'Color','k','FontSize',16);
 text(65,median(-relbfe1global(:,1)+relbfe1global(:,2))-1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))-2,strcat('M-1.45IQR= ',num2str(round((median(-relbfe1global(:,1)+relbfe1global(:,2))-1.45*iqr(-relbfe1global(:,1)+relbfe1global(:,2))),0),'%0.1f'),char(176)),'Color','k','FontSize',16);
 title('Elbow flexion-extension after 90^{o} abduction','Color','k','FontSize',16)
-% [ax,h1]=suplabel('X axis: Mean of Kinect and WISE signals');
-% [ax,h2]=suplabel('Y axis: Difference between Kinect and WISE signals','y');
+[ax,h1]=suplabel('X axis: Mean of Kinect and WISE signals');
+[ax,h2]=suplabel('Y axis: Difference between Kinect and WISE signals','y');
 % [ax,h3]=suplabel('Bland-Altman plots' ,'t');
-% set(h1,'FontSize',20)
-% set(h2,'FontSize',20)
+set(h1,'FontSize',20)
+set(h2,'FontSize',20)
 % set(h3,'FontSize',30)
 
 %%

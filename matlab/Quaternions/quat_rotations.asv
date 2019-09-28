@@ -1,5 +1,5 @@
 
-qA = axang2quat([1 0 0 0]);
+qA = axang2quat([1 0 0 pi/2]);
 qB = axang2quat([1 0 0 pi/4]);
 AqB = quatmultiply(qB,quatconj(qA));
 BqA = quatconj(AqB);
@@ -67,6 +67,5 @@ A3 = plot3([RA(1),RA(1)+KA(1)],[RA(2),RA(2)+KA(2)],[RA(3),RA(3)+KA(3)],'b');
         A3 = plot3([RA(1),RA(1)+KA(1)],[RA(2),RA(2)+KA(2)],[RA(3),RA(3)+KA(3)],'b');
         Te = text(0,0,0,'B');
         
-        V1 = qJ
+        V1 = qK
         V2 = quaternion(quatmultiply(qB,quatmultiply(V1,quatconj(qB))))
-        V3 = quaternion(quatmultiply(AqB,quatmultiply(V1,quatconj(AqB))))

@@ -67,7 +67,6 @@ while i<=length(str)
            case 'e'
                datamodified(5,:) = data;
                flg = flg +1;
-               
                qE = qconvert(datamodified(5,:));
                qE = box_transf('e',qE);
                

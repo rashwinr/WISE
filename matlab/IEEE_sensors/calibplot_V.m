@@ -9,7 +9,7 @@ fopen(ser);k=[];
 pause(2);
 sts = 'F:\github\wearable-jacket\matlab\IEEE_sensors\data_matched\';
 cd(sts);
-ttotal = 1*60;
+ttotal = 5*60;
 prompt1 = 'Please enter the sensor ID attached on the moving arm respond LA,LF,RA,RF: ';
 WISESENSORID = input(prompt1,'s');
 WISESENSORID = string(WISESENSORID);
@@ -399,6 +399,6 @@ time = time+toc;
            break; 
            end
        end      
-       pause(0.01)
+       pause(0.05)
 end
 fclose(fwrite);

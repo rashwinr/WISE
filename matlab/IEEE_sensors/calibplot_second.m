@@ -283,18 +283,19 @@ t20 = text(-7,7.5,strcat('A:  ',num2str(theta1),'^{o}'),'FontSize',fs);
 t21 = text(-3,7.5,strcat('B:  ',num2str(theta2),'^{o}'),'FontSize',fs);
 t22 = text(1,7.5,strcat('C:  ',num2str(theta3),'^{o}'),'FontSize',fs);
 t23 = text(5,7.5,strcat('D:  ',num2str(theta4),'^{o}'),'FontSize',fs);
-
-% suptitle(strcat('Turntable testing sensorID:   ',WISESENSORID, '   ',AX,' axis'));
 hold off
+
 fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',time,q1(1),q1(2),q1(3),q1(4),q2(1),q2(2),q2(3),q2(4),q3(1),q3(2),q3(3),q3(4),q4(1),q4(2),q4(3),q4(4),theta1,theta2,theta3,theta4);
+
 time = time+toc;
-       if ~isempty(k)
-           if strcmp(k,'q') 
+
+if ~isempty(k)
+       if strcmp(k,'q') 
            k=[];
            fclose(fwrite);
            break; 
-           end
-       end      
+        end
+end      
        pause(0.01)
 end
 fclose(fwrite);

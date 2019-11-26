@@ -51,7 +51,7 @@ plot(28.8675*xlen,len,'k--')
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
 lgd = legend([Pl,El,Il],'FontSize',20)
-lgd.Orientation = 'vertical'
+lgd.Orientation = 'vertical';
 % 
 % figure(2)
 hold on

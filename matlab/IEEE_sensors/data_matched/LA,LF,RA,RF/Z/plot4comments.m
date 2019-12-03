@@ -20,7 +20,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("F:\github\wearable-jacket\matlab\IEEE_sensors\data_matched\LA,LF,RA,RF\Y\0_WISE+turntable_11-26-2019 12-12.txt", opts);
+tbl = readtable("F:\github\wearable-jacket\matlab\IEEE_sensors\data_matched\LA,LF,RA,RF\Z\90degrees.csv", opts);
 
 %% Convert to output type
 Time = tbl.VarName1;
@@ -44,29 +44,29 @@ VarName18 = tbl.VarName18;
 VarName19 = tbl.VarName19;
 VarName20 = tbl.VarName20;
 VarName21 = tbl.VarName21;
-LF = tbl.VarName22;
-RF = tbl.VarName23;
-LA = tbl.VarName24;
-RA = tbl.VarName25;
+LF = -tbl.VarName22;
+RF = -tbl.VarName23;
+LA = -tbl.VarName24;
+RA = -tbl.VarName25;
+zer = [11.137091	-13.673372	-5.437669	8.575355];
 
-
-LF = LF-min(LF);
+LF = LF-max(LF);
 % LF = LF-2.5;
 % for i=1:length(LF) %for 60_WISE+turntable_11-22-2019 21-21
 % if LF(i)~=0
 %     LF(i) = LF(i)-[3.40729200000000];
 % end
 % end
-RF = RF-min(RF);
+RF = RF-max(RF);
 % RF = RF-2.5;
-LA = LA-min(LA);
+LA = LA-max(RF);
 % LA = LA-2.5;
 % for i=1:length(LA) %for 60_WISE+turntable_11-22-2019 21-21
 % if LA(i)~=0
 %     LA(i) = LA(i)-[3.82183400000000];
 % end
 % end
-RA = RA-min(RA);
+RA = RA-max(RA);
 % RA = RA-2.5;
 
 %% Clear temporary variables
@@ -80,11 +80,11 @@ lf = plot(Time,LF,'Color','r','LineWidth',LW,'DisplayName','LF')
 hold on
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-axis([0 300 -1 1])
+axis([0 300 -90 0])
 subplot(4,1,2)
 rf = plot(Time,RF,'Color','g','LineWidth',LW,'DisplayName','RF')
 hold on
-axis([0 300 -1 1])
+axis([0 300 -90 0])
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
 subplot(4,1,3)
@@ -92,13 +92,13 @@ la = plot(Time,LA,'Color','b','LineWidth',LW,'DisplayName','LA')
 hold on
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-axis([0 300 -1 1])
+axis([0 300 -90 0])
 subplot(4,1,4)
 ra = plot(Time,RA,'Color','k','LineWidth',LW,'DisplayName','RA')
 hold on
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-axis([0 300 -1 1])
+axis([0 300 -90 0])
 lgd = legend([lf,rf,la,ra],'FontSize',15)
 lgd.Orientation = 'horizontal'
 

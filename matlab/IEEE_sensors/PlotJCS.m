@@ -17,7 +17,7 @@ end
 cd(strcat(sts,WID,'\'));
 f = sprintf('%s_WISE+JCS_%s.txt',WID,datestr(now,'mm-dd-yyyy HH-MM'));
 fwrite = fopen(f,'wt');
-ttotal = 1*60;
+ttotal = 10*60;
 telapsed = 0;
 LF = [0,0,0];
 LA = [0,0,0];

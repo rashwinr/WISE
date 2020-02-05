@@ -1,13 +1,14 @@
 function [Angle] = getAnglefromFC(ser)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+flushinput(ser);
 bytes = ser.Bytesavailable;
 while bytes<=50
 bytes = ser.Bytesavailable;    
 end
 str = strsplit(convertCharsToStrings(char(fread(ser,bytes))),'\n');
 str = fliplr(str(2:length(str)-1));
-
+i = 1;
 while i<=length(str)
     data = strsplit(str(i),':');
     if (length(data)==2) 
@@ -16,6 +17,7 @@ while i<=length(str)
                Angle = data(2);
         end
     end
+        i = i + 1;
 end
 
 end

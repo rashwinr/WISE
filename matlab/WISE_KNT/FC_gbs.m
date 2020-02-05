@@ -14,6 +14,17 @@ addpath('F:\github\wearable-jacket\matlab\WISE_KNT');
 k2 = Kin2('color','depth','body','face');
 outOfRange = 4000;
 
+sz1 = screensize(1);
+c_width = sz1(3); c_height = sz1(4);COL_SCALE = 1;
+color = zeros(c_height*COL_SCALE,c_width*COL_SCALE,3,'uint8');
+c.h = figure('units', 'pixels', 'outerposition', sz1);
+c.ax = axes;
+color = imresize(color,COL_SCALE);
+c.im = imshow(color, 'Parent', c.ax);
+
+set( figure(1) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
+
+
 instrreset
 ser = serial('COM38','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
@@ -30,7 +41,8 @@ ls = 0;rs = 1350;lw = 475;H = 1080;rw = 570;
 qC = [1,0,0,0];qD = [1,0,0,0];qA = [1,0,0,0];qB = [1,0,0,0];qE = [1,0,0,0];
 lshoangle = [0,0,0,0,0]';
 rshoangle = [0,0,0,0,0]';
-
+file = sprintf('%s_WISE+KINECT_testing_%s.txt',num2str(SUBJECTID),datestr(now,'mm-dd-yyyy HH-MM'));
+fid = fopen(file,'wt');
 %%  
 lc=1;l=0;lflag = 0;telapsed=0;
 while (lc) 
@@ -46,6 +58,7 @@ while (lc)
        if numBodies == 1
 
        pos2Dxxx = bodies(1).Position; 
+       Angle = getAnglefromFC(ser);
        kinect_ang = get_Kinect(pos2Dxxx);
        lkinef = kinect_ang(1);
        rkinef = kinect_ang(2);
@@ -56,14 +69,14 @@ while (lc)
        lkinelb = kinect_ang(7);
        rkinelb = kinect_ang(8); 
        
-              figure(1)
+       figure(1)
        color = imresize(color,COL_SCALE);c.im = imshow(color, 'Parent', c.ax);
        rectangle('Position',[0 0 475 1080],'LineWidth',3,'FaceColor','k');  
        rectangle('Position',[1350 0 620 1080],'LineWidth',3,'FaceColor','k');
        k2.drawBodies(c.ax,bodies,'color',3,2,1);k2.drawFaces(c.ax,face,5,false,20);
-       
+       fprintf( fid, '%.2f,%.2f,%.2f\n',telapsed,rkinbd,Angle);
        end
-              if numBodies == 0
+       if numBodies == 0
            figure(1)
            s1 = strcat('No persons in view');   
            text((1920/2) - 250,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
@@ -81,7 +94,8 @@ while (lc)
                text(1920/2,100,s1,'Color','red','FontSize',30,'FontWeight','bold');
             end
            end
-       end      
+       end     
+       
        if ~isempty(k)
            if strcmp(k,'q') 
            k=[];
@@ -90,11 +104,11 @@ while (lc)
        end
    end
    
-    if telapsed>=65
+if telapsed>=30
      break;
- end
+end
 
 telapsed = telapsed+toc(tstart);
-
-
+pause(0.05)
 end
+fclose(fid);

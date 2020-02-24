@@ -51,7 +51,10 @@ LIE = plot(T,Lie,'-b','LineWidth',2,'DisplayName','Shoulder Int.-Ext. Rotation')
 plot(15*t,line,'--k','LineWidth',1)
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-
+Ax = gca;
+Ax.FontSize = 15;
+lgd1 = legend([LSE,LSP,LIE],'FontSize',15)
+lgd1.Orientation = 'horizontal';
 subplot(2,1,2)
 axis([12.1088 17.8717 -90 30])
 hold on
@@ -61,6 +64,7 @@ LPS = plot(T,Lps-80,'-k','LineWidth',2,'DisplayName','Forearm Pro.-Sup.')
 plot(15*t,line,'--k','LineWidth',1)
 xlabel('Time [s]','FontSize',15)
 ylabel('Angle [deg^o]','FontSize',15)
-
-lgd = legend([LSE,LSP,LIE,LELBFE,LPS,LCA],'FontSize',15)
-lgd.Orientation = 'vertical';
+Ax = gca;
+Ax.FontSize = 15;
+lgd2 = legend([LELBFE,LPS,LCA],'FontSize',15)
+lgd2.Orientation = 'horizontal';

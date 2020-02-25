@@ -1,27 +1,22 @@
 % print JCS angles
 
 clear all, close all, clc
-addpath('F:\github\wearable-jacket\matlab\IEEE_sensors');
+markers = ["ref","rbd","relb","rps"];
+addpath('F:\github\wearable-jacket\matlab\ieee_jbhi');
 instrreset
+
 ser = serial('COM15','BaudRate',115200);
 ser.ReadAsyncMode = 'continuous';
 fopen(ser);
-addpath('F:\github\wearable-jacket\matlab\IEEE_sensors\JCS_data\');
-sts = 'F:\github\wearable-jacket\matlab\IEEE_sensors\JCS_data\';
+Prompt0 = 'Please enter the subject ID of the person: ';
+WID = input(Prompt0,'s');
 Prompt1 = 'Please enter the gender of the person: ';
-WID = input(Prompt1,'s');
-cd(sts);
-if ~exist(WID,'dir')
-mkdir(WID);
-end
-cd(strcat(sts,WID,'\'));
-f = sprintf('%s_WISE+JCS_%s.txt',WID,datestr(now,'mm-dd-yyyy HH-MM'));
-fwrite = fopen(f,'wt');
-ttotal = 60;
-telapsed = 0;
+WID1 = input(Prompt1,'s');
+Prompt2 = 'Please enter the option (aROM,rROM+ps,rROM+elbfe,rROM+ps+elbfe,rROM+sie,rROM+ps+sie,rROM+elbfe+sie,rROM+elbfe+sie+ps): ';
+WID2 = input(Prompt2,'s');
+
 LF = [0,0,0];
 LA = [0,0,0];
-
 RF = [0,0,0];
 RA = [0,0,0];
 qLA = [1 0 0 0];
@@ -29,6 +24,7 @@ qRA = [1 0 0 0];
 qLF = [1 0 0 0];
 qRF = [1 0 0 0];
 qB = [1 0 0 0];
+telapsed = 0.00;
 
 figure(1)
 set( figure(1) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
@@ -122,8 +118,95 @@ k=[];
 
 %%
 
-while telapsed<=ttotal
-    tic;
+for i=1:length(markers)
+   arg = char(markers(i));
+   file1 = Update_video(arg,WID,WID1,WID2);
+   telapsed = 0.00;
+   
+figure(1)
+set( figure(1) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
+hold on
+Tl = sgtitle('Left arm');
+subplot(3,2,1)
+hold on
+title('Shoulder plane')
+LApl = text(telapsed,LA(1),'0');
+alplane = animatedline(telapsed,LA(1),'Color','r');
+
+subplot(3,2,3)
+hold on
+title('Shoulder elevation')
+LAel = text(telapsed,LA(2),'0');
+alelev = animatedline(telapsed,LA(2),'Color','g');
+
+subplot(3,2,5)
+hold on
+title('Shoulder Int.-ext. rot.')
+LAie = text(telapsed,LA(3),'0');
+alie = animatedline(telapsed,LA(3),'Color','b');
+
+subplot(3,2,2)
+hold on
+title('Carrying angle')
+LFmo = text(telapsed,LF(1),'0');
+almo = animatedline(telapsed,LF(1),'Color','c');
+
+subplot(3,2,4)
+hold on
+title('Elbow Flex.-Ext.');
+LFef = text(telapsed,LF(2),'0');
+alef = animatedline(telapsed,LF(2),'Color','m');
+
+subplot(3,2,6)
+hold on
+title('Forearm Pro.-sup.');
+LFps = text(telapsed,LF(3),'0');
+alps = animatedline(telapsed,LF(3),'Color','k');
+
+figure(2)
+set( figure(2) , 'DoubleBuffer', 'on','keypress','k=get(gcf,''currentchar'');' );
+hold on
+Tr = sgtitle('Right arm');
+subplot(3,2,1)
+hold on
+title('Shoulder plane')
+RApl = text(telapsed,RA(1),'0');
+arplane = animatedline(telapsed,RA(1),'Color','r');
+
+subplot(3,2,3)
+hold on
+title('Shoulder elevation')
+RAel = text(telapsed,RA(2),'0');
+arelev = animatedline(telapsed,RA(2),'Color','g');
+
+subplot(3,2,5)
+hold on
+title('Shoulder Int.-ext. rot.')
+RAie = text(telapsed,RA(3),'0');
+arie = animatedline(telapsed,RA(3),'Color','b');
+
+subplot(3,2,2)
+hold on
+title('Carrying angle')
+RFmo = text(telapsed,RF(1),'0');
+armo = animatedline(telapsed,RF(1),'Color','c');
+
+subplot(3,2,4)
+hold on
+title('Elbow Flex.-Ext.');
+RFef = text(telapsed,RF(2),'0');
+aref = animatedline(telapsed,RF(2),'Color','m');
+
+subplot(3,2,6)
+hold on
+title('Forearm Pro.-sup.');
+RFps = text(telapsed,RF(3),'0');
+arps = animatedline(telapsed,RF(3),'Color','k');
+k=[];
+
+while(telapsed<=65.00)
+    
+    tic;    
     if ser.BytesAvailable
         [qLF,qRF,qLA,qRA,qB] = DataReceive(ser,qLF,qRF,qLA,qRA,qB);
         LA = JCS_isb('LA',qB,qLA);
@@ -203,17 +286,21 @@ while telapsed<=ttotal
         RFps = text(telapsed+2,RF(3)+2,num2str(RF(3)));
         addpoints(arps,telapsed,RF(3));
         drawnow;
-    fprintf(fwrite,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',telapsed,LA(1),LA(2),LA(3),LF(1),LF(2),LF(3),RA(1),RA(2),RA(3),RF(1),RF(2),RF(3));    
-       if ~isempty(k)
-           if strcmp(k,'q') 
-               k=[];
-               fclose(fwrite);
-               break; 
-           end
-       end
-
-    telapsed = toc+telapsed;
-    pause(0.1);
+        
+    fprintf(file1,'%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',telapsed,LA(1),LA(2),LA(3),LF(1),LF(2),LF(3),RA(1),RA(2),RA(3),RF(1),RF(2),RF(3));    
+   
+if ~isempty(k)
+  if strcmp(k,'q') 
+       k=[];
+       fclose(file1);
+       break; 
+  end
+end
+telapsed = telapsed+toc;
+end
+clf(figure(2),'reset');
+clf(figure(1),'reset');
+disp(telapsed);
+fclose(file1);
 end
 
-fclose(fwrite);

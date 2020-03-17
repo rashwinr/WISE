@@ -1,0 +1,60 @@
+[System]
+Name='fl_grasp'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=2
+NumRules=0
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='pLFR'
+Range=[15 75]
+NumMFs=9
+MF1='250':'gaussmf',[5.48 22.9]
+MF2='300':'gaussmf',[4.52 25.86]
+MF3='350':'gaussmf',[7.75 29.98]
+MF4='400':'gaussmf',[4.65 38.15]
+MF5='450':'gaussmf',[8.18 39.02]
+MF6='500':'gaussmf',[5.63 43.45]
+MF7='550':'gaussmf',[8.97 48.1]
+MF8='mf8':'gaussmf',[12.74 45]
+MF9='600':'gaussmf',[7.68 54.01]
+
+[Input2]
+Name='pGFR'
+Range=[0 1]
+NumMFs=3
+MF1='mf1':'trimf',[-0.416666666666667 0 0.416666666666667]
+MF2='mf2':'trimf',[0.0833333333333333 0.5 0.916666666666667]
+MF3='mf3':'trimf',[0.583333333333333 1 1.41666666666667]
+
+[Output1]
+Name='Weight'
+Range=[0 10]
+NumMFs=10
+MF1='W1':'trimf',[-1 0 1]
+MF2='W4':'trimf',[2 3 4]
+MF3='W7':'trimf',[5 6 7]
+MF4='W2':'trimf',[0 1 2]
+MF5='W3':'trimf',[1 2 3]
+MF6='W5':'trimf',[3 4 5]
+MF7='W6':'trimf',[4 5 6]
+MF8='W8':'trimf',[6 7 8]
+MF9='W9':'trimf',[7 8 9]
+MF10='W10':'trimf',[8 9 10]
+
+[Output2]
+Name='Texture'
+Range=[0 3]
+NumMFs=4
+MF1='T1':'trimf',[-1 0 1]
+MF2='T2':'trimf',[0 1 2]
+MF3='T3':'trimf',[1 2 3]
+MF4='T4':'trimf',[2 3 4]
+
+[Rules]

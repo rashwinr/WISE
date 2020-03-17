@@ -1,0 +1,85 @@
+[System]
+Name='fl_grasp'
+Type='mamdani'
+Version=2.0
+NumInputs=4
+NumOutputs=2
+NumRules=0
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='pLFR'
+Range=[15 75]
+NumMFs=9
+MF1='250':'gaussmf',[5.48 22.9]
+MF2='300':'gaussmf',[4.52 25.86]
+MF3='350':'gaussmf',[7.75 29.98]
+MF4='400':'gaussmf',[4.65 38.15]
+MF5='450':'gaussmf',[8.18 39.02]
+MF6='500':'gaussmf',[5.63 43.45]
+MF7='550':'gaussmf',[8.97 48.1]
+MF8='mf8':'gaussmf',[12.74 45]
+MF9='600':'gaussmf',[7.68 54.01]
+
+[Input2]
+Name='pGFR'
+Range=[25 50]
+NumMFs=4
+MF1='A1':'gaussmf',[5.71 36.31]
+MF2='A2':'gaussmf',[9.583 48.43]
+MF3='B1':'gaussmf',[6.19 33.65]
+MF4='B2':'gaussmf',[5.308 37.5]
+
+[Input3]
+Name='Texture'
+Range=[0 3]
+NumMFs=4
+MF1='A1':'trimf',[-1 0 1]
+MF2='A2':'trimf',[0 1 2]
+MF3='B2':'trimf',[2 3 4]
+MF4='B1':'trimf',[1 2 3]
+
+[Input4]
+Name='Weight'
+Range=[0 10]
+NumMFs=10
+MF1='W1':'trimf',[0 1 2]
+MF2='W2':'trimf',[1 2 3]
+MF3='W3':'trimf',[2 3 4]
+MF4='W4':'trimf',[3 4 5]
+MF5='W5':'trimf',[4 5 6]
+MF6='W6':'trimf',[5 6 7]
+MF7='W7':'trimf',[6 7 8]
+MF8='W8':'trimf',[7 8 9]
+MF9='W9':'trimf',[8 9 10]
+MF10='W10':'trimf',[9 10 11]
+
+[Output1]
+Name='Weight'
+Range=[0 10]
+NumMFs=10
+MF1='W1':'trimf',[-1 0 1]
+MF2='W4':'trimf',[2 3 4]
+MF3='W7':'trimf',[5 6 7]
+MF4='W2':'trimf',[0 1 2]
+MF5='W3':'trimf',[1 2 3]
+MF6='W5':'trimf',[3 4 5]
+MF7='W6':'trimf',[4 5 6]
+MF8='W8':'trimf',[6 7 8]
+MF9='W9':'trimf',[7 8 9]
+MF10='W10':'trimf',[8 9 10]
+
+[Output2]
+Name='Texture'
+Range=[0 3]
+NumMFs=4
+MF1='A1':'trimf',[-1 0 1]
+MF2='A2':'trimf',[0 1 2]
+MF3='B1':'trimf',[1 2 3]
+MF4='B2':'trimf',[2 3 4]
+
+[Rules]
